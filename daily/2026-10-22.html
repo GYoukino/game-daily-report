@@ -1,39 +1,82 @@
 <!DOCTYPE html>
-<html lang="zh-CN"><head><meta charset="UTF-8">
-<title>游戏动态日报 - 2026-10-22</title>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>游戏动态日报 · 2026-10-22</title>
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
-       background: #f5f6f8; color: #262626; padding: 24px; }
-.wrap { max-width: 860px; margin: 0 auto; }
-header { background: #fff; border-radius: 12px; padding: 24px 28px;
-         box-shadow: 0 1px 3px rgba(0,0,0,.06); margin-bottom: 16px; }
-h1 { font-size: 22px; color: #1a1a1a; }
-.meta { color: #8c8c8c; font-size: 13px; margin-top: 8px; }
-.summary { background: #fff; border-radius: 12px; padding: 16px 28px;
-           box-shadow: 0 1px 3px rgba(0,0,0,.06); margin-bottom: 16px;
-           font-size: 14px; line-height: 1.9; }
-.summary b { color: #d4380d; }
-.game { background: #fff; border-radius: 12px; padding: 20px 28px;
-        box-shadow: 0 1px 3px rgba(0,0,0,.06); margin-bottom: 16px; }
-.game h2 { font-size: 17px; border-left: 4px solid #d4380d; padding-left: 10px; }
-.game h2 .count { font-size: 13px; color: #8c8c8c; font-weight: normal; margin-left: 8px; }
-.item { border-top: 1px solid #f0f0f0; padding: 14px 0; }
-.item:first-of-type { border-top: none; }
-.item-head { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
-.cat { font-size: 12px; color: #d4380d; background: #fff2e8;
-       border-radius: 4px; padding: 1px 8px; white-space: nowrap; }
-.item-head a { color: #1677ff; text-decoration: none; font-size: 15px; font-weight: 600; }
-.item-head a:hover { text-decoration: underline; }
-.time { color: #bfbfbf; font-size: 12px; margin-left: auto; white-space: nowrap; }
-.content { color: #595959; font-size: 13px; line-height: 1.8; margin-top: 6px;
-           white-space: pre-wrap; word-break: break-all; }
-.empty { color: #bfbfbf; font-size: 13px; padding: 6px 0; }
-footer { text-align: center; color: #bfbfbf; font-size: 12px; padding: 12px 0 24px; }
-</style></head><body><div class='wrap'>
-<header><h1>🎮 游戏动态日报</h1>
-<div class='meta'>日期：2026-10-22　｜　监测游戏：0 款　｜　生成时间：2026-10-22 01:25:14</div></header>
-<div class='summary'>今日动态共 <b>0</b> 条　｜　暂无数据</div>
-<div class='game'><h2>今日暂无新动态</h2><div class='empty'>各游戏官网暂未发布新公告。</div></div>
-<footer>数据来自各游戏官方网站，仅供参考，请以官方发布为准。</footer>
-</div></body></html>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif; background: #f5f6f8; color: #2c2c33; line-height: 1.65; padding: 24px 16px; }
+  .wrap { max-width: 1080px; margin: 0 auto; }
+  header { background: linear-gradient(135deg, #ffffff 0%, #eef2ff 100%); border: 1px solid #d9dfee; border-radius: 12px; padding: 22px 26px; margin-bottom: 18px; }
+  header h1 { font-size: 22px; color: #1f2340; }
+  header .meta { margin-top: 8px; font-size: 13px; color: #5a6070; }
+  header .meta b { color: #3b4a8a; }
+  .note { background: #fff8e6; border: 1px solid #f0ddaa; border-radius: 8px; padding: 10px 14px; font-size: 13px; color: #7a5b12; margin-top: 12px; }
+  section { background: #ffffff; border: 1px solid #e3e6ee; border-radius: 12px; padding: 20px 24px; margin-bottom: 16px; }
+  h2 { font-size: 17px; color: #1f2340; border-left: 4px solid #4a6cf7; padding-left: 10px; margin-bottom: 14px; }
+  h3 { font-size: 15px; color: #333a5c; margin: 16px 0 8px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 8px 0 14px; }
+  th { background: #f0f3fb; color: #3b4a8a; text-align: left; padding: 8px 10px; border: 1px solid #dfe4f2; white-space: nowrap; }
+  td { padding: 8px 10px; border: 1px solid #e6e9f2; vertical-align: top; }
+  tr:nth-child(even) td { background: #fafbfe; }
+  .tag { display: inline-block; font-size: 11px; padding: 1px 8px; border-radius: 10px; margin-right: 4px; white-space: nowrap; }
+  .t-official { background: #e3f5e9; color: #157a3d; border: 1px solid #b5e2c4; }
+  .t-rumor { background: #fdeaea; color: #b03a3a; border: 1px solid #f3c2c2; }
+  .t-estimate { background: #fff3dd; color: #9a6206; border: 1px solid #f0d9a8; }
+  .t-third { background: #ececf4; color: #5a5f7a; border: 1px solid #d5d8e6; }
+  .t-expired { background: #e8e8ec; color: #8a8fa3; border: 1px solid #d8dae4; text-decoration: line-through; }
+  .code { font-family: Consolas, "Courier New", monospace; background: #f2f4fa; border: 1px solid #dde1f0; border-radius: 4px; padding: 1px 6px; font-size: 12.5px; color: #2f3a6e; }
+  .deadline { color: #c0392b; font-weight: 600; white-space: nowrap; }
+  .ok-date { color: #157a3d; font-weight: 600; white-space: nowrap; }
+  ul { padding-left: 20px; }
+  li { margin: 3px 0; font-size: 13.5px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 760px) { .grid2 { grid-template-columns: 1fr; } }
+  .card { border: 1px solid #e3e6ee; border-radius: 10px; padding: 14px 16px; background: #fcfcfe; }
+  .card h4 { font-size: 14px; color: #2b3160; margin-bottom: 6px; }
+  .card p, .card li { font-size: 13px; color: #454a5e; }
+  .src { font-size: 12px; color: #7a8098; margin-top: 6px; }
+  .timeline { border-left: 3px solid #4a6cf7; margin: 10px 0 4px 8px; padding-left: 18px; }
+  .tl-item { position: relative; margin-bottom: 12px; }
+  .tl-item::before { content: ""; position: absolute; left: -24px; top: 5px; width: 9px; height: 9px; border-radius: 50%; background: #4a6cf7; }
+  .tl-date { font-weight: 700; color: #3b4a8a; font-size: 13.5px; }
+  .tl-body { font-size: 13px; color: #454a5e; }
+  .footer { text-align: center; font-size: 12px; color: #8a90a5; padding: 10px 0 26px; }
+  a { color: #4a6cf7; text-decoration: none; }
+  /* ---- 以下三类为日报场景扩展，配色/字体均取自上方同一套设计令牌 ---- */
+  .content { font-size: 13px; color: #454a5e; line-height: 1.7; margin-top: 6px; white-space: pre-wrap; word-break: break-all; }
+  .time { color: #7a8098; font-size: 12px; white-space: nowrap; }
+  .empty { font-size: 13px; color: #7a8098; padding: 6px 0; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>🎮 游戏动态日报（公告 · 活动 · 版本更新）</h1>
+  <div class="meta">
+    数据截至 <b>2026-10-22</b> ｜ 覆盖游戏：暂无数据<br>
+    生成时间：2026-10-22 01:51:34 ｜ 今日动态 <b>0</b> 条 ｜ 监测游戏 0 款
+  </div>
+  <div class="note">⏰ 时效性提示：本日报由程序自动抓取各游戏官网公开信息生成，内容仅供参考，请以官方最终发布为准；点击公告标题可跳转官网原文。</div>
+</header>
+
+<section>
+  <h2>📊 今日概览</h2>
+  <table>
+    <tr><th style="width:70%">游戏</th><th>动态条数</th></tr>
+    <tr><td><b>合计</b></td><td><b>0 条</b></td></tr>
+  </table>
+</section>
+
+<section>
+  <h2>📭 今日暂无新动态</h2>
+  <div class='empty'>各游戏官网暂未发布新公告。可在门户页历史列表中查看往期日报。</div>
+</section>
+
+<div class="footer">游戏动态日报 · 生成于 2026-10-22 · 由游戏活动监测程序自动生成 · 内容以官方最终公告为准</div>
+
+</div>
+</body>
+</html>
