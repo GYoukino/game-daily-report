@@ -1,101 +1,450 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>游戏前瞻资讯汇总 · 2026-10-22</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>官方社区前瞻总览</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif; background: #f5f6f8; color: #2c2c33; line-height: 1.65; padding: 24px 16px; }
-  .wrap { max-width: 1080px; margin: 0 auto; }
-  header { background: linear-gradient(135deg, #ffffff 0%, #eef2ff 100%); border: 1px solid #d9dfee; border-radius: 12px; padding: 22px 26px; margin-bottom: 18px; }
-  header h1 { font-size: 22px; color: #1f2340; }
-  header .meta { margin-top: 8px; font-size: 13px; color: #5a6070; }
-  header .meta b { color: #3b4a8a; }
-  .note { background: #fff8e6; border: 1px solid #f0ddaa; border-radius: 8px; padding: 10px 14px; font-size: 13px; color: #7a5b12; margin-top: 12px; }
-  section { background: #ffffff; border: 1px solid #e3e6ee; border-radius: 12px; padding: 20px 24px; margin-bottom: 16px; }
-  h2 { font-size: 17px; color: #1f2340; border-left: 4px solid #4a6cf7; padding-left: 10px; margin-bottom: 14px; }
-  h3 { font-size: 15px; color: #333a5c; margin: 16px 0 8px; }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 8px 0 14px; }
-  th { background: #f0f3fb; color: #3b4a8a; text-align: left; padding: 8px 10px; border: 1px solid #dfe4f2; white-space: nowrap; }
-  td { padding: 8px 10px; border: 1px solid #e6e9f2; vertical-align: top; }
-  tr:nth-child(even) td { background: #fafbfe; }
-  .tag { display: inline-block; font-size: 11px; padding: 1px 8px; border-radius: 10px; margin-right: 4px; white-space: nowrap; }
-  .t-official { background: #e3f5e9; color: #157a3d; border: 1px solid #b5e2c4; }
-  .t-rumor { background: #fdeaea; color: #b03a3a; border: 1px solid #f3c2c2; }
-  .t-estimate { background: #fff3dd; color: #9a6206; border: 1px solid #f0d9a8; }
-  .t-third { background: #ececf4; color: #5a5f7a; border: 1px solid #d5d8e6; }
-  .t-expired { background: #e8e8ec; color: #8a8fa3; border: 1px solid #d8dae4; text-decoration: line-through; }
-  .code { font-family: Consolas, "Courier New", monospace; background: #f2f4fa; border: 1px solid #dde1f0; border-radius: 4px; padding: 1px 6px; font-size: 12.5px; color: #2f3a6e; }
-  .deadline { color: #c0392b; font-weight: 600; white-space: nowrap; }
-  .ok-date { color: #157a3d; font-weight: 600; white-space: nowrap; }
-  ul { padding-left: 20px; }
-  li { margin: 3px 0; font-size: 13.5px; }
-  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  @media (max-width: 760px) { .grid2 { grid-template-columns: 1fr; } }
-  .card { border: 1px solid #e3e6ee; border-radius: 10px; padding: 14px 16px; background: #fcfcfe; }
-  .card h4 { font-size: 14px; color: #2b3160; margin-bottom: 6px; }
-  .card p, .card li { font-size: 13px; color: #454a5e; }
-  .src { font-size: 12px; color: #7a8098; margin-top: 6px; }
-  .timeline { border-left: 3px solid #4a6cf7; margin: 10px 0 4px 8px; padding-left: 18px; }
-  .tl-item { position: relative; margin-bottom: 12px; }
-  .tl-item::before { content: ""; position: absolute; left: -24px; top: 5px; width: 9px; height: 9px; border-radius: 50%; background: #4a6cf7; }
-  .tl-date { font-weight: 700; color: #3b4a8a; font-size: 13.5px; }
-  .tl-body { font-size: 13px; color: #454a5e; }
-  .footer { text-align: center; font-size: 12px; color: #8a90a5; padding: 10px 0 26px; }
-  .empty { text-align: center; padding: 22px 16px; border: 1px dashed #cdd3e4; border-radius: 10px; background: #fafbff; margin: 6px 0 4px; }
-  .empty-mark { font-size: 15px; font-weight: 700; color: #8a90a5; letter-spacing: 2px; }
-  .empty-reason { font-size: 12.5px; color: #9aa0b4; margin-top: 6px; line-height: 1.6; }
-  a { color: #4a6cf7; text-decoration: none; }
+  :root{
+    --bg:#f4f6fb; --card:#fff; --ink:#1e2430; --sub:#68738a;
+    --line:#e6eaf4; --accent:#3f6df5; --accent2:#8b5cf6;
+    --official:#0f9d6e; --official-bg:#e5f7ef;
+    --leak:#d9541e; --leak-bg:#fdeee4;
+    --expo:#8a63d2; --expo-bg:#f1ebfc;
+    --shadow:0 5px 20px rgba(35,52,100,.08); --radius:14px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    background:var(--bg);color:var(--ink);line-height:1.55;-webkit-text-size-adjust:100%}
+  a{color:inherit;text-decoration:none}
+  header.hero{background:linear-gradient(120deg,#3f6df5,#8b5cf6);color:#fff;padding:24px 18px 20px;text-align:center}
+  header.hero h1{margin:0;font-size:23px}
+  header.hero p{margin:7px 0 0;font-size:12.5px;opacity:.92}
+  nav.topnav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.94);backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);box-shadow:var(--shadow)}
+  nav.topnav .wrap{max-width:1160px;margin:0 auto;display:flex;gap:2px;align-items:center;padding:7px 10px;overflow-x:auto;scrollbar-width:thin}
+  nav.topnav a{flex:0 0 auto;padding:8px 13px;border-radius:999px;font-size:13.5px;color:var(--sub);white-space:nowrap}
+  nav.topnav a:hover{background:#eef2ff;color:var(--accent)}
+  nav.topnav a.fav{margin-left:auto;color:var(--leak);font-weight:600}
+  nav.topnav a.fav.active{background:var(--leak-bg)}
+  main{max-width:1160px;margin:0 auto;padding:20px 14px 60px}
+  section{margin:28px 0;scroll-margin-top:58px}
+  .sec-head{display:flex;align-items:baseline;gap:9px;margin:0 0 13px;flex-wrap:wrap}
+  .sec-head h2{font-size:19px;margin:0}
+  .sec-head .desc{color:var(--sub);font-size:12.5px}
+  .sec-num{display:inline-flex;align-items:center;justify-content:center;width:25px;height:25px;border-radius:8px;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:13px;font-weight:700;flex:0 0 auto;align-self:center}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:13px 15px;box-shadow:var(--shadow);transition:.15s}
+  .card:hover{transform:translateY(-2px);border-color:#c9d4ef}
+  .row{display:flex;gap:9px;align-items:flex-start}
+  .title-link{font-weight:600;font-size:15px;color:var(--ink);flex:1}
+  .title-link:hover{color:var(--accent)}
+  .title-link .ext{font-size:11px;color:var(--sub);margin-left:4px;font-weight:400}
+  .meta{display:flex;flex-wrap:wrap;gap:5px;align-items:center;margin-top:7px;font-size:12px;color:var(--sub)}
+  .tag{padding:2px 9px;border-radius:999px;font-size:11.5px;font-weight:600;white-space:nowrap}
+  .tag.official{background:var(--official-bg);color:var(--official)}
+  .tag.leak{background:var(--leak-bg);color:var(--leak)}
+  .tag.expo{background:var(--expo-bg);color:var(--expo)}
+  .tag.status{background:#eef2ff;color:var(--accent)}
+  .tag.ft{background:#f0f3fa;color:#5a6377}
+  .tag.code{background:#fff1f0;color:#d4380d;border:1px dashed #ffb3ae;font-family:ui-monospace,Menlo,Consolas,monospace}
+  .game-pill{background:#eef2ff;color:var(--accent);padding:2px 9px;border-radius:999px;font-size:11.5px;font-weight:600}
+  .when{font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums;font-size:12.5px}
+  .excerpt{margin-top:6px;font-size:12.5px;color:var(--sub);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .empty{color:var(--sub);font-size:13.5px;padding:16px;text-align:center;border:1px dashed var(--line);border-radius:12px;background:#fafbff}
+  .star{flex:0 0 auto;width:29px;height:29px;border-radius:50%;border:1px solid var(--line);background:#fff;cursor:pointer;
+    font-size:14px;display:flex;align-items:center;justify-content:center;color:#c3c9d8;transition:.15s;user-select:none}
+  .star:hover{color:var(--leak);border-color:var(--leak)}
+  .star.on{color:#fff;background:var(--leak);border-color:var(--leak)}
+  /* 紧凑时间线（关键节点式：日期头 + 文字行 + 徽标） */
+  .tline{position:relative;margin-left:6px;padding-left:26px}
+  .tline::before{content:"";position:absolute;left:7px;top:6px;bottom:6px;width:2px;border-radius:2px;
+    background:linear-gradient(var(--accent),var(--accent2))}
+  .tl-node{position:relative;margin-bottom:15px}
+  .tl-node::before{content:"";position:absolute;left:-26px;top:7px;width:9px;height:9px;border-radius:50%;
+    background:#fff;border:3px solid var(--accent);box-shadow:0 0 0 3px #fff}
+  .tl-date{font-size:14px;font-weight:700;color:var(--accent);margin-bottom:3px;font-variant-numeric:tabular-nums}
+  .tl-text{font-size:13.5px;color:var(--ink);line-height:1.95}
+  .tl-time{color:var(--accent);font-weight:600;font-variant-numeric:tabular-nums}
+  .tl-sep{color:#c3c9d8;margin:0 3px}
+  .tl-link{color:inherit;transition:.15s;border-bottom:1px dashed transparent}
+  .tl-link:hover{color:var(--accent);border-bottom-color:var(--accent)}
+  .badge-off,.badge-pend{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;font-weight:600;
+    vertical-align:1px;margin-left:4px;white-space:nowrap}
+  .badge-off{background:var(--official-bg);color:var(--official)}
+  .badge-pend{background:#fff7e6;color:#d48806}
+  .code-pill{display:inline-block;padding:0 7px;border-radius:6px;font-size:11.5px;color:#d4380d;background:#fff1f0;
+    border:1px dashed #ffb3ae;font-family:ui-monospace,Menlo,Consolas,monospace;margin:0 2px;vertical-align:1px}
+  .star.mini{width:22px;height:22px;font-size:11px;vertical-align:middle;margin-left:5px;border:none;background:transparent}
+  /* 森空岛式讯息卡：原帖封面图 + 标题跳转 + 概览 */
+  .skcard{position:relative;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column;transition:.15s}
+  .skcard:hover{transform:translateY(-2px);border-color:#c9d4ef}
+  .skcard .cover{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;background:#eef2ff}
+  .skcard .sk-body{padding:12px 14px 13px;display:flex;flex-direction:column}
+  .skcard .star{position:absolute;top:9px;right:9px;background:rgba(255,255,255,.93);box-shadow:0 1px 6px rgba(0,0,0,.14)}
+  .tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:13px;scrollbar-width:thin}
+  .tabs button{flex:0 0 auto;padding:8px 15px;border:1px solid var(--line);background:#fff;border-radius:999px;
+    font-size:13.5px;color:var(--sub);cursor:pointer;white-space:nowrap;transition:.15s}
+  .tabs button:hover{border-color:var(--accent);color:var(--accent)}
+  .tabs button.active{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-color:transparent;font-weight:600}
+  .sub-h{font-size:14px;font-weight:700;margin:15px 0 8px;display:flex;align-items:center;gap:6px}
+  .sub-h .bar{width:4px;height:15px;border-radius:3px;background:var(--accent)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:11px}
+  /* 板块2：汇总表格（游戏 · 前瞻标题跳转 · 前瞻时间 · 兑换码 · 内容总结） */
+  .vtable-wrap{overflow-x:auto;background:var(--card);border:1px solid var(--line);
+    border-radius:var(--radius);box-shadow:var(--shadow)}
+  table.vtable{width:100%;border-collapse:collapse;font-size:13px;min-width:760px}
+  .vtable thead th{background:#e8effc;color:#2c4a8a;font-weight:700;font-size:12.5px;
+    text-align:left;padding:10px 12px;border-bottom:2px solid #d5e1f7;white-space:nowrap}
+  .vtable tbody td{padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.6}
+  .vtable tbody tr:last-child td{border-bottom:none}
+  .vtable tbody tr:hover{background:#f6f9ff}
+  .vtable .vgame{font-weight:700;color:var(--accent);white-space:nowrap;font-size:12.5px}
+  .vtable .vtitle{font-weight:600;font-size:13.5px}
+  .vtable .vtitle a{color:var(--ink);border-bottom:1px dashed transparent}
+  .vtable .vtitle a:hover{color:var(--accent);border-bottom-color:var(--accent)}
+  .vtable .vtitle .ver{font-weight:400;color:var(--sub);font-size:12px;display:block;margin-top:1px}
+  .vtable .vtime{color:var(--accent);font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap;font-size:12.5px}
+  .vtable .vtime small{display:block;color:#a7aec2;font-weight:400}
+  .vtable .vcodes{max-width:170px}
+  .vtable .vsum{color:#454e63;font-size:12.5px;min-width:230px}
+  .vtable .vsrc{white-space:nowrap}
+  .vtable .vsrc .star{margin-top:2px}
+  .dg-reward{color:#9a6206;background:#fff3dd;padding:1px 8px;border-radius:999px;
+    font-size:11.5px;font-weight:600;white-space:nowrap}
+  .dg-plat{margin-top:4px;font-size:12px;color:var(--accent)}
+  .tl-venue{color:var(--sub);font-size:12.5px}
+  .tl-reward{color:#9a6206;font-size:12px;font-weight:600}
+  /* 卡片封面：无图时用统一占位，保持外观一致 */
+  .skcard .cover{width:100%;aspect-ratio:16/9;object-fit:cover;object-position:center;
+    display:block;background:#eef2ff}
+  .skcard .cover-empty{width:100%;aspect-ratio:16/9;display:flex;align-items:center;
+    justify-content:center;background:linear-gradient(135deg,#eef2ff,#f4f0ff);
+    color:#b6c0d8;font-size:30px}
+  footer{max-width:1160px;margin:0 auto;padding:22px 16px 50px;color:var(--sub);font-size:12.5px;text-align:center}
+  footer .note{background:#fff;border:1px solid var(--line);border-radius:12px;padding:13px 16px;text-align:left;box-shadow:var(--shadow)}
+  @media (max-width:768px){
+    header.hero h1{font-size:19px}
+    main{padding:14px 11px 50px}
+    .grid{grid-template-columns:1fr}
+    nav.topnav a{padding:7px 11px;font-size:12.5px}
+    .sec-head h2{font-size:17px}
+    .title-link{font-size:14.5px}
+    .tl-text{font-size:13px}
+  }
+  body.fav-only .skcard:not(.faved){display:none}
+  body.fav-only .vtable tbody tr:not(.faved){display:none}
 </style>
 </head>
 <body>
-<div class="wrap">
-
-<header>
-  <h1>🎮 游戏前瞻资讯日报（版本前瞻 · 兑换码 · 线下联动 · 周边上新 · 快闪店 · 漫展展会）</h1>
-  <div class="meta">
-    数据截至 <b>2026-10-22 17:54</b> ｜ 覆盖游戏：BilibiliWorld 2026、The Game Awards、gamescom、原神、崩坏3、崩坏：星穹铁道、明日方舟、明日方舟：终末地、绝区零、鸣潮<br>
-    整理范围：游戏外运营 / 宣传 / 线下活动类前瞻信息（已排除游戏内公告、系统维护等非前瞻内容）<br>本期收录：前瞻直播 / 特别节目 2 条 ｜ 版本前瞻内容 23 条 ｜ 限时兑换码 6 条 ｜ 线下联动活动 11 条 ｜ 官方周边上新 15 条 ｜ 漫展 / 展会 16 条
-  </div>
-  <div class="note">⏰ 时效性提示：兑换码与活动档期变动极快，请以各游戏官方渠道最终公告为准。标注 <span class="tag t-rumor">爆料</span> 的内容未经官方确认；标注 <span class="tag t-expired">已过期 / 已结束</span> 的节点已不在当前有效前瞻范围内。本日报优先采官方第一方渠道，社区内容（如 NGA）均标注来源、不代表官方确认；凡索要账号密码、验证码或付费代兑的「兑换码」均为诈骗。</div>
+<header class="hero">
+  <h1>📡 官方社区前瞻总览</h1>
+  <p id="subtitle">来源：米游社 / 官网 / 官方微博 / NGA社区 / 测试服爆料 / 官方票务展会平台 / 资讯站交叉参考 / 第三方码汇总</p>
+  <p id="genMeta" style="margin:4px 0 0;font-size:12px;opacity:.85"></p>
 </header>
 
-<section>
-  <h2>📅 未来 100 天关键节点速览（今天起；总览，非六大板块）</h2>
-  <div class="timeline"><div class="tl-item"><div class="tl-date">10/22（周四）</div><div class="tl-body">[明日方舟] <a href="https://bbs.nga.cn/read.php?tid=47758375" target="_blank">[新闻搬运] [常驻标准寻访]10月22日卡池更替（@夜如梭）</a> </div></div><div class="tl-item"><div class="tl-date">10/22（周四） 10:00</div><div class="tl-body">[绝区零] <a href="https://zzz.mihoyo.com/main/news/detail/166971" target="_blank">「怪奇诡屋惊魂记」活动说明</a> </div></div><div class="tl-item"><div class="tl-date">10/22（周四） 11:59</div><div class="tl-body">[崩坏3] <a href="https://bh3.mihoyo.com/main/news/detail/166377" target="_blank">银海拾忆 ｜ 完成任务赢取手办、角色自选箱等好礼</a> </div></div><div class="tl-item"><div class="tl-date">10/25（周日） 03:59</div><div class="tl-body">[崩坏：星穹铁道] <a href="https://sr.mihoyo.com/news/detail/166662" target="_blank">「位面分裂」活动：位面饰品限时双倍掉落</a> </div></div><div class="tl-item"><div class="tl-date">10/30（周五） 03:59</div><div class="tl-body">[明日方舟] <a href="https://ak.hypergryph.com/news/1454" target="_blank">【明日方舟×国家图书馆】「恒远津梁」限时活动即将开启</a> </div></div><div class="tl-item"><div class="tl-date">10/30（周五） 03:59</div><div class="tl-body">[明日方舟] <a href="https://ak.hypergryph.com/news/5101" target="_blank">[活动预告]SideStory「昨日海」限时活动即将开启</a> </div></div><div class="tl-item"><div class="tl-date">11/10（周二） 15:00</div><div class="tl-body">[崩坏：星穹铁道] <a href="https://sr.mihoyo.com/news/detail/166950" target="_blank">4.6版本活动跃迁（其二）</a> </div></div><div class="tl-item"><div class="tl-date">11/10（周二） 15:00</div><div class="tl-body">[崩坏：星穹铁道] <a href="https://sr.mihoyo.com/news/detail/166487" target="_blank">4.6版本活动跃迁（其一）</a> </div></div><div class="tl-item"><div class="tl-date">11/11（周三） 03:59</div><div class="tl-body">[崩坏：星穹铁道] <a href="https://sr.mihoyo.com/news/detail/166235" target="_blank">4.6版本商店上新</a> </div></div><div class="tl-item"><div class="tl-date">11/11（周三） 06:00</div><div class="tl-body">[崩坏：星穹铁道] <a href="https://sr.mihoyo.com/news/detail/166489" target="_blank">4.6版本「月升之前，与兽共舞」版本更新说明</a> </div></div><div class="tl-item"><div class="tl-date">11/11（周三） 23:59</div><div class="tl-body">[绝区零] <a href="https://zzz.mihoyo.com/main/news/detail/166933" target="_blank">新品情报丨客制化三模键盘等多款周边上新</a> </div></div><div class="tl-item"><div class="tl-date">11/14（周六） 04:00</div><div class="tl-body">[崩坏3] <a href="https://bh3.mihoyo.com/main/news/detail/166464" target="_blank">周年累消丨累消水晶领全新服装&amp;商城特惠礼包上架</a> </div></div><div class="tl-item"><div class="tl-date">11/26（周四） 04:00</div><div class="tl-body">[崩坏3] <a href="https://bh3.mihoyo.com/main/news/detail/166546" target="_blank">海正用火的声音歌唱丨全新主线更新，参与获取携梦待曙礼盒、水晶等奖励</a> </div></div><div class="tl-item"><div class="tl-date">11/26（周四） 04:00</div><div class="tl-body">[崩坏3] <a href="https://bh3.mihoyo.com/main/news/detail/166469" target="_blank">「时序照新」9.1版本更新公告</a> </div></div><div class="tl-item"><div class="tl-date">11/27（周五）</div><div class="tl-body">[绝区零] <a href="https://zzz.mihoyo.com/main/news/detail/166660" target="_blank">《绝区零》☆Zenless LIVE 2026——FES专场</a> </div></div><div class="tl-item"><div class="tl-date">12/01（周二） 03:59</div><div class="tl-body">[绝区零] <a href="https://zzz.mihoyo.com/main/news/detail/166970" target="_blank">「全新放送」活动说明</a> </div></div><div class="tl-item"><div class="tl-date">12/02（周三） 05:59</div><div class="tl-body">[绝区零] <a href="https://zzz.mihoyo.com/main/news/detail/166935" target="_blank">3.3版本「商城」上新说明</a> </div></div><div class="tl-item"><div class="tl-date">12/03（周四） 04:00</div><div class="tl-body">[崩坏3] <a href="https://bh3.mihoyo.com/main/news/detail/166972" target="_blank">畅游吼姆世界：好友成群丨参与得服装自选箱、水晶等奖励</a> </div></div><div class="tl-item"><div class="tl-date">12/03（周四） 04:00</div><div class="tl-body">[崩坏3] <a href="https://bh3.mihoyo.com/main/news/detail/166375" target="_blank">甜趣沙集丨参与活动获取武器&amp;服装自选箱等奖励</a> </div></div><div class="tl-item"><div class="tl-date">12/10（周四）</div><div class="tl-body">[The Game Awards] <a href="https://thegameawards.com/news/tga-returns-december-10-2026/" target="_blank">TGA Returns December 10, 2026</a> </div></div></div>
-</section>
-<section>
-  <h2>🗺️ 一、游戏版本前瞻内容汇总（含版本卡池、福利活动等）</h2>
-  <h3>明日方舟</h3><ul><li><span class="tag t-official">社区</span><span class="tag t-official">档期待确认</span><a href="https://bbs.nga.cn/read.php?tid=47764935" target="_blank">[闲谈交流] 因为之前的直播前瞻图突然想到，如果年是这几年实装，那么她的立绘尤其是精二，会多些什么东西（@残响降临）</a><br><span style="font-size:12.5px;color:#7a8098">[闲谈交流] 因为之前的直播前瞻图突然想到，如果年是这几年实装，那么她的立绘尤其是精二，会多些什么东西</span></li><li><span class="tag t-official">社区</span><span class="tag t-official">档期待确认</span><a href="https://bbs.nga.cn/read.php?tid=47764482" target="_blank">[新闻搬运] [活动预告]“视相博物馆：演化”玩法介绍（@Sumuzi）</a><br><span style="font-size:12.5px;color:#7a8098">[新闻搬运] [活动预告]“视相博物馆：演化”玩法介绍</span></li><li><span class="tag t-official">社区</span><span class="tag t-official">即将</span><a href="https://bbs.nga.cn/read.php?tid=47758375" target="_blank">[新闻搬运] [常驻标准寻访]10月22日卡池更替（@夜如梭）</a><br><span style="font-size:12.5px;color:#7a8098">[新闻搬运] [常驻标准寻访]10月22日卡池更替</span></li><li><span class="tag t-official">社区</span><a href="https://ak.hypergryph.com/news/1454" target="_blank">【明日方舟×国家图书馆】「恒远津梁」限时活动即将开启</a><br><span style="font-size:12.5px;color:#7a8098">一、【明日方舟×国家图书馆】，「恒远津梁」限时活动开启活动时间：10月16日 16:00 - 10月30日 03:59活动说明：活动期间内，玩家累计活动签到3日可获得【绒毛读书伴侣】等活动家具奖励二、</span></li><li><span class="tag t-official">社区</span><a href="https://ak.hypergryph.com/news/5101" target="_blank">[活动预告]SideStory「昨日海」限时活动即将开启</a><br><span style="font-size:12.5px;color:#7a8098">一、全新SideStory「昨日海」，活动关卡开启活动时间：10月09日 12:00 - 10月30日 03:59解锁条件：通关主线1-10活动说明：活动期间将开放「昨日海」活动关卡，玩家可通过活动关</span></li><li><span class="tag t-official">社区</span><span class="tag t-official">档期待确认</span><a href="https://ak.hypergryph.com/news/5101" target="_blank">SideStory「昨日海」限时活动即将开启</a><br><span style="font-size:12.5px;color:#7a8098">SideStory「昨日海」限时活动即将开启</span></li><li><span class="tag t-official">社区</span><span class="tag t-official">即将</span><a href="https://ak.hypergryph.com/news/1455" target="_blank">[活动预告]矢量突破#3「拟生态」限时活动即将开启</a><br><span style="font-size:12.5px;color:#7a8098">一、矢量突破#3「拟生态」限时活动开启关卡开放时间：09月29日 16:00 - 10月20日 03:59解锁条件：通关主线 2-10活动说明：活动期间将开放「矢量突破」限时活动，玩家可通过活动关卡作</span></li></ul><h3>原神</h3><ul><li><span class="tag t-official">社区</span><span class="tag t-official">档期待确认</span><a href="https://bbs.nga.cn/read.php?tid=47763067" target="_blank">[游戏杂谈] 从前瞻预告来看，瓦学妹粉碎天钉直接导致提瓦特毁灭了（@过载ooo）</a><br><span style="font-size:12.5px;color:#7a8098">[游戏杂谈] 从前瞻预告来看，瓦学妹粉碎天钉直接导致提瓦特毁灭了</span></li><li><span class="tag t-official">社区</span><span class="tag t-expired">已过期</span><a href="https://ys.mihoyo.com/main/news/detail/166392" target="_blank">「往冥府的安魂歌」7.1版本更新说明</a><br><span style="font-size:12.5px;color:#7a8098">亲爱的旅行者： 以下是7.1版本——「往冥府的安魂歌」更新与补偿内容。 〓补偿内容〓 停服更新补偿：原石*300（停服维护每小时补偿60原石） 问题修复补偿：原石*300（补偿条目请参考对应补偿邮件）…</span></li></ul><h3>绝区零</h3><ul><li><span class="tag t-official">官宣</span><span class="tag t-expired">已过期</span><a href="https://zzz.mihoyo.com/main/news/detail/166652" target="_blank">《绝区零》3.3版本「重返天空的旅程」前瞻特别节目</a><br><span style="font-size:12.5px;color:#7a8098">《绝区零》3.3版本「重返天空的旅程」将于10月21日正式上线，全新S级代理人「菲欧妮」、「赛维里安」即将登场！ 本次特别节目中的一切人物、故事、设定仅为节目包装，均与《绝区零》原作无关，展示画面与奖…</span></li><li><span class="tag t-official">官宣</span><span class="tag t-expired">已过期</span><a href="https://zzz.mihoyo.com/main/news/detail/166583" target="_blank">《绝区零》3.3版本「重返天空的旅程」前瞻特别节目预告</a><br><span style="font-size:12.5px;color:#7a8098">亲爱的绳匠，《绝区零》3.3版本「重返天空的旅程」前瞻特别节目，将于10月9日 19:30正式开播！ 从天而降的「菲欧妮」将如何改写绳匠众人的命运走向？ 身受市长之命的「赛维里安」突然现身「宁息屿」！…</span></li><li><span class="tag t-official">社区</span><span class="tag t-official">档期待确认</span><a href="https://bbs.nga.cn/read.php?tid=47761297" target="_blank">[剧情讨论] 这下不是三个挽昼都要进卡池了（@concept）</a><br><span style="font-size:12.5px;color:#7a8098">[剧情讨论] 这下不是三个挽昼都要进卡池了</span></li><li><span class="tag t-official">社区</span><span class="tag t-official">档期待确认</span><a href="https://zzz.mihoyo.com/main/news/detail/166923" target="_blank">新剧情：主线第三季第四章「重返天空的旅程」</a><br><span style="font-size:12.5px;color:#7a8098">在一个梦游者的梦中，另一个做梦的人醒了。 绳匠完成相应的前置剧情后，即可解锁主线第三季第四章「重返天空的旅程」。 【开放时间】 3.3版本更新后永久开放。 【开放条件】 完成主线第三季第三章「她与她的…</span></li></ul><h3>崩坏：星穹铁道</h3><ul><li><span class="tag t-official">社区</span><a href="https://sr.mihoyo.com/news/detail/166950" target="_blank">4.6版本活动跃迁（其二）</a><br><span style="font-size:12.5px;color:#7a8098">亲爱的开拓者： 限定5星角色「真珠（欢愉•冰）」与限定5星光锥「献给明日的色彩（欢愉）」跃迁成功概率限时提升，4星角色「青雀（智识•量子）」「雪衣（毁灭•量子）」「米沙（毁灭•冰）」与4星光锥「一场术…</span></li><li><span class="tag t-official">官宣</span><span class="tag t-official">档期待确认</span><a href="https://sr.mihoyo.com/news/detail/166504" target="_blank">《崩坏：星穹铁道》真珠角色PV——「如何描绘一种希望」</a><br><span style="font-size:12.5px;color:#7a8098">母题：什么是完美的艺术？ 为世界存亡挥笔时，她忘记了问题，却得到了答案。 中文CV： 真珠——苏婉</span></li><li><span class="tag t-official">社区</span><a href="https://sr.mihoyo.com/news/detail/166489" target="_blank">4.6版本「月升之前，与兽共舞」版本更新说明</a><br><span style="font-size:12.5px;color:#7a8098">蠢动于幽暗的兽再度开口，索求一位神明作为祭品。在月亮重新升起前，唯有智者的血方能平息它的饥渴…… 亲爱的开拓者： 欢迎来到4.6版本「月升之前，与兽共舞」！ ▌更新及补偿说明 4.6版本的持续时间为 …</span></li><li><span class="tag t-official">社区</span><a href="https://sr.mihoyo.com/news/detail/166487" target="_blank">4.6版本活动跃迁（其一）</a><br><span style="font-size:12.5px;color:#7a8098">亲爱的开拓者： 限定5星角色「真珠（欢愉•冰）」与限定5星光锥「献给明日的色彩（欢愉）」跃迁成功概率限时提升，4星角色「青雀（智识•量子）」「雪衣（毁灭•量子）」「米沙（毁灭•冰）」与4星光锥「一场术…</span></li></ul><h3>明日方舟：终末地</h3><ul><li><span class="tag t-official">社区</span><span class="tag t-official">档期待确认</span><a href="https://endfield.hypergryph.com/news/9326" target="_blank">「丹青渡」版本创作征集活动进行中</a><br><span style="font-size:12.5px;color:#7a8098">管理员，《明日方舟：终末地》「丹青渡」版本创作征集活动正在哔哩哔哩、抖音、小红书、微博、微信游戏圈、TapTap、知乎等多个社区平台进行中。按对应要求进行内容创作与分享，即可参与奖金瓜分、创作评优与互</span></li><li><span class="tag t-official">社区</span><span class="tag t-official">即将</span><a href="https://endfield.hypergryph.com/news/6094" target="_blank">「丹青渡」版本更新说明</a><br><span style="font-size:12.5px;color:#7a8098">秋景现，丹青垂，渡过千般崎岖，万种嶙峋。亲爱的管理员：欢迎来到全新版本「丹青渡」！▼//更新维护及补偿说明■ 更新维护时间2026/10/15 06:00 - 2026/10/15 12:00（UTC</span></li><li><span class="tag t-official">社区</span><span class="tag t-official">即将</span><a href="https://endfield.hypergryph.com/news/3805" target="_blank">「丹青渡」版本研发通讯</a><br><span style="font-size:12.5px;color:#7a8098">亲爱的管理员：这里是《明日方舟：终末地》项目组。秋景现，丹青垂。《明日方舟：终末地》新版本「丹青渡」将于10月15日开启。通过本期研发通讯，我们将为管理员介绍即将在此版本中上线的一系列优化与调整。「新</span></li><li><span class="tag t-official">社区</span><span class="tag t-official">档期待确认</span><a href="https://endfield.hypergryph.com/news/4774" target="_blank">「丹青渡」新版本导览上线，浏览领嵌晶玉！</a><br><span style="font-size:12.5px;color:#7a8098">「丹青渡」新版本导览专题网页上线，一站式查阅新版本内容，浏览即可领取【嵌晶玉】×1000、【折金票】×10000、【初级认知载体】×8，【武器检查套组】×4。▼//网页入口链接管理员可以通过下方链接、</span></li></ul><h3>崩坏3</h3><ul><li><span class="tag t-official">社区</span><a href="https://bh3.mihoyo.com/main/news/detail/166546" target="_blank">海正用火的声音歌唱丨全新主线更新，参与获取携梦待曙礼盒、水晶等奖励</a><br><span style="font-size:12.5px;color:#7a8098">圆满总会随着时间流逝愈发臃肿，而我更喜欢它还是一个轻巧的「句号」的时候。 主线第二部后日谈「海正用火的声音歌唱」更新，舰长通关主线剧情可获得携梦待曙礼盒、水晶、根源棱镜、逆熵·虚数核心等奖励。 ===…</span></li><li><span class="tag t-official">社区</span><a href="https://bh3.mihoyo.com/main/news/detail/166469" target="_blank">「时序照新」9.1版本更新公告</a><br><span style="font-size:12.5px;color:#7a8098">蕾耶拉的过往属于我，而我的未来，属于此刻身处的世界。 欢迎来到9.1版本——「时序照新」！ =====更新内容===== ★ 全新虚数属性S级角色——「时序之律者」 「时序之律者」为虚数属性角色，造成…</span></li></ul><p class="src">来源：各游戏官网公告、官方社群；含版本 PV、研发通讯、版本更新说明、版本卡池（祈愿 / 跃迁）、福利与限时活动。标注「爆料 / 待官宣」的内容请以官方前瞻直播为准。</p>
-</section>
-<section>
-  <h2>🎁 二、限时兑换码及其有效期（按截止时间排序）</h2>
-  <table><tr><th style="width:12%">游戏</th><th style="width:34%">兑换码</th><th style="width:17%">截止时间</th><th>说明 / 来源</th></tr><tr><td>绝区零</td><td>详见原文</td><td><span class="deadline">10/09（周五） 19:30</span></td><td>亲爱的绳匠，《绝区零》3.3版本「重返天空的旅程」前瞻特别节目，将于10月9日 19:30正式开播！ 从天而降的「菲欧妮」将如何改写绳匠众人的命运走向？ 身受市… <span class="tag t-official">官宣</span><span class="tag t-expired">已过期</span><br><span style="font-size:12px;color:#7a8098">来源：<span class="tag t-official">米游社·官方</span></span></td></tr><tr><td>绝区零</td><td>详见原文</td><td><span class="deadline">10/11（周日） 23:59</span></td><td>《绝区零》3.3版本「重返天空的旅程」将于10月21日正式上线，全新S级代理人「菲欧妮」、「赛维里安」即将登场！ 本次特别节目中的一切人物、故事、设定仅为节目包… <span class="tag t-official">官宣</span><span class="tag t-expired">已过期</span><br><span style="font-size:12px;color:#7a8098">来源：<span class="tag t-official">米游社·官方</span></span></td></tr><tr><td>崩坏：星穹铁道</td><td>详见原文</td><td><span class="ok-date">11/11（周三） 03:59</span></td><td>亲爱的开拓者： 4.6版本中，游戏内商店将会上架「绯英」全新时装「月待花时」、「风堇」全新时装「云边拾暖」！同时，礼包「黑塔 • 协议」的限购次数刷新。 ▌绯英… <span class="tag t-official">社区</span><br><span style="font-size:12px;color:#7a8098">来源：<span class="tag t-third">官网</span></span></td></tr><tr><td>崩坏3</td><td>详见原文</td><td><span class="ok-date">11/14（周六） 04:00</span></td><td>9.1版本更新后~11月6日12:00期间将开启周年累消活动，活动期间参与各类补给（除回归增援外）累计消耗3万水晶即可获取咚！炽愿吉星全新服装「月咏星谣」。 同… <span class="tag t-official">社区</span><br><span style="font-size:12px;color:#7a8098">来源：<span class="tag t-third">官网</span></span></td></tr><tr><td>崩坏3</td><td>详见原文</td><td><span class="ok-date">12/03（周四） 04:00</span></td><td>呼朋引伴，就此集结。等待在前方的是——友谊与喧闹的惊喜大冒险！ 「畅游吼姆世界：好友成群」活动复刻开启，与团队伙伴相互助力，一起争取更高名次！参与活动可获取「轻… <span class="tag t-official">社区</span><br><span style="font-size:12px;color:#7a8098">来源：<span class="tag t-third">官网</span></span></td></tr><tr><td>崩坏3</td><td>详见原文</td><td><span class="ok-date">12/03（周四） 04:00</span></td><td>脚踏细沙，轻翻小石，乐享甜趣。 「甜趣沙集」活动开启！活动期间完成面板任务可获取商店代币「沁凉甜心」。「沁凉甜心」可在活动商店中兑换「乘浪夜语」服装自选箱、「蜜… <span class="tag t-official">社区</span><br><span style="font-size:12px;color:#7a8098">来源：<span class="tag t-third">官网</span></span></td></tr></table><p class="src">来源：各游戏官网 / 官方第一方社区（米游社·官方、森空岛·官方、库街区·官方、TapTap）/ 玩家社区（NGA，已标注来源）。防骗提示：官方兑换码全部免费，凡索要账号密码 / 验证码 / 付费代兑的均为诈骗。</p>
-</section>
-<section>
-  <h2>🤝 三、线下联动活动（时间 / 地点 / 参与方式）</h2>
-  <table><tr><th style="width:20%">联动</th><th style="width:22%">时间</th><th style="width:24%">地点 / 范围</th><th>参与方式与内容</th></tr><tr><td><b><a href="https://ak.hypergryph.com/news/1454" target="_blank">【明日方舟×国家图书馆】「恒远津梁」限时活动即将开启</a></b></td><td><span class="ok-date">10/30（周五） 03:59</span></td><td>以官方公告为准</td><td>一、【明日方舟×国家图书馆】，「恒远津梁」限时活动开启活动时间：10月16日 16:00 - 10月30日 03:59活动说明：活动期间内，玩家累计活动签到3日可获得【绒毛读书伴侣… <span class="tag t-official">社区</span></td></tr><tr><td><b><a href="https://endfield.hypergryph.com/news/4774" target="_blank">「丹青渡」新版本导览上线，浏览领嵌晶玉！</a></b></td><td>档期待确认</td><td>以官方公告为准</td><td>「丹青渡」新版本导览专题网页上线，一站式查阅新版本内容，浏览即可领取【嵌晶玉】×1000、【折金票】×10000、【初级认知载体】×8，【武器检查套组】×4。▼//网页入口链接管理… <span class="tag t-official">社区</span><span class="tag t-official">档期待确认</span></td></tr><tr><td><b><a href="https://bh3.mihoyo.com/main/news/detail/166546" target="_blank">海正用火的声音歌唱丨全新主线更新，参与获取携梦待曙礼盒、水晶等奖励</a></b></td><td><span class="ok-date">11/26（周四） 04:00</span></td><td>以官方公告为准</td><td>圆满总会随着时间流逝愈发臃肿，而我更喜欢它还是一个轻巧的「句号」的时候。 主线第二部后日谈「海正用火的声音歌唱」更新，舰长通关主线剧情可获得携梦待曙礼盒、水晶、根源棱镜、逆熵·虚数… <span class="tag t-official">社区</span></td></tr><tr><td><b><a href="https://bh3.mihoyo.com/main/news/detail/166469" target="_blank">「时序照新」9.1版本更新公告</a></b></td><td><span class="ok-date">11/26（周四） 04:00</span></td><td>以官方公告为准</td><td>蕾耶拉的过往属于我，而我的未来，属于此刻身处的世界。 欢迎来到9.1版本——「时序照新」！ =====更新内容===== ★ 全新虚数属性S级角色——「时序之律者」 「时序之律者」… <span class="tag t-official">社区</span></td></tr><tr><td><b><a href="https://bbs.nga.cn/read.php?tid=47763901" target="_blank">在七神合作开会之前我只想问一件事（@BAGAKO）</a></b></td><td>档期待确认</td><td>以官方公告为准</td><td>在七神合作开会之前我只想问一件事 <span class="tag t-official">社区</span><span class="tag t-official">档期待确认</span></td></tr><tr><td><b><a href="https://bbs.nga.cn/read.php?tid=47758153" target="_blank">[破事氵] 事已至此…抽出来还是等联动or挽昼（@__蓝宇珩°）</a></b></td><td>档期待确认</td><td>以官方公告为准</td><td>[破事氵] 事已至此…抽出来还是等联动or挽昼 <span class="tag t-official">社区</span><span class="tag t-official">档期待确认</span></td></tr><tr><td><b><a href="https://bh3.mihoyo.com/main/news/detail/166972" target="_blank">畅游吼姆世界：好友成群丨参与得服装自选箱、水晶等奖励</a></b></td><td><span class="ok-date">12/03（周四） 04:00</span></td><td>以官方公告为准</td><td>呼朋引伴，就此集结。等待在前方的是——友谊与喧闹的惊喜大冒险！ 「畅游吼姆世界：好友成群」活动复刻开启，与团队伙伴相互助力，一起争取更高名次！参与活动可获取「轻梦时光」服装自选箱、… <span class="tag t-official">社区</span></td></tr><tr><td><b><a href="https://bh3.mihoyo.com/main/news/detail/166464" target="_blank">周年累消丨累消水晶领全新服装&amp;商城特惠礼包上架</a></b></td><td><span class="ok-date">11/14（周六） 04:00</span></td><td>以官方公告为准</td><td>9.1版本更新后~11月6日12:00期间将开启周年累消活动，活动期间参与各类补给（除回归增援外）累计消耗3万水晶即可获取咚！炽愿吉星全新服装「月咏星谣」。 同时，多款限定特惠礼包… <span class="tag t-official">社区</span></td></tr><tr><td><b><a href="https://bh3.mihoyo.com/main/news/detail/166377" target="_blank">银海拾忆 ｜ 完成任务赢取手办、角色自选箱等好礼</a></b></td><td><span class="ok-date">10/22（周四） 11:59</span> 至 <span class="deadline">12/14（周一） 04:00</span></td><td>以官方公告为准</td><td>月光倾洒成银，海风吹响十年浪潮的低声细语；浪花把回忆悉心珍藏，只待你的轻轻拾起。 「银海拾忆」活动开启！活动期间完成面板任务可获取「听潮拾忆邀请券」，赢取琪亚娜手办、爱莉希雅抱枕、… <span class="tag t-official">社区</span><span class="tag t-official">即将</span></td></tr><tr><td><b><a href="https://bh3.mihoyo.com/main/news/detail/166375" target="_blank">甜趣沙集丨参与活动获取武器&amp;服装自选箱等奖励</a></b></td><td><span class="ok-date">12/03（周四） 04:00</span></td><td>以官方公告为准</td><td>脚踏细沙，轻翻小石，乐享甜趣。 「甜趣沙集」活动开启！活动期间完成面板任务可获取商店代币「沁凉甜心」。「沁凉甜心」可在活动商店中兑换「乘浪夜语」服装自选箱、「蜜螺之礼」武器自选箱、… <span class="tag t-official">社区</span></td></tr><tr><td><b><a href="https://sr.mihoyo.com/news/detail/166235" target="_blank">4.6版本商店上新</a></b></td><td><span class="ok-date">11/11（周三） 03:59</span></td><td>以官方公告为准</td><td>亲爱的开拓者： 4.6版本中，游戏内商店将会上架「绯英」全新时装「月待花时」、「风堇」全新时装「云边拾暖」！同时，礼包「黑塔 • 协议」的限购次数刷新。 ▌绯英时装「月待花时」特惠… <span class="tag t-official">社区</span></td></tr></table>
-</section>
-<section>
-  <h2>🛍️ 四、官方周边上新信息</h2>
-  <div class="grid2"><div class="card"><h4>崩坏：星穹铁道</h4><ul><li><span class="tag t-official">社区</span><a href="https://sr.mihoyo.com/news/detail/166489" target="_blank">4.6版本「月升之前，与兽共舞」版本更新说明</a><br><span style="font-size:12.5px;color:#7a8098">蠢动于幽暗的兽再度开口，索求一位神明作为祭品。在月亮重新升起前，唯有智者的血方能平息它的饥渴…… 亲爱的开拓者： 欢迎来到4.6版本「月升之前，与兽共舞」！ ▌更新及补偿说明 4.…</span></li><li><span class="tag t-official">社区</span><a href="https://sr.mihoyo.com/news/detail/166235" target="_blank">4.6版本商店上新</a><br><span style="font-size:12.5px;color:#7a8098">亲爱的开拓者： 4.6版本中，游戏内商店将会上架「绯英」全新时装「月待花时」、「风堇」全新时装「云边拾暖」！同时，礼包「黑塔 • 协议」的限购次数刷新。 ▌绯英时装「月待花时」特惠…</span></li></ul></div><div class="card"><h4>崩坏3</h4><ul><li><span class="tag t-official">社区</span><a href="https://bh3.mihoyo.com/main/news/detail/166469" target="_blank">「时序照新」9.1版本更新公告</a><br><span style="font-size:12.5px;color:#7a8098">蕾耶拉的过往属于我，而我的未来，属于此刻身处的世界。 欢迎来到9.1版本——「时序照新」！ =====更新内容===== ★ 全新虚数属性S级角色——「时序之律者」 「时序之律者」…</span></li><li><span class="tag t-official">社区</span><a href="https://bh3.mihoyo.com/main/news/detail/166972" target="_blank">畅游吼姆世界：好友成群丨参与得服装自选箱、水晶等奖励</a><br><span style="font-size:12.5px;color:#7a8098">呼朋引伴，就此集结。等待在前方的是——友谊与喧闹的惊喜大冒险！ 「畅游吼姆世界：好友成群」活动复刻开启，与团队伙伴相互助力，一起争取更高名次！参与活动可获取「轻梦时光」服装自选箱、…</span></li><li><span class="tag t-official">社区</span><a href="https://bh3.mihoyo.com/main/news/detail/166464" target="_blank">周年累消丨累消水晶领全新服装&amp;商城特惠礼包上架</a><br><span style="font-size:12.5px;color:#7a8098">9.1版本更新后~11月6日12:00期间将开启周年累消活动，活动期间参与各类补给（除回归增援外）累计消耗3万水晶即可获取咚！炽愿吉星全新服装「月咏星谣」。 同时，多款限定特惠礼包…</span></li><li><span class="tag t-official">社区</span><span class="tag t-official">即将</span><a href="https://bh3.mihoyo.com/main/news/detail/166377" target="_blank">银海拾忆 ｜ 完成任务赢取手办、角色自选箱等好礼</a><br><span style="font-size:12.5px;color:#7a8098">月光倾洒成银，海风吹响十年浪潮的低声细语；浪花把回忆悉心珍藏，只待你的轻轻拾起。 「银海拾忆」活动开启！活动期间完成面板任务可获取「听潮拾忆邀请券」，赢取琪亚娜手办、爱莉希雅抱枕、…</span></li><li><span class="tag t-official">社区</span><a href="https://bh3.mihoyo.com/main/news/detail/166375" target="_blank">甜趣沙集丨参与活动获取武器&amp;服装自选箱等奖励</a><br><span style="font-size:12.5px;color:#7a8098">脚踏细沙，轻翻小石，乐享甜趣。 「甜趣沙集」活动开启！活动期间完成面板任务可获取商店代币「沁凉甜心」。「沁凉甜心」可在活动商店中兑换「乘浪夜语」服装自选箱、「蜜螺之礼」武器自选箱、…</span></li></ul></div><div class="card"><h4>鸣潮</h4><ul><li><span class="tag t-official">社区</span><span class="tag t-official">档期待确认</span><a href="https://bbs.nga.cn/read.php?tid=47758866" target="_blank">[周边氵]有买过这种异形键帽的谭u说说使用感受如何吗（@哎呀又已被注册）</a><br><span style="font-size:12.5px;color:#7a8098">[周边氵]有买过这种异形键帽的谭u说说使用感受如何吗</span></li></ul></div><div class="card"><h4>绝区零</h4><ul><li><span class="tag t-official">社区</span><a href="https://zzz.mihoyo.com/main/news/detail/166935" target="_blank">3.3版本「商城」上新说明</a><br><span style="font-size:12.5px;color:#7a8098">亲爱的绳匠： 3.3版本更新后，「商城」好物上新！ 一、「今日穿搭」代理人时装上新 【时装组合「空白遐想」】 • 在售时间：3.3版本更新后~2026/12/02 05:59 • …</span></li><li><span class="tag t-official">官宣</span><a href="https://zzz.mihoyo.com/main/news/detail/166933" target="_blank">新品情报丨客制化三模键盘等多款周边上新</a><br><span style="font-size:12.5px;color:#7a8098">亲爱的绳匠，天猫「绝区零三Z官方旗舰店」、米游社「绝区零」商城、抖音「绝区零周边旗舰店」将于10月20日20:00开启「她与她的隐秘往事」周边上新活动！ 本次上新活动包含模玩类新品…</span></li><li><span class="tag t-official">官宣</span><span class="tag t-official">即将</span><a href="https://zzz.mihoyo.com/main/news/detail/166672" target="_blank">新品预告丨「Tidal Noise噪点狂潮」键盘即将上新</a><br><span style="font-size:12.5px;color:#7a8098">亲爱的绳匠，天猫「绝区零三Z官方旗舰店」、米游社「绝区零」商城、抖音「绝区零周边旗舰店」将于10月20日20:00开启三Z STUDIO「Tidal Noise噪点狂潮」客制化三模…</span></li><li><span class="tag t-official">官宣</span><span class="tag t-official">即将</span><a href="https://zzz.mihoyo.com/main/news/detail/166670" target="_blank">新品情报丨LIMEPIE系列 仪玄 1/8手办 墨形影踪Ver.</a><br><span style="font-size:12.5px;color:#7a8098">亲爱的绳匠，天猫「绝区零三Z官方旗舰店」、米游社「绝区零」商城、抖音「绝区零周边旗舰店」将于10月20日20:00开启「LIMEPIE系列 仪玄 1/8手办 墨形影踪Ver.」的贩…</span></li><li><span class="tag t-official">官宣</span><span class="tag t-official">即将</span><a href="https://zzz.mihoyo.com/main/news/detail/166669" target="_blank">新品情报 ｜ 阵营系列 怪啖屋 浮波柚叶 1/7手办</a><br><span style="font-size:12.5px;color:#7a8098">「觉得自己霉运缠身吗，那不妨问问…狸猫的建议吧？」 亲爱的绳匠，天猫「绝区零三Z官方旗舰店」、米游社「绝区零」商城、抖音「绝区零周边旗舰店」将于10月20日20:00开启「阵营系列…</span></li><li><span class="tag t-official">官宣</span><span class="tag t-official">档期待确认</span><a href="https://zzz.mihoyo.com/main/news/detail/166661" target="_blank">养成指南上新丨菲欧妮养成材料预告</a><br><span style="font-size:12.5px;color:#7a8098">想要提前准备菲欧妮养成材料的绳匠们注意啦： 前往养成指南，使用养成材料计算功能，可以提前了解菲欧妮所需养成材料的类型和总量，以及还需获取的数量。 【养成前瞻材料计算说明】 养成指南…</span></li></ul></div><div class="card"><h4>BilibiliWorld 2026</h4><ul><li><span class="tag t-official">社区</span><span class="tag t-expired">已过期</span><a href="https://show.bilibili.com/platform/detail.html?id=1001653" target="_blank">上海·BilibiliWorld 2026</a><br><span style="font-size:12.5px;color:#7a8098">开始时间：2026年07月10日08:30；结束时间：2026年07月12日17:00；场馆：国家会展中心 5-1/6-1 馆；票价：128-888 元；开售时间：2026年07月…</span></li></ul></div></div><p class="src">来源：各游戏官方商城 / 旗舰店公告。</p>
-</section>
-<section>
-  <h2>⚡ 五、快闪店活动安排</h2>
-  <div class="empty"><div class="empty-mark">暂无信息</div><div class="empty-reason">现有官方数据源中暂未检索到快闪店活动安排。游戏快闪店 / 主题店通常随大版本、周年庆或城市巡展由官方公告，建议关注各官方微博 / 公众号与会员购。</div></div>
-</section>
-<section>
-  <h2>🎪 六、漫展 / 展会活动详情</h2>
-  <table><tr><th style="width:26%">展会</th><th style="width:18%">时间</th><th style="width:22%">地点</th><th>参展情报</th></tr><tr><td><b><a href="https://bh3.mihoyo.com/main/news/detail/166464" target="_blank">周年累消丨累消水晶领全新服装&amp;商城特惠礼包上架</a></b></td><td><span class="ok-date">11/14（周六） 04:00</span></td><td>以官方公告为准</td><td>9.1版本更新后~11月6日12:00期间将开启周年累消活动，活动期间参与各类补给（除回归增援外）累计消耗3万水晶即可获取咚！炽愿吉星全新服装「月咏星谣」。 同时，多款限定特惠礼包… <span class="tag t-official">社区</span></td></tr><tr><td><b><a href="https://www.youtube.com/watch?v=Zzvzt3IjNik" target="_blank">gamescom Opening Night Live 2026</a></b></td><td>档期待确认</td><td>以官方公告为准</td><td>gamescom Opening Night Live 2026 <span class="tag t-official">社区</span><span class="tag t-official">档期待确认</span></td></tr><tr><td><b><a href="https://www.youtube.com/watch/fwkYrrefDeQ" target="_blank">FYNG gamescom Show 2026</a></b></td><td>档期待确认</td><td>以官方公告为准</td><td>FYNG gamescom Show 2026 <span class="tag t-official">社区</span><span class="tag t-official">档期待确认</span></td></tr><tr><td><b><a href="https://www.youtube.com/watch/fwkYrrefDeQ" target="_blank">FYNG gamescom show</a></b></td><td>档期待确认</td><td>以官方公告为准</td><td>FYNG gamescom show <span class="tag t-official">社区</span><span class="tag t-official">档期待确认</span></td></tr><tr><td><b><a href="https://www.youtube.com/watch?v=ajZnnGUvJek" target="_blank">gamescom awesome indies 2026</a></b></td><td>档期待确认</td><td>以官方公告为准</td><td>gamescom awesome indies 2026 <span class="tag t-official">社区</span><span class="tag t-official">档期待确认</span></td></tr><tr><td><b><a href="https://www.youtube.com/watch?v=CHHNvLhdhkg" target="_blank">gamescom cosplay contest 2026</a></b></td><td>档期待确认</td><td>以官方公告为准</td><td>gamescom cosplay contest 2026 <span class="tag t-official">社区</span><span class="tag t-official">档期待确认</span></td></tr><tr><td><b>gamescom congress 2026</b></td><td>档期待确认</td><td>以官方公告为准</td><td>gamescom congress 2026 <span class="tag t-official">社区</span><span class="tag t-official">档期待确认</span></td></tr><tr><td><b>gamescom congress Opening 2026: Welcome and Speech</b></td><td>档期待确认</td><td>以官方公告为准</td><td>gamescom congress Opening 2026: Welcome and Speech <span class="tag t-official">社区</span><span class="tag t-official">档期待确认</span></td></tr><tr><td><b>Verabschiedung und Handover weiteres Programm gamescom congress</b></td><td>档期待确认</td><td>以官方公告为准</td><td>Verabschiedung und Handover weiteres Programm gamescom congress <span class="tag t-official">社区</span><span class="tag t-official">档期待确认</span></td></tr><tr><td><b><a href="https://www.youtube.com/watch?v=RtvC1WXni_g" target="_blank">gamescom political opening 2026</a></b></td><td>档期待确认</td><td>以官方公告为准</td><td>gamescom political opening 2026 <span class="tag t-official">社区</span><span class="tag t-official">档期待确认</span></td></tr><tr><td><b><a href="https://www.youtube.com/watch?v=ocGNLYR9E1U" target="_blank">gamescom opening night live 2026 (ASL)</a></b></td><td>档期待确认</td><td>以官方公告为准</td><td>gamescom opening night live 2026 (ASL) <span class="tag t-official">社区</span><span class="tag t-official">档期待确认</span></td></tr><tr><td><b><a href="https://www.youtube.com/watch?v=zvkTGmZzZFg" target="_blank">gamescom award 2026</a></b></td><td>档期待确认</td><td>以官方公告为准</td><td>gamescom award 2026 <span class="tag t-official">社区</span><span class="tag t-official">档期待确认</span></td></tr><tr><td><b><a href="https://show.bilibili.com/platform/detail.html?id=1001653" target="_blank">上海·BilibiliWorld 2026</a></b></td><td><span class="ok-date">07/10（周五） 08:30</span> 至 <span class="deadline">07/12（周日） 17:00</span></td><td>以官方公告为准</td><td>开始时间：2026年07月10日08:30；结束时间：2026年07月12日17:00；场馆：国家会展中心 5-1/6-1 馆；票价：128-888 元；开售时间：2026年07月… <span class="tag t-official">社区</span><span class="tag t-expired">已过期</span></td></tr><tr><td><b><a href="https://zzz.mihoyo.com/main/news/detail/166660" target="_blank">《绝区零》☆Zenless LIVE 2026——FES专场</a></b></td><td><span class="ok-date">11/27（周五）</span></td><td>以官方公告为准</td><td>举起双手，跟上梦的节拍，一起狂欢吧！ 绝区零 2026 ZLIVE FES专场将于11月27日-11月29日在杭州大会展中心举办，更多活动细节将会陆续公布，敬请期待~ —— 欢迎来… <span class="tag t-official">官宣</span></td></tr><tr><td><b><a href="https://thegameawards.com/news/public-tickets-on-sale-october-29/" target="_blank">Public Tickets on Sale October 29</a></b></td><td>档期待确认</td><td>以官方公告为准</td><td>Public Tickets on Sale October 29 <span class="tag t-official">社区</span><span class="tag t-official">档期待确认</span></td></tr><tr><td><b><a href="https://thegameawards.com/news/tga-returns-december-10-2026/" target="_blank">TGA Returns December 10, 2026</a></b></td><td><span class="ok-date">12/10（周四）</span></td><td>以官方公告为准</td><td>TGA Returns December 10, 2026 <span class="tag t-official">社区</span></td></tr></table>
-</section>
-<section>
-  <h2>📚 信息来源与时效性说明</h2>
-  <ul><li><b>官方第一方渠道（最高可信，标注「官方」）</b>：官网·官方、米游社·官方；含各游戏官网、官方微博 / 微信公众号、B站 / 抖音官号。</li><li><b>社区交叉参考（已标注来源，不代表官方确认）</b>：NGA。</li><li><b>数据来源范围</b>：各游戏官网接口、官方第一方社区（米游社 / 森空岛 / 库街区 / TapTap）、官方票务与展会平台（哔哩哔哩会员购、The Game Awards、gamescom、Summer Game Fest）；不接入第三方资讯站与 Wiki，社区内容仅作交叉参考并标注出处。</li><li><b>检索时间</b>：2026-10-22 17:54（GMT+8）。兑换码与活动档期时效以小时 / 天计，请参与前以官方渠道实际提示为准。</li><li><b>分级标注</b>：<span class="tag t-official">官宣</span>官方已公布 ｜ <span class="tag t-estimate">待官宣</span>未官宣、按惯例推测 ｜ <span class="tag t-rumor">爆料</span>社区消息，未经确认 ｜ <span class="tag t-third">社区</span>玩家社区交叉参考 ｜ <span class="tag t-expired">已过期 / 已结束</span>已不在当前有效前瞻范围。</li><li><b>本期覆盖</b>：BilibiliWorld 2026、The Game Awards、gamescom、原神、崩坏3、崩坏：星穹铁道、明日方舟、明日方舟：终末地、绝区零、鸣潮；信息来源平台：NGA、官网、米游社。</li><li><b>防骗提示</b>：官方福利码全部免费，凡「付费代兑 / 内部码 / 扫码领原石 / 索要账号密码验证码」均为诈骗。</li><li><b>板块完整性</b>：日报固定包含「版本前瞻 / 兑换码 / 线下联动 / 周边上新 / 快闪店 / 漫展展会」六大板块；某板块在现有数据源中确实无法获取时明确标注「暂无信息」，不省略。</li></ul>
-</section>
+<nav class="topnav">
+  <div class="wrap">
+    <a href="#sec-timeline">① 资讯时间线</a>
+    <a href="#sec-version">② 版本前瞻汇总</a>
+    <a href="#sec-collab">③ 联动活动</a>
+    <a href="#sec-merch">④ 官方周边</a>
+    <a href="#" class="fav" id="favToggle">★ 我的收藏 <span id="favCount">(0)</span></a>
+  </div>
+</nav>
 
-<div class="footer">游戏前瞻资讯汇总 · 生成于 2026-10-22 · 由游戏活动监测程序自动生成 · 内容以官方最终公告为准</div>
+<main>
+  <section id="sec-timeline">
+    <div class="sec-head"><span class="sec-num">1</span><h2>主要资讯时间线速览</h2>
+      <span class="desc">未来约 100 天 · 关键节点 · 按活动时间排序</span></div>
+    <div class="tline" id="timeline"></div>
+  </section>
 
-</div>
+  <section id="sec-version">
+    <div class="sec-head"><span class="sec-num">2</span><h2>游戏版本前瞻内容汇总</h2>
+      <span class="desc">表格：游戏 · 前瞻标题（点击跳原文） · 前瞻时间 · 兑换码 · 内容总结</span></div>
+    <div id="versionBody"></div>
+  </section>
+
+  <section id="sec-collab">
+    <div class="sec-head"><span class="sec-num">3</span><h2>联动活动资讯</h2>
+      <span class="desc">联动活动 / 快闪店 / 漫展展会 子分页切换</span></div>
+    <div class="tabs" id="collabTabs"></div>
+    <div class="grid" id="collabList"></div>
+  </section>
+
+  <section id="sec-merch">
+    <div class="sec-head"><span class="sec-num">4</span><h2>官方周边资讯</h2>
+      <span class="desc">周边上新 · 限时优惠 · 盲袋活动</span></div>
+    <div class="grid" id="merchGrid"></div>
+  </section>
+</main>
+
+<footer>
+  <div class="note">
+    <b>标注说明：</b>时间线为<b>纯信息速览</b>（无链接），「官宣」= 官方渠道确认，「待官宣」= 社区信息 / 测试服爆料 / 待官方确认；
+    板块2 为<b>汇总表格</b>（游戏 · 前瞻标题可点击跳转原文 · 前瞻时间 · 兑换码 · 内容总结）；
+    板块3-4 每条讯息统一以封面图（原帖无图时显示占位图）+ 标题（点击跳转原始来源）+ 简介呈现。
+    「X·官方」= 官方社区第一方渠道；「官网·官方」= 游戏官网新闻公告；「官方票务/展会」= B站会员购与展会官网；
+    「测试服爆料·第三方」非官方确认，请以官方公告为准。
+    时间一律按<b>实际活动时间</b>标注，时间线仅收录未来约 100 天内正在进行 / 将要开始的信息。<br>
+    <b>分级图例：</b><span class="tag official">官宣</span>官方渠道已公布 ｜
+    <span class="tag leak">爆料</span>测试服 / 社区消息未经确认 ｜
+    <span class="tag status">待官宣</span>档期未定或按惯例推测（标「预计」）｜
+    <span class="tag ft">第三方汇总</span>兑换码来自第三方聚合站，时效 / 区服不定，失效属正常。
+    防骗提示：官方福利码全部免费，凡「付费代兑 / 内部码 / 扫码领原石 / 索要账号密码验证码」均为诈骗。
+    数据生成于 <span id="genTime"></span>。
+  </div>
+</footer>
+
+<script type="application/json" id="payload">{"timeline": [{"label": "10/23（周五）", "items": [{"time": "20:00", "kind": "start", "title": "《原神》7.2版本「坏灭肇始之时」前瞻特别节目预告", "url": "https://www.miyoushe.com/ys/article/79040314", "badge": "official", "codes": [], "venue": "", "reward": "", "expect": false, "id": "原神|mys_79040314"}]}, {"label": "10/29（周四）", "items": [{"time": "", "kind": "start", "title": "重返未来：1999 4.1 前瞻直播（预计）", "url": "", "badge": "pending", "codes": [], "venue": "", "reward": "", "expect": false, "id": "重返未来：1999|est_重返未来：1999_4.1_stream"}]}, {"label": "10/30（周五）", "items": [{"time": "03:59", "kind": "start", "title": "【明日方舟×国家图书馆】「恒远津梁」限时活动即将开启", "url": "https://ak.hypergryph.com/news/1454", "badge": "official", "codes": [], "venue": "", "reward": "", "expect": false, "id": "明日方舟|1454"}, {"time": "", "kind": "start", "title": "崩坏：星穹铁道 4.7 前瞻直播（预计）", "url": "", "badge": "pending", "codes": [], "venue": "", "reward": "", "expect": false, "id": "崩坏：星穹铁道|est_崩坏：星穹铁道_4.7_stream"}, {"time": "", "kind": "start", "title": "鸣潮 3.8 前瞻直播（预计）", "url": "", "badge": "pending", "codes": [], "venue": "", "reward": "", "expect": false, "id": "鸣潮|est_鸣潮_3.8_stream"}]}, {"label": "11/04（周三）", "items": [{"time": "", "kind": "start", "title": "原神 7.2「坏灭肇始之时」 版本上线（预计）", "url": "", "badge": "pending", "codes": [], "venue": "", "reward": "", "expect": false, "id": "原神|est_原神_7.2_launch"}]}, {"label": "11/05（周四）", "items": [{"time": "", "kind": "start", "title": "重返未来：1999 4.1 版本上线（预计）", "url": "", "badge": "pending", "codes": [], "venue": "", "reward": "", "expect": false, "id": "重返未来：1999|est_重返未来：1999_4.1_launch"}]}, {"label": "11/06（周五）", "items": [{"time": "18:00", "kind": "deadline", "title": "【米游币兑换中心】崩坏：星穹铁道商品即将上新！", "url": "https://www.miyoushe.com/sr/article/78610193", "badge": "official", "codes": [], "venue": "", "reward": "", "expect": false, "id": "崩坏：星穹铁道|mys_78610193"}]}, {"label": "11/08（周日）", "items": [{"time": "23:59", "kind": "start", "title": "崩坏：星穹铁道 周边优惠上新 手办服饰新品齐亮相", "url": "https://www.miyoushe.com/sr/article/78988118", "badge": "official", "codes": [], "venue": "天猫「miHoYo旗舰店」", "reward": "", "expect": false, "id": "崩坏：星穹铁道|mys_78988118"}]}, {"label": "11/11（周三）", "items": [{"time": "23:59", "kind": "start", "title": "绝区零 新品情报丨客制化三模键盘等多款周边上新", "url": "https://www.miyoushe.com/zzz/article/79002850", "badge": "official", "codes": [], "venue": "天猫「绝区零三Z官方旗舰店」", "reward": "", "expect": false, "id": "绝区零|mys_79002850"}, {"time": "06:00", "kind": "start", "title": "崩坏：星穹铁道 4.6版本「月升之前，与兽共舞」版本更新说明", "url": "https://sr.mihoyo.com/news/detail/166489", "badge": "official", "codes": [], "venue": "■「星际幻宠」乐园", "reward": "", "expect": false, "id": "崩坏：星穹铁道|166489"}, {"time": "", "kind": "start", "title": "鸣潮 3.8 版本上线（预计）", "url": "", "badge": "pending", "codes": [], "venue": "", "reward": "", "expect": false, "id": "鸣潮|est_鸣潮_3.8_launch"}]}, {"label": "11/20（周五）", "items": [{"time": "", "kind": "start", "title": "绝区零 3.4 前瞻直播（预计）", "url": "", "badge": "pending", "codes": [], "venue": "", "reward": "", "expect": false, "id": "绝区零|est_绝区零_3.4_stream"}]}, {"label": "11/26（周四）", "items": [{"time": "19:00", "kind": "deadline", "title": "【米游币兑换中心】绝区零商品即将上新，七万份好礼等你来换！", "url": "https://www.miyoushe.com/zzz/article/79065391", "badge": "official", "codes": [], "venue": "", "reward": "", "expect": false, "id": "绝区零|mys_79065391"}, {"time": "04:00", "kind": "start", "title": "崩坏3 「时序照新」9.1版本更新公告", "url": "https://bh3.mihoyo.com/main/news/detail/166469", "badge": "official", "codes": [], "venue": "", "reward": "9600 水晶", "expect": false, "id": "崩坏3|166469"}]}, {"label": "11/27（周五）", "items": [{"time": "", "kind": "start", "title": "《绝区零》☆Zenless LIVE 2026——FES专场", "url": "https://zzz.mihoyo.com/main/news/detail/166660", "badge": "official", "codes": [], "venue": "杭州大会展中心", "reward": "", "expect": false, "id": "绝区零|166660"}]}, {"label": "11/30（周一）", "items": [{"time": "", "kind": "start", "title": "崩坏3 9.1 前瞻直播（预计）", "url": "", "badge": "pending", "codes": [], "venue": "", "reward": "", "expect": false, "id": "崩坏3|est_崩坏3_9.1_stream"}]}, {"label": "12/02（周三）", "items": [{"time": "", "kind": "start", "title": "绝区零 3.4 版本上线（预计）", "url": "", "badge": "pending", "codes": [], "venue": "", "reward": "", "expect": false, "id": "绝区零|est_绝区零_3.4_launch"}]}, {"label": "12/04（周五）", "items": [{"time": "", "kind": "start", "title": "原神 7.3 前瞻直播（预计）", "url": "", "badge": "pending", "codes": [], "venue": "", "reward": "", "expect": false, "id": "原神|est_原神_7.3_stream"}]}, {"label": "12/10（周四）", "items": [{"time": "", "kind": "start", "title": "The Game Awards TGA Returns December 10, 2026", "url": "https://thegameawards.com/news/tga-returns-december-10-2026/", "badge": "official", "codes": [], "venue": "", "reward": "", "expect": false, "id": "The Game Awards|tga-returns-december-10-2026"}, {"time": "", "kind": "start", "title": "崩坏3 9.1 版本上线（预计）", "url": "", "badge": "pending", "codes": [], "venue": "", "reward": "", "expect": false, "id": "崩坏3|est_崩坏3_9.1_launch"}]}, {"label": "12/11（周五）", "items": [{"time": "", "kind": "start", "title": "崩坏：星穹铁道 4.8 前瞻直播（预计）", "url": "", "badge": "pending", "codes": [], "venue": "", "reward": "", "expect": false, "id": "崩坏：星穹铁道|est_崩坏：星穹铁道_4.8_stream"}, {"time": "", "kind": "start", "title": "鸣潮 4.0「新联邦」 前瞻直播（预计）", "url": "", "badge": "pending", "codes": [], "venue": "", "reward": "", "expect": false, "id": "鸣潮|est_鸣潮_4.0_stream"}]}, {"label": "12/16（周三）", "items": [{"time": "", "kind": "start", "title": "原神 7.3 版本上线（预计）", "url": "", "badge": "pending", "codes": [], "venue": "", "reward": "", "expect": false, "id": "原神|est_原神_7.3_launch"}]}, {"label": "12/23（周三）", "items": [{"time": "", "kind": "start", "title": "崩坏：星穹铁道 4.8 版本上线（预计）", "url": "", "badge": "pending", "codes": [], "venue": "", "reward": "", "expect": false, "id": "崩坏：星穹铁道|est_崩坏：星穹铁道_4.8_launch"}, {"time": "", "kind": "start", "title": "鸣潮 4.0「新联邦」 版本上线（预计）", "url": "", "badge": "pending", "codes": [], "venue": "", "reward": "", "expect": false, "id": "鸣潮|est_鸣潮_4.0_launch"}]}], "sections": [{"key": "version", "num": "2", "title": "游戏版本前瞻内容汇总", "desc": "表格：游戏 · 前瞻标题（点击跳原文） · 前瞻时间 · 兑换码 · 内容总结", "count": 13, "items": [{"id": "明日方舟：终末地|3805", "game": "明日方舟：终末地", "title": "「丹青渡」版本研发通讯", "url": "https://endfield.hypergryph.com/news/3805", "ver": "", "timeDisplay": "10/15（周四） 开始", "timeKind": "开始时间", "codes": [], "deadline": "", "reward": "", "platforms": "", "summary": "亲爱的管理员：这里是《明日方舟：终末地》项目组。秋景现，丹青垂。《明日方舟：终末地》新版本「丹青渡」将于10月15日开启。通过本期研发通讯，我们将为管理员介绍即将在此版本中上线的一系列优化与调整。「新", "source": "鹰角官网", "official": true, "leak": false}, {"id": "原神|tp_原神", "game": "原神", "title": "兑换码汇总（第三方）", "url": "https://www.vg247.com/genshin-impact-codes", "ver": "", "timeDisplay": "尽快兑换（时效不定）", "timeKind": "第三方码", "codes": [], "deadline": "", "reward": "", "platforms": "", "summary": "第三方兑换码汇总（多为国际服 / 常驻码，时效与区服不定，失效属正常，以游戏内实际兑换结果为准）。当前收录：industry、description、headline、assetsio、primogems、keywords、publisher、pagetype", "source": "第三方汇总", "official": false, "leak": false}, {"id": "原神|mys_79040314", "game": "原神", "title": "《原神》7.2版本「坏灭肇始之时」前瞻特别节目预告", "url": "https://www.miyoushe.com/ys/article/79040314", "ver": "7.2「坏灭肇始之时」", "timeDisplay": "10/23（周五） 20:00 开始", "timeKind": "开始时间", "codes": [], "deadline": "", "reward": "", "platforms": "B站、抖音、米游社、斗鱼、快手、微博、微信视频号、视频号", "summary": "亲爱的旅行者，现在是派蒙的特别节目预告时间> <\n《原神》7.2版本「坏灭肇始之时」前瞻特别节目将于10月23日（本周五）20:00正式开启。\n\n提前关注米游社直播间、B站直播间 ，我们不见不散！\n\n同时，本次特别节目将在以下7个平台同步开播：B站直播间、斗鱼直播间、快手直播间、抖音直播间、微博直播间、微信视频号直播间和小红书直播间，欢迎旅行者们前往收看！\n\n★★活动1： 前瞻预热 好礼放送 ★★", "source": "米游社", "official": true, "leak": false}, {"id": "重返未来：1999|est_重返未来：1999_4.1_stream", "game": "重返未来：1999", "title": "重返未来：1999 4.1 前瞻直播（预计）", "url": "", "ver": "", "timeDisplay": "10/29（周四） 开始", "timeKind": "开始时间", "codes": [], "deadline": "", "reward": "", "platforms": "", "summary": "按官方版本节奏惯例推算：4.0版本于2026年10月01日上线，版本周期约35天，前瞻直播通常在版本上线前7天左右（推算窗口 2026年10月29日 前后 1–2 天）。此为社区推算信息，非官方公告，请以官方前瞻预告为准。", "source": "社区推算", "official": false, "leak": false}, {"id": "崩坏：星穹铁道|est_崩坏：星穹铁道_4.7_stream", "game": "崩坏：星穹铁道", "title": "崩坏：星穹铁道 4.7 前瞻直播（预计）", "url": "", "ver": "", "timeDisplay": "10/30（周五） 开始", "timeKind": "开始时间", "codes": [], "deadline": "", "reward": "", "platforms": "", "summary": "按官方版本节奏惯例推算：4.6版本于2026年09月30日上线，版本周期约42天，前瞻直播通常在版本上线前12天左右（推算窗口 2026年10月30日 前后 1–2 天）。此为社区推算信息，非官方公告，请以官方前瞻预告为准。", "source": "社区推算", "official": false, "leak": false}, {"id": "鸣潮|est_鸣潮_3.8_stream", "game": "鸣潮", "title": "鸣潮 3.8 前瞻直播（预计）", "url": "", "ver": "", "timeDisplay": "10/30（周五） 开始", "timeKind": "开始时间", "codes": [], "deadline": "", "reward": "", "platforms": "", "summary": "按官方版本节奏惯例推算：3.7版本于2026年09月30日上线，版本周期约42天，前瞻直播通常在版本上线前12天左右（推算窗口 2026年10月30日 前后 1–2 天）。此为社区推算信息，非官方公告，请以官方前瞻预告为准。", "source": "社区推算", "official": false, "leak": false}, {"id": "崩坏：星穹铁道|166489", "game": "崩坏：星穹铁道", "title": "4.6版本「月升之前，与兽共舞」版本更新说明", "url": "https://sr.mihoyo.com/news/detail/166489", "ver": "4.6「月升之前」", "timeDisplay": "11/11（周三） 06:00 开始", "timeKind": "开始时间", "codes": [], "deadline": "", "reward": "", "platforms": "", "summary": "蠢动于幽暗的兽再度开口，索求一位神明作为祭品。在月亮重新升起前，唯有智者的血方能平息它的饥渴……\n亲爱的开拓者：\n欢迎来到4.6版本「月升之前，与兽共舞」！\n▌更新及补偿说明\n4.6版本的持续时间为 2026/09/28 4.6版本更新后 - 2026/11/11 06:00。\n■更新时间\n2026/09/28 06:00开始，预计5个小时完成。\n■补偿说明\n●停服更新补偿\n补偿内容：星琼*300", "source": "官网", "official": true, "leak": false}, {"id": "绝区零|est_绝区零_3.4_stream", "game": "绝区零", "title": "绝区零 3.4 前瞻直播（预计）", "url": "", "ver": "", "timeDisplay": "11/20（周五） 开始", "timeKind": "开始时间", "codes": [], "deadline": "", "reward": "", "platforms": "", "summary": "按官方版本节奏惯例推算：3.3版本于2026年10月21日上线，版本周期约42天，前瞻直播通常在版本上线前12天左右（推算窗口 2026年11月20日 前后 1–2 天）。此为社区推算信息，非官方公告，请以官方前瞻预告为准。", "source": "社区推算", "official": false, "leak": false}, {"id": "崩坏3|166469", "game": "崩坏3", "title": "「时序照新」9.1版本更新公告", "url": "https://bh3.mihoyo.com/main/news/detail/166469", "ver": "9.1「更新公告」", "timeDisplay": "11/26（周四） 04:00 开始", "timeKind": "开始时间", "codes": [], "deadline": "", "reward": "9600 水晶", "platforms": "", "summary": "蕾耶拉的过往属于我，而我的未来，属于此刻身处的世界。\n欢迎来到9.1版本——「时序照新」！\n=====更新内容=====\n★ 全新虚数属性S级角色——「时序之律者」\n「时序之律者」为虚数属性角色，造成火焰元素伤害，使用的武器类型为驱动核心，跨越无尽时光与梦境后，她将以新的姿态再次出发。「时序之律者」在战斗中可通过回溯使敌人再度承受过去的创伤，队伍中角色和协同者对敌人造成的非生命流失伤害都会记录为「", "source": "官网", "official": true, "leak": false}, {"id": "崩坏3|est_崩坏3_9.1_stream", "game": "崩坏3", "title": "崩坏3 9.1 前瞻直播（预计）", "url": "", "ver": "", "timeDisplay": "11/30（周一） 开始", "timeKind": "开始时间", "codes": [], "deadline": "", "reward": "", "platforms": "", "summary": "按官方版本节奏惯例推算：9.0版本于2026年10月08日上线，版本周期约63天，前瞻直播通常在版本上线前10天左右（推算窗口 2026年11月30日 前后 1–2 天）。此为社区推算信息，非官方公告，请以官方前瞻预告为准。", "source": "社区推算", "official": false, "leak": false}, {"id": "原神|est_原神_7.3_stream", "game": "原神", "title": "原神 7.3 前瞻直播（预计）", "url": "", "ver": "", "timeDisplay": "12/04（周五） 开始", "timeKind": "开始时间", "codes": [], "deadline": "", "reward": "", "platforms": "", "summary": "按官方版本节奏惯例推算：7.1版本于2026年09月23日上线，版本周期约42天，前瞻直播通常在版本上线前12天左右（推算窗口 2026年12月04日 前后 1–2 天）。此为社区推算信息，非官方公告，请以官方前瞻预告为准。", "source": "社区推算", "official": false, "leak": false}, {"id": "崩坏：星穹铁道|est_崩坏：星穹铁道_4.8_stream", "game": "崩坏：星穹铁道", "title": "崩坏：星穹铁道 4.8 前瞻直播（预计）", "url": "", "ver": "", "timeDisplay": "12/11（周五） 开始", "timeKind": "开始时间", "codes": [], "deadline": "", "reward": "", "platforms": "", "summary": "按官方版本节奏惯例推算：4.6版本于2026年09月30日上线，版本周期约42天，前瞻直播通常在版本上线前12天左右（推算窗口 2026年12月11日 前后 1–2 天）。此为社区推算信息，非官方公告，请以官方前瞻预告为准。", "source": "社区推算", "official": false, "leak": false}, {"id": "鸣潮|est_鸣潮_4.0_stream", "game": "鸣潮", "title": "鸣潮 4.0「新联邦」 前瞻直播（预计）", "url": "", "ver": "", "timeDisplay": "12/11（周五） 开始", "timeKind": "开始时间", "codes": [], "deadline": "", "reward": "", "platforms": "", "summary": "按官方版本节奏惯例推算：3.7版本于2026年09月30日上线，版本周期约42天，前瞻直播通常在版本上线前12天左右（推算窗口 2026年12月11日 前后 1–2 天）。此为社区推算信息，非官方公告，请以官方前瞻预告为准。", "source": "社区推算", "official": false, "leak": false}]}, {"key": "collab", "num": "3", "title": "联动活动资讯", "desc": "联动活动 / 快闪店 / 漫展展会 三个子分页切换", "count": 5, "items": [{"id": "崩坏3|info_23a3d35bce", "game": "崩坏3", "title": "荣耀官宣成为《崩坏3》官方性能优化合作伙伴，推联名礼盒&定制手机壳", "url": "https://www.ithome.com/0/490/644.htm", "timeDisplay": "发布 10-22 18:38", "timeKind": "发布时间", "source": "IT之家", "official": false, "leak": false, "facets": ["offline_collab"], "codes": [], "tags": ["社区", "档期待确认"], "image": "", "excerpt": "荣耀官宣成为《崩坏3》官方性能优化合作伙伴，推联名礼盒&定制手机壳", "price": "", "channel": "", "sub": "collab", "location": ""}, {"id": "崩坏3|info_28caab294f", "game": "崩坏3", "title": "铁三角将推出SR30BT“铁三角x崩坏3”特别联动款", "url": "https://www.ithome.com/0/435/006.htm", "timeDisplay": "发布 10-22 18:38", "timeKind": "发布时间", "source": "IT之家", "official": false, "leak": false, "facets": ["offline_collab"], "codes": [], "tags": ["社区", "档期待确认"], "image": "", "excerpt": "铁三角将推出SR30BT“铁三角x崩坏3”特别联动款", "price": "", "channel": "", "sub": "collab", "location": ""}, {"id": "明日方舟|1454", "game": "明日方舟", "title": "【明日方舟×国家图书馆】「恒远津梁」限时活动即将开启", "url": "https://ak.hypergryph.com/news/1454", "timeDisplay": "10/30（周五） 03:59 开始", "timeKind": "开始时间", "source": "鹰角官网", "official": true, "leak": false, "facets": ["version_preview", "offline_collab"], "codes": [], "tags": ["官宣"], "image": "", "excerpt": "一、【明日方舟×国家图书馆】，「恒远津梁」限时活动开启活动时间：10月16日 16:00 - 10月30日 03:59活动说明：活动期间内，玩家累计活动签到3日可获得【绒毛读书伴侣】等活动家具奖励二、", "price": "", "channel": "", "sub": "collab", "location": ""}, {"id": "绝区零|166660", "game": "绝区零", "title": "《绝区零》☆Zenless LIVE 2026——FES专场", "url": "https://zzz.mihoyo.com/main/news/detail/166660", "timeDisplay": "11/27（周五） 开始", "timeKind": "开始时间", "source": "官网", "official": true, "leak": false, "facets": ["expo"], "codes": [], "tags": ["官宣"], "image": "", "excerpt": "举起双手，跟上梦的节拍，一起狂欢吧！\n绝区零 2026 ZLIVE FES专场将于11月27日-11月29日在杭州大会展中心举办，更多活动细节将会陆续公布，敬请期待~\n—— 欢迎来到新艾利都！——", "price": "", "channel": "", "sub": "expo", "location": "杭州大会展中心"}, {"id": "The Game Awards|tga-returns-december-10-2026", "game": "The Game Awards", "title": "TGA Returns December 10, 2026", "url": "https://thegameawards.com/news/tga-returns-december-10-2026/", "timeDisplay": "12/10（周四） 开始", "timeKind": "开始时间", "source": "展会官网", "official": true, "leak": false, "facets": ["expo"], "codes": [], "tags": ["官宣"], "image": "", "excerpt": "TGA Returns December 10, 2026", "price": "", "channel": "", "sub": "expo", "location": "以官方公告为准"}]}, {"key": "merch", "num": "4", "title": "官方周边资讯", "desc": "周边上新 · 限时优惠 · 盲袋活动", "count": 10, "items": [{"id": "崩坏：星穹铁道|mys_78959243", "game": "崩坏：星穹铁道", "title": "新品预告 | 苍天航路绒绒号系列周边首发", "url": "https://www.miyoushe.com/sr/article/78959243", "timeDisplay": "10/20（周二） 20:00 开始", "timeKind": "开始时间", "source": "米游社", "official": true, "leak": false, "facets": ["merch"], "codes": [], "tags": ["官宣", "即将"], "image": "", "excerpt": "《崩坏：星穹铁道》「苍天航路绒绒号系列」服饰及多款周边即将于10月20日20:00在「货全杂货铺」、「miHoYo旗舰店」、「崩坏星穹铁道官方旗舰店」开启贩售！\n服饰系列包含卫衣、毛绒围巾、毛绒包，设有三月兔款、汪汪丹款", "price": "", "channel": "miHoYo旗舰店 / 货全杂货铺", "sub": "", "location": "miHoYo旗舰店"}, {"id": "绝区零|166672", "game": "绝区零", "title": "新品预告丨「Tidal Noise噪点狂潮」键盘即将上新", "url": "https://zzz.mihoyo.com/main/news/detail/166672", "timeDisplay": "10/20（周二） 20:00 开始", "timeKind": "开始时间", "source": "官网", "official": true, "leak": false, "facets": ["merch"], "codes": [], "tags": ["官宣", "即将"], "image": "", "excerpt": "亲爱的绳匠，天猫「绝区零三Z官方旗舰店」、米游社「绝区零」商城、抖音「绝区零周边旗舰店」将于10月20日20:00开启三Z STUDIO「Tidal Noise噪点狂潮」客制化三模机械键盘及定制配件的贩售，后续详情敬请期", "price": "", "channel": "绝区零三Z官方旗舰店 / 绝区零", "sub": "", "location": "天猫「绝区零三Z官方旗舰店」"}, {"id": "绝区零|166670", "game": "绝区零", "title": "新品情报丨LIMEPIE系列 仪玄 1/8手办 墨形影踪Ver.", "url": "https://zzz.mihoyo.com/main/news/detail/166670", "timeDisplay": "10/20（周二） 20:00 开始", "timeKind": "开始时间", "source": "官网", "official": true, "leak": false, "facets": ["merch"], "codes": [], "tags": ["官宣", "即将"], "image": "", "excerpt": "亲爱的绳匠，天猫「绝区零三Z官方旗舰店」、米游社「绝区零」商城、抖音「绝区零周边旗舰店」将于10月20日20:00开启「LIMEPIE系列 仪玄 1/8手办 墨形影踪Ver.」的贩售。\n▼官方售价\n299元\n定金40元，", "price": "299 元", "channel": "绝区零三Z官方旗舰店 / 绝区零", "sub": "", "location": "天猫「绝区零三Z官方旗舰店」"}, {"id": "绝区零|166669", "game": "绝区零", "title": "新品情报 | 阵营系列 怪啖屋 浮波柚叶 1/7手办", "url": "https://zzz.mihoyo.com/main/news/detail/166669", "timeDisplay": "10/20（周二） 20:00 开始", "timeKind": "开始时间", "source": "官网", "official": true, "leak": false, "facets": ["merch"], "codes": [], "tags": ["官宣", "即将"], "image": "", "excerpt": "「觉得自己霉运缠身吗，那不妨问问…狸猫的建议吧？」\n亲爱的绳匠，天猫「绝区零三Z官方旗舰店」、米游社「绝区零」商城、抖音「绝区零周边旗舰店」将于10月20日20:00开启「阵营系列 怪啖屋 浮波柚叶 1/7手办」的预售。", "price": "949 元", "channel": "绝区零三Z官方旗舰店 / 绝区零", "sub": "", "location": "天猫「绝区零三Z官方旗舰店」"}, {"id": "原神|mys_78959150", "game": "原神", "title": "《原神》周边双11活动日历登场！", "url": "https://www.miyoushe.com/ys/article/78959150", "timeDisplay": "尽快兑换（时效不定）", "timeKind": "第三方码", "source": "米游社", "official": true, "leak": false, "facets": ["redeem_code", "merch"], "codes": [], "tags": ["官宣", "档期待确认"], "image": "", "excerpt": "亲爱的旅行者，《原神》周边双11活动日历来啦> < 请查收~\n \n>>>「原神旗舰店」及「原神-万有铺子」积分兑换活动限时开放！\n>>>「纷彩补给站」活动即将开启~\n>>>《原神》六周年周边创作征集活动即将截止，旅行者不", "price": "", "channel": "", "sub": "", "location": "原神旗舰店"}, {"id": "崩坏：星穹铁道|mys_79040368", "game": "崩坏：星穹铁道", "title": "谷帕谷帕 | 小不点猫猫系列波提欧手办实物展示", "url": "https://www.miyoushe.com/sr/article/79040368", "timeDisplay": "发布 10-21 12:02", "timeKind": "发布时间", "source": "米游社", "official": true, "leak": false, "facets": ["merch"], "codes": [], "tags": ["官宣", "档期待确认"], "image": "https://upload-bbs.miyoushe.com/upload/2026/10/21/378227948/63a2bf545ca500c466f2777a768ed690_8156448048089231808.png", "excerpt": "《崩坏：星穹铁道》「小不点猫猫系列波提欧手办」实物展示登场！产品已在店内开启预定，参与预定还可获得专属特典徽章，欢迎前往了解更多~\n\n〓手办详情〓\n产品尺寸：高约19cm、宽约13cm、深约12cm\n产品售价：全款369", "price": "369 元", "channel": "", "sub": "", "location": ""}, {"id": "崩坏：星穹铁道|mys_78610193", "game": "崩坏：星穹铁道", "title": "【米游币兑换中心】崩坏：星穹铁道商品即将上新！", "url": "https://www.miyoushe.com/sr/article/78610193", "timeDisplay": "截止 11/06（周五） 18:00", "timeKind": "截止时间", "source": "米游社", "official": true, "leak": false, "facets": ["redeem_code", "merch"], "codes": [], "tags": ["官宣"], "image": "", "excerpt": "开拓者好~米游币兑换中心崩坏：星穹铁道商品即将上新！\n本次上新，阿姬准备了星琼、信用点等游戏道具商品，还有光锥系列亚克力挂件、角色立绘系列马口铁徽章等实物周边商品~开拓者可以在兑换中心使用米游币兑换上新商品，先到先得，快", "price": "", "channel": "", "sub": "", "location": ""}, {"id": "崩坏：星穹铁道|mys_78988118", "game": "崩坏：星穹铁道", "title": "周边优惠上新 手办服饰新品齐亮相", "url": "https://www.miyoushe.com/sr/article/78988118", "timeDisplay": "11/08（周日） 23:59 开始", "timeKind": "开始时间", "source": "米游社", "official": true, "leak": false, "facets": ["merch"], "codes": [], "tags": ["官宣"], "image": "", "excerpt": "亲爱的开拓者，《崩坏：星穹铁道》4.6版本阶段角色、光锥等系列周边及服饰模玩新品即将于10月20日20点在米游社、天猫、抖音官方周边店铺开启贩售！\n数码手办｜新品齐发\n「砂金 命运从未公平Ver. 立体框画」、「小不点猫", "price": "", "channel": "miHoYo旗舰店 / 崩坏星穹铁道官方旗舰店", "sub": "", "location": "天猫「miHoYo旗舰店」"}, {"id": "绝区零|mys_79002850", "game": "绝区零", "title": "新品情报丨客制化三模键盘等多款周边上新", "url": "https://www.miyoushe.com/zzz/article/79002850", "timeDisplay": "11/11（周三） 23:59 开始", "timeKind": "开始时间", "source": "米游社", "official": true, "leak": false, "facets": ["merch"], "codes": [], "tags": ["官宣"], "image": "", "excerpt": "亲爱的绳匠，天猫「绝区零三Z官方旗舰店」、米游社「绝区零」商城、抖音「绝区零周边旗舰店」将于10月20日20:00开启「她与她的隐秘往事」周边上新活动！\n\n本次上新活动包含模玩类新品「阵营系列」怪啖屋浮波柚叶 1/7手办", "price": "", "channel": "绝区零三Z官方旗舰店 / 绝区零", "sub": "", "location": "天猫「绝区零三Z官方旗舰店」"}, {"id": "绝区零|mys_79065391", "game": "绝区零", "title": "【米游币兑换中心】绝区零商品即将上新，七万份好礼等你来换！", "url": "https://www.miyoushe.com/zzz/article/79065391", "timeDisplay": "截止 11/26（周四） 19:00", "timeKind": "截止时间", "source": "米游社", "official": true, "leak": false, "facets": ["redeem_code", "merch"], "codes": [], "tags": ["官宣"], "image": "", "excerpt": "绳匠好~米游币兑换中心绝区零商品即将上新！\n本次上新，阿姬准备了 菲林、丁尼 等游戏道具商品，还有 丽都时装系列 亚克力立牌、影画系列 双片亚克力挂件 等实物周边商品，共计近七万份好礼！~绳匠可以在兑换中心使用米游币兑换", "price": "", "channel": "", "sub": "", "location": ""}]}], "games": [{"name": "原神", "note": ""}, {"name": "崩坏：星穹铁道", "note": ""}, {"name": "绝区零", "note": ""}, {"name": "崩坏3", "note": ""}, {"name": "鸣潮", "note": "官网源已接入；库街区填 token 后增强"}, {"name": "明日方舟", "note": "官网源已接入；森空岛填 cred 后增强"}, {"name": "明日方舟：终末地", "note": "官网源已接入；森空岛填 cred 后增强"}, {"name": "重返未来：1999", "note": "官网接口为全球服公告；国服动态待官方社媒接入"}], "generated": "2026-10-22 18:37 GMT+8"}</script>
+<script>
+(function(){
+  "use strict";
+  var PAYLOAD = JSON.parse(document.getElementById("payload").textContent);
+  var DATA = PAYLOAD.timeline || [];
+  var SECTIONS = {};
+  (PAYLOAD.sections || []).forEach(function(s){SECTIONS[s.key]=s;});
+  var GAMES_META = PAYLOAD.games || [];
+  var FACET_LABEL = {
+    livestream:"前瞻直播", version_preview:"版本前瞻", redeem_code:"兑换码",
+    offline_collab:"联动", merch:"周边", popup:"快闪店", expo:"漫展展会"
+  };
+  var FAV_KEY = "gmon_fav_comm_v3";
+  var favSet = new Set(JSON.parse(localStorage.getItem(FAV_KEY) || "[]"));
+  var favOnly = false;
+
+  function esc(s){return (s||"").replace(/[&<>"]/g,function(c){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];});}
+
+  function saveFav(){localStorage.setItem(FAV_KEY, JSON.stringify([...favSet]));
+    document.getElementById("favCount").textContent="("+favSet.size+")";}
+  function toggleFav(id,btn){
+    if(favSet.has(id)){favSet.delete(id);if(btn){btn.classList.remove("on");btn.textContent="☆";}}
+    else{favSet.add(id);if(btn){btn.classList.add("on");btn.textContent="★";}}
+    saveFav();
+    toggleFav(id);   // 时间线不再参与收藏，卡片/汇总行由各自渲染函数刷新
+  }
+  function starBtn(id){
+    var on=favSet.has(id);
+    var b=document.createElement("button");
+    b.className="star"+(on?" on":"");b.textContent=on?"★":"☆";b.title="特别关注 / 收藏";
+    b.setAttribute("data-id",id);
+    b.onclick=function(e){e.stopPropagation();e.preventDefault();toggleFav(id,b);};
+    return b;}
+  function starHtml(id){
+    return '<button class="star mini'+(favSet.has(id)?" on":"")
+      +'" data-id="'+esc(id)+'" title="特别关注 / 收藏">'+(favSet.has(id)?"★":"☆")+'</button>';}
+
+  function sourceBadge(it){
+    if(it.leak) return '<span class="tag leak">测试服爆料·第三方</span>';
+    if(it.official){
+      var s=it.source||"官方";
+      if(/会员购|展会/.test(s)) s=s+"·官方票务/展会";
+      else s=s+"·官方";
+      return '<span class="tag official">'+esc(s)+'</span>';
+    }
+    return '<span class="tag leak">'+esc(it.source||"社区")+'</span>';}
+  function statusTags(it){
+    var h="";
+    (it.tags||[]).forEach(function(t){
+      if(t==="官宣"||t==="社区"||t==="第三方")return;
+      h+='<span class="tag status">'+esc(t)+'</span>';});
+    return h;}
+  function facetTags(it){
+    var h="";
+    (it.facets||[]).forEach(function(f){
+      h+='<span class="tag ft">'+(FACET_LABEL[f]||f)+'</span>';});
+    return h;}
+  function codeTags(it){
+    var h="";
+    (it.codes||[]).slice(0,4).forEach(function(c){
+      h+='<span class="tag code">'+esc(c)+'</span>';});
+    return h;}
+
+  /* 森空岛式讯息卡：封面图（无图占位）+ 标题跳转 + 简介 */
+  function skCard(it){
+    var c=document.createElement("div");
+    c.className="skcard"+(favSet.has(it.id)?" faved":"");
+    if(it.image){
+      var img=document.createElement("img");
+      img.className="cover";img.loading="lazy";img.referrerPolicy="no-referrer";
+      img.src=it.image;img.alt="";
+      c.appendChild(img);
+    }else{
+      var ph=document.createElement("div");
+      ph.className="cover-empty";ph.textContent="🎮";
+      c.appendChild(ph);
+    }
+    var body=document.createElement("div");body.className="sk-body";
+    var link=it.url
+      ? '<a class="title-link" href="'+esc(it.url)+'" target="_blank" rel="noopener">'+esc(it.title)
+        +'<span class="ext">↗</span></a>'
+      : '<div class="title-link">'+esc(it.title)+'</div>';
+    var meta='<div class="meta">'
+      +'<span class="game-pill">'+esc(it.game)+'</span>'
+      +sourceBadge(it)+statusTags(it)+facetTags(it)+codeTags(it)
+      +'<span class="when">🕐 '+esc(it.timeDisplay||"")+'</span>'
+      +(it.timeDisplay?'<span style="color:#a7aec2">'+esc(it.timeKind)+'</span>':'')
+      +(it.location?'<span style="color:#a7aec2">📍 '+esc(it.location)+'</span>':'')
+      +(it.price?'<span class="dg-reward">💰 '+esc(it.price)+'</span>':'')
+      +(it.channel?'<span style="color:#a7aec2">🏬 '+esc(it.channel)+'</span>':'')
+      +'</div>';
+    body.innerHTML='<div class="row">'+link+'</div>'+meta
+      +(it.excerpt?'<div class="excerpt">'+esc(it.excerpt)+'</div>':'');
+    c.appendChild(body);
+    c.appendChild(starBtn(it.id));
+    return c;}
+
+  /* ===== 1. 时间线：紧凑关键节点式（日期头 + 文字行 + 徽标，标题点击跳原文） ===== */
+  function renderTimeline(){
+    var box=document.getElementById("timeline");
+    box.innerHTML="";
+    var nodes=DATA;
+    if(!nodes.length){
+      box.innerHTML='<div class="empty">未来约 100 天内暂无带明确活动时间的前瞻资讯</div>';
+      return;}
+    nodes.forEach(function(nd){
+      var node=document.createElement("div");node.className="tl-node";
+      var h=document.createElement("div");h.className="tl-date";
+      h.textContent="📅 "+nd.label;
+      node.appendChild(h);
+      var html=nd.items.map(function(it){
+        var s="";
+        if(it.kind==="start"&&it.time) s+='<span class="tl-time">'+esc(it.time)+'</span> ';
+        s+= it.url
+          ? '<a class="tl-link" href="'+esc(it.url)+'" target="_blank" rel="noopener">'+esc(it.title)+'</a>'
+          : esc(it.title);
+        if(it.venue) s+=' <span class="tl-venue">📍 '+esc(it.venue)+'</span>';
+        if(it.reward) s+=' <span class="tl-reward">🎁 '+esc(it.reward)+'</span>';
+        if(it.kind==="deadline") s+=' <span class="tl-time">'+esc(it.time||"00:00")+' 截止</span>';
+        (it.codes||[]).slice(0,3).forEach(function(c){
+          s+=' <span class="code-pill">'+esc(c)+'</span>';});
+        s+= it.badge==="official"
+          ? ' <span class="badge-off">官宣</span>'
+          : ' <span class="badge-pend" title="社区信息 / 测试服爆料 / 待官方确认">待官宣</span>';
+        if(it.expect) s+=' <span class="badge-pend">预计</span>';
+        return '<span class="tl-line">'+s+'</span>';
+      }).join('<span class="tl-sep">｜</span>');
+      var t=document.createElement("div");t.className="tl-text";t.innerHTML=html;
+      node.appendChild(t);
+      box.appendChild(node);
+    });
+  }
+
+  /* ===== 2. 版本前瞻汇总：表格（游戏 · 前瞻标题跳转 · 前瞻时间 · 兑换码 · 内容总结） ===== */
+  function renderVersion(){
+    var body=document.getElementById("versionBody");
+    var sec=SECTIONS.version||{items:[]};
+    body.innerHTML="";
+    if(!sec.items.length){
+      body.innerHTML='<div class="empty">暂无进行中/将开始的大版本前瞻与兑换码</div>';
+      return;}
+    var wrap=document.createElement("div");wrap.className="vtable-wrap";
+    var t=document.createElement("table");t.className="vtable";
+    t.innerHTML="<thead><tr><th>游戏</th><th>前瞻标题</th><th>前瞻时间</th>"
+      +"<th>兑换码</th><th>前瞻内容总结</th><th>来源</th></tr></thead>";
+    var tb=document.createElement("tbody");
+    sec.items.forEach(function(it){
+      var tr=document.createElement("tr");
+      tr.className=favSet.has(it.id)?"faved":"";
+      var codes="";
+      (it.codes||[]).slice(0,4).forEach(function(c){
+        codes+='<span class="tag code">'+esc(c)+'</span> ';});
+      if(it.deadline&&it.codes.length&&it.timeKind!=="截止时间"){
+        codes+='<div style="color:#c0392b;font-size:11.5px;margin-top:3px">'+esc(it.deadline)+' 截止</div>';}
+      var ver=it.ver?'<span class="ver">'+esc(it.ver)+'</span>':'';
+      var plat=it.platforms?'<div class="dg-plat">📺 '+esc(it.platforms)+'</div>':'';
+      var reward=it.reward?' <span class="dg-reward">🎁 '+esc(it.reward)+'</span>':'';
+      var title=it.url
+        ? '<a href="'+esc(it.url)+'" target="_blank" rel="noopener">'+esc(it.title)+' ↗</a>'
+        : esc(it.title);
+      var src=it.leak
+        ? '<span class="tag leak">测试服爆料</span>'
+        : (it.official
+          ? '<span class="tag official">'+esc(it.source||"官方")+'</span>'
+          : '<span class="tag ft">'+esc(it.source||"第三方")+'</span>');
+      tr.innerHTML='<td class="vgame">'+esc(it.game)+'<div style="margin-top:4px">'+starHtml(it.id)+'</div></td>'
+        +'<td class="vtitle">'+title+ver+plat+reward+'</td>'
+        +'<td class="vtime">'+esc(it.timeDisplay||"档期待确认")+'<small>'+esc(it.timeKind||"")+'</small></td>'
+        +'<td class="vcodes">'+(codes||'<span style="color:#a7aec2">—</span>')+'</td>'
+        +'<td class="vsum">'+esc(it.summary||"")+'</td>'
+        +'<td class="vsrc">'+src+'</td>';
+      tb.appendChild(tr);
+    });
+    t.appendChild(tb);wrap.appendChild(t);body.appendChild(wrap);
+  }
+
+  /* ===== 3. 联动活动：三个子分页（联动 / 快闪店 / 漫展展会，卡片带封面图） ===== */
+  var COLLAB_TABS=[["collab","联动活动"],["popup","快闪店"],["expo","漫展展会"]];
+  function renderCollab(){
+    var tabs=document.getElementById("collabTabs");
+    var box=document.getElementById("collabList");
+    var sec=SECTIONS.collab||{items:[]};
+    var labelOf={};COLLAB_TABS.forEach(function(p){labelOf[p[0]]=p[1];});
+    function draw(sub){
+      box.innerHTML="";
+      var arr=sec.items.filter(function(it){return it.sub===sub;});
+      if(!arr.length){
+        box.innerHTML='<div class="empty">'+esc(labelOf[sub])
+          +'：暂无进行中/将开始的资讯（快闪店 / 漫展通常随大版本或档期由官方公告，'
+          +'建议关注官方微博 / 公众号与会员购）</div>';
+        return;}
+      arr.forEach(function(it){box.appendChild(skCard(it));});
+    }
+    tabs.innerHTML="";
+    var firstNonEmpty=COLLAB_TABS[0][0];
+    COLLAB_TABS.forEach(function(pair,i){
+      var n=sec.items.filter(function(it){return it.sub===pair[0];}).length;
+      if(i===0){
+        for(var j=0;j<COLLAB_TABS.length;j++){
+          if(sec.items.some(function(it){return it.sub===COLLAB_TABS[j][0];})){
+            firstNonEmpty=COLLAB_TABS[j][0];break;}}}
+      var b=document.createElement("button");
+      b.textContent=pair[1]+" ("+n+")";
+      if(pair[0]===firstNonEmpty)b.classList.add("active");
+      b.onclick=function(){[...tabs.children].forEach(function(x){x.classList.remove("active");});
+        b.classList.add("active");draw(pair[0]);};
+      tabs.appendChild(b);
+    });
+    draw(firstNonEmpty);
+  }
+
+  /* ===== 4. 官方周边（森空岛式卡片） ===== */
+  function renderMerch(){
+    var box=document.getElementById("merchGrid");
+    var sec=SECTIONS.merch||{items:[]};
+    if(!sec.items.length){box.innerHTML='<div class="empty">暂无官方周边资讯</div>';return;}
+    sec.items.forEach(function(it){box.appendChild(skCard(it));});
+  }
+
+  document.getElementById("favToggle").onclick=function(e){
+    e.preventDefault();
+    if(!favOnly&&!favSet.size){
+      alert("你还没有收藏任何资讯，点击条目/卡片右上角的 ☆ 即可特别关注。");return;}
+    favOnly=!favOnly;
+    document.body.classList.toggle("fav-only",favOnly);
+    this.classList.toggle("active",favOnly);
+  };
+
+  document.getElementById("favCount").textContent="("+favSet.size+")";
+  document.getElementById("genTime").textContent=PAYLOAD.generated||new Date().toLocaleString("zh-CN");
+  (function(){
+    var g={};
+    (PAYLOAD.timeline||[]).forEach(function(nd){nd.items.forEach(function(it){
+      g[it.title.split(" ")[0]]=1;});});
+    (PAYLOAD.sections||[]).forEach(function(sec){sec.items.forEach(function(it){
+      g[it.game||it.title]=1;});});
+    var names=Object.keys(g).filter(function(k){return k&&k.length<12;});
+    document.getElementById("genMeta").textContent="数据截至 "+(PAYLOAD.generated||"")
+      +(names.length?" ｜ 覆盖："+names.slice(0,10).join("、"):"");
+  })();
+  document.getElementById("subtitle").textContent="关键节点时间线（未来约 100 天，标题可点击跳原文）· "
+    +"板块2 汇总表格（标题跳原文+前瞻时间+兑换码+总结）· 板块3/4 统一封面图卡片（无图占位）";
+  renderTimeline();renderVersion();renderCollab();renderMerch();
+})();
+</script>
 </body>
 </html>
