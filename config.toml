@@ -1,0 +1,326 @@
+# ============================================================
+# 游戏活动监测配置（可用记事本编辑，保存后重启程序生效）
+# ============================================================
+
+[settings]
+# 每多少分钟检查一次（仅"常驻模式"生效；计划任务模式由 Windows 任务计划决定）
+check_interval_minutes = 30
+
+# 每日汇总推送时间（24小时制，如 "21:00"；留空 "" 表示不发送每日汇总）
+daily_summary_time = "21:00"
+
+# 单个数据源网络超时（秒）
+request_timeout_seconds = 20
+
+# 关键节点时间线的展望天数：只收录"今天起 N 天内"的活动节点（过期的不进时间线）
+timeline_horizon_days = 100
+
+# 访问官网用的浏览器标识（一般不用改）
+user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36"
+
+# 首次运行是否推送通知。
+# false = 首次只建立"基线"（把现有公告记为已看过，不推送），之后只推送真正的新公告——推荐
+# true = 首次就把当前所有公告全部推送一遍（会一次性收到很多条，慎用）
+notify_on_first_run = false
+
+# ============================================================
+# 推送渠道配置（多渠道按优先级发送，第一个成功的生效，其余作备用）
+# 当前优先级：飞书 -> Server酱（顺序在 notifier.py 的 build_notifiers 里调整）
+# ============================================================
+
+[notify.feishu]
+# 飞书群机器人推送（免费、无每日条数限制，推荐）。必须 enabled = true 且填了 webhook 才会推送
+enabled = true
+# 获取方式（约2分钟）：
+#   1. 电脑端打开飞书，任意一个群（可以自己建一个只有自己的群）-> 右上角群设置
+#   2. 群机器人 -> 添加机器人 -> 自定义机器人 -> 起个名字（如"游戏监测"）
+#   3. 安全设置选"签名校验"（推荐），把 Webhook 地址和签名密钥复制下来
+#      （密钥只显示一次，务必当场保存；丢了只能删了机器人重建）
+#   4. 粘贴到下面两行
+# ⚠️ 安全：本文件会提交到公开 GitHub 仓库，webhook / secret **一律留空**。
+#     真实密钥填在 secrets.local.toml（本机，已 gitignore），或由 CI 环境变量注入。
+#     config.toml → secrets.local.toml → 环境变量，后者优先级更高（见 load_config）。
+# Webhook 地址形如：https://open.feishu.cn/open-apis/bot/v2/hook/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+webhook = ""
+# 签名校验密钥（形如 xxxxxxxxxxxxxxxxxxxxxxxx）；若安全设置没选签名校验则留空
+secret = ""
+
+[notify.serverchan]
+# Server酱推送（消息发到微信）。免费版每天 5 条，作备用渠道
+enabled = false
+# SendKey 获取方式：浏览器打开 https://sct.ftqq.com/ ，微信扫码登录，复制"SendKey"（形如 SCT123456Txxxxxxxx）
+send_key = ""
+
+# ============================================================
+# 网页日报发布（GitHub Pages）：把当日前瞻日报发布成公开网页，
+# 飞书推送卡片里附链接，点开即可在飞书内置浏览器里阅读完整日报
+# （排版、可点击链接全部保留，历史日报自动沉淀）。
+#
+# 配置方式（约10分钟，详细图文步骤见《GitHub Pages 配置指南_小白版.html》）：
+#   1. 登录 GitHub（https://github.com/ ），点右上角 "+" -> New repository
+#      新建一个**公开**仓库（建议名 game-daily-report），
+#      **不要勾选** "Add a README file" 等初始化选项
+#   2. 仓库页面 Settings -> Pages -> Source 选 "Deploy from a branch"，
+#      Branch 选 main、文件夹选 /(root)，点 Save
+#   3. 把 GitHub 用户名和仓库名填到下面，enabled 改 true
+#   4. 双击 run_test_publish.bat 做首次发布测试
+#      （首次会弹出 GitHub 登录窗口，登录一次后自动记住，
+#       之后计划任务自动推送不再需要人工干预）
+# ============================================================
+
+[publish.github]
+enabled = true
+# GitHub 用户名（打开 https://github.com/ 后地址栏/头像边显示的那个名字）
+username = "GYoukino"
+# 仓库名（刚新建的公开仓库，如 game-daily-report）
+repo = "game-daily-report"
+# 发布分支，一般不用改（需和 GitHub 仓库默认分支一致，新仓库默认就是 main）
+branch = "main"
+
+# 静态站目录：这里就是仓库根目录（daily/ 与 index.html 都在本目录）。
+# 本机运行时 git 由 publisher 自己提交推送；GitHub Actions 里会由环境变量
+# NO_PUSH=1 SITE_DIR=<工作目录> 覆盖，改成只写文件、由 workflow 负责提交。
+site_dir = "."
+
+# no_push=true 表示「只写文件、不碰 git」——CI 环境专用，本机保持 false（不写此项）
+# no_push = false
+# git 网络操作超时（秒）
+timeout = 120
+# 高级选项：自定义 git 远端地址。默认按 username/repo 自动拼
+# https://github.com/用户名/仓库名.git ；想用 SSH 或本地测试仓库时再填
+remote = ""
+
+# ============================================================
+# 游戏与资讯来源清单（enabled = true 才会监测）
+#
+# 添加新来源的方法：复制下面一整段 [[games]] 块，改 name / source / url 等参数即可。
+# source（采集器类型）目前支持 11 种：
+#   mihoyo_content  米哈游系游戏（原神/星铁/绝区零/崩坏3/未定）通用；来源即米游社官方标签
+#   arknights_web   明日方舟官网（网页解析）
+#   endfield_web    明日方舟：终末地官网（网页解析）
+#   kuro_json       鸣潮官网（静态 JSON）
+#   bluepoch_api    重返未来：1999 官网（接口 POST）
+#   bili_mall       哔哩哔哩会员售票务项目（开放接口，按项目 ID）
+#   expo_next       海外展会官网新闻/活动列表（gamescom / TGA / Summer Game Fest）
+#   senkongdao      森空岛（鹰角官方社区，需 params.cred 登录令牌）
+#   kurobbs         库街区（库洛官方社区，需 params.token 登录令牌）
+#   taptap          TapTap 官方动态（交叉参考，url 可配）
+#   nga             NGA 玩家社区（交叉参考，需 params.fid 子版 id；非官方，标注来源）
+#
+# 历史回溯：`python main.py --backfill` 会翻页抓取官网的**过去信息**（用于充实前瞻
+# 全景与时间线），抓到的历史条目一律记为基线、不推送。支持翻页的源用
+# `params.backfill_pages` 指定翻多少页（mihoyo_content 默认 8 页≈160 条/游戏，
+# 可回溯到 2023 年；bluepoch_api 默认 3 页=全量 57 条；鸣潮/鹰角官网单页即全量）。
+#
+# 数据源原则（2026-10-22 起）：只采官方机构与官方渠道 + 官方票务/展会平台，
+# 不接第三方资讯站/Wiki。以下来源实测受限，未接入（原因见文档）：
+#   - ChinaJoy 官网：SPA 空壳页，无可抓接口
+#   - CP 漫展：官方票务平台 CPP 需登录，信息在官微/公众号（风控）
+#   - BW 官网：SPA；核心票务信息由会员购接口覆盖
+#   - 天猫/淘宝旗舰店：登录墙，无法抓取商品列表
+# ============================================================
+
+# ---------- 米哈游系（5 款） ----------
+
+# detail_url = 官网资讯详情页模板（{id} 由采集器替换为接口 iInfoId）
+#   URL 格式于 2026-10-23 逐一核实（官网为 SPA，错误路径服务端仍返回 200、前端渲染 404）：
+#   原神   /main/m/news/detail/{id}   （路由 /m/news/detail/:id，索引规范地址带 /main/m）
+#   星铁   /news/{id}                 （路由 /news/:id）
+#   绝区零 /news/{id}                 （路由 /news/:id）
+#   崩坏3  /news/cate_0/{id}          （路由 /news/:cate/:id；cate_0 = 频道 693，见官网 JS 映射 {693:cate_0…}）
+#   修改任一 detail_url 前请先核对官网路由，或用 check_links.py 回归验证
+
+[[games]]
+name = "原神"
+enabled = true
+source = "mihoyo_content"
+url = "https://act-api-takumi-static.mihoyo.com/content_v2_user/app/16471662a82d418a/getContentList"
+params = { iAppId = 43, iChanId = 721, iPageSize = 30, iPage = 1, sLangKey = "zh-cn", backfill_pages = 8 }
+detail_url = "https://ys.mihoyo.com/main/m/news/detail/{id}"
+
+[[games]]
+name = "崩坏：星穹铁道"
+enabled = true
+source = "mihoyo_content"
+url = "https://act-api-takumi-static.mihoyo.com/content_v2_user/app/1963de8dc19e461c/getContentList"
+params = { iChanIds = "257,260", iPageSize = 30, iPage = 1, sLangKey = "zh-cn", backfill_pages = 8 }
+detail_url = "https://sr.mihoyo.com/news/{id}"
+
+[[games]]
+name = "绝区零"
+enabled = true
+source = "mihoyo_content"
+url = "https://api-takumi-static.mihoyo.com/content_v2_user/app/706fd13a87294881/getContentList"
+params = { iChanIds = "279,278", iPageSize = 30, iPage = 1, sLangKey = "zh-cn", backfill_pages = 8 }
+detail_url = "https://zzz.mihoyo.com/news/{id}"
+
+[[games]]
+name = "崩坏3"
+enabled = true
+source = "mihoyo_content"
+url = "https://act-api-takumi-static.mihoyo.com/content_v2_user/app/b9d5f96cd69047eb/getContentList"
+params = { iChanId = 693, iPageSize = 30, iPage = 1, sLangKey = "zh-cn", backfill_pages = 8 }
+detail_url = "https://bh3.mihoyo.com/news/cate_0/{id}"
+
+[[games]]
+name = "未定事件簿"
+enabled = true
+source = "mihoyo_content"
+url = "https://wd.mihoyo.com/content_v2/getContentList"
+params = { iAppId = 15, iChanId = 51, iPageSize = 20, iPage = 1, sLangKey = "zh-cn", backfill_pages = 8 }
+# 未定官网公告详情页当前无法直接访问，链接暂用官网首页
+detail_url = "https://wd.mihoyo.com/"
+
+# ---------- 鹰角网络（2 款） ----------
+
+[[games]]
+name = "明日方舟"
+enabled = true
+source = "arknights_web"
+url = "https://ak.hypergryph.com/news"
+detail_url = "https://ak.hypergryph.com/news/{id}"
+
+[[games]]
+name = "明日方舟：终末地"
+enabled = true
+source = "endfield_web"
+url = "https://endfield.hypergryph.com/news"
+detail_url = "https://endfield.hypergryph.com/news/{id}"
+
+# ---------- 库洛（1 款） ----------
+
+[[games]]
+name = "鸣潮"
+enabled = true
+source = "kuro_json"
+url = "https://media-cdn-mingchao.kurogame.com/akiwebsite/website2.0/json/G152/zh/ArticleMenu.json"
+# 鸣潮文章详情页链接暂用官网新闻页
+detail_url = "https://mc.kurogames.com/main/news"
+
+# ---------- 深蓝互动（1 款） ----------
+# 注意：1999 官网接口当前返回的是"全球服"公告（内容为英文），
+# 国服特有公告暂无法从官网接口获取，后续可在此增加其他来源。
+
+[[games]]
+name = "重返未来：1999"
+enabled = true
+source = "bluepoch_api"
+url = "https://re1999.bluepoch.com/activity/official/websites/information/query"
+# informationType: 2=公告 3=活动 4=新闻（留空=最新）
+params = { gameId = 60001, informationType = 2, current = 1, pageSize = 20, backfill_pages = 3 }
+detail_url = "https://re1999.bluepoch.com/en/home/detail.html#newsId?{id}"
+
+# ============================================================
+# 线下展会与票务平台（官方渠道，前瞻日报「漫展展会」板块的数据源）
+#
+# bili_mall：会员购票务项目接口，project_ids 逗号分隔可配多个。
+#   新项目 ID 获取：浏览器打开会员购活动页，地址栏 detail.html?id= 后面的数字。
+# expo_next：海外展会官网新闻/活动列表，mode = "flight"（Next.js 页面）
+#   或 "anchors"（静态页，需配 block/title/desc marker）。
+# ============================================================
+
+[[games]]
+name = "BilibiliWorld 2026"
+enabled = true
+source = "bili_mall"
+params = { project_ids = "1001653" }
+detail_url = "https://show.bilibili.com/platform/detail.html?id=1001653"
+
+[[games]]
+name = "The Game Awards"
+enabled = true
+source = "expo_next"
+url = "https://thegameawards.com/"
+params = { mode = "flight", link_prefix = "https://thegameawards.com" }
+
+[[games]]
+name = "gamescom"
+enabled = true
+source = "expo_next"
+url = "https://www.gamescom.global/en/gamescom/news"
+params = { mode = "flight", link_prefix = "https://www.gamescom.global", title_include = "gamescom", title_exclude = "studio,Livestreams,GDQ,Done Quick" }
+
+[[games]]
+name = "Summer Game Fest"
+enabled = true
+source = "expo_next"
+url = "https://www.summergamefest.com/events"
+params = { mode = "anchors", block_marker = "cms-event-item", title_marker = "event-name-title", desc_marker = "event-desc-text", link_prefix = "https://www.summergamefest.com" }
+
+# ============================================================
+# 官方第一方社区 + 玩家社区交叉参考来源（用户确认接入，2026-10-22）
+#
+# 米哈游系 5 款已通过上面的 mihoyo_content 接入，其来源即「米游社」官方标签
+# （source_label=米游社，标「米游社·官方」），无需重复添加。
+# 下面补充森空岛 / 库街区 / TapTap（官方动态）/ NGA（玩家社区）四个来源。
+#
+# 标注原则：官方第一方渠道 -> 「X·官方」；NGA 玩家社区 -> 「NGA」，并注明
+# 不代表官方确认。需要登录令牌的源（森空岛 cred / 库街区 token）未填令牌时
+# 仅日志提示、不抓数据，也不影响其它源。
+# ============================================================
+
+# ---------- 森空岛（鹰角网络官方社区，需登录 cred） ----------
+# 填好 params.cred（鹰角通行证 OAuth 换取的 skland cred）后才会抓到数据。
+
+[[games]]
+name = "明日方舟"
+enabled = true
+source = "senkongdao"
+url = "https://zonai.skland.com/api/v1/forum/post/list"
+params = { cred = "", forum_id = "0" }
+
+[[games]]
+name = "明日方舟：终末地"
+enabled = true
+source = "senkongdao"
+url = "https://zonai.skland.com/api/v1/forum/post/list"
+params = { cred = "", forum_id = "0" }
+
+# ---------- 库街区（库洛官方社区，需登录 token） ----------
+# 鸣潮 game_id=3，forum_id 推荐=9 / 天诚茶馆=10 / 同人=11。填 params.token 后生效。
+
+[[games]]
+name = "鸣潮"
+enabled = true
+source = "kurobbs"
+url = "https://api.kurobbs.com/forum/list"
+params = { token = "", game_id = 3, forum_id = 9, page_size = 20 }
+
+# ---------- TapTap 官方动态（2026-10-22 实测：webapiv2 全端点 404，接口已下线） ----------
+# 旧接口 webapiv2/app/moment/v2/by_app 已失效；新接口需客户端签名，暂无法接入。
+# 真实 app_id 已查证（原神=168332、鸣潮=234280），未来接口恢复时填回即可。
+
+[[games]]
+name = "鸣潮"
+enabled = false
+source = "taptap"
+url = "https://www.taptap.cn/webapiv2/app/moment/v2/by_app?app_id=234280&limit=10&offset=0"
+params = { app_id = "234280" }
+
+# ---------- NGA 玩家社区（交叉参考，非官方，已标注来源） ----------
+# fid：原神=650，绝区零=853，鸣潮=854，明日方舟=-34587507
+# 社区帖以攻略/杂谈为主，分类器只保留命中前瞻关键词（兑换码/联动/周边/快闪/漫展/前瞻）的帖子。
+
+[[games]]
+name = "原神"
+enabled = true
+source = "nga"
+params = { fid = 650 }
+
+[[games]]
+name = "绝区零"
+enabled = true
+source = "nga"
+params = { fid = 853 }
+
+[[games]]
+name = "鸣潮"
+enabled = true
+source = "nga"
+params = { fid = 854 }
+
+[[games]]
+name = "明日方舟"
+enabled = true
+source = "nga"
+params = { fid = -34587507 }

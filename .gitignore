@@ -1,0 +1,21 @@
+# ---- 本地私密密钥（真实 webhook/secret 在这里，绝不入库） ----
+secrets.local.toml
+
+# ---- 运行产物 ----
+__pycache__/
+*.pyc
+reports/
+data/
+logs/
+_test_*
+
+# ---- 历史备份 ----
+backup_*/
+archive_*/
+
+# ---- 旧的子网页仓库残留（内容已上移到根目录，不再使用） ----
+pages-site/
+
+# ---- 系统垃圾 ----
+.DS_Store
+Thumbs.db

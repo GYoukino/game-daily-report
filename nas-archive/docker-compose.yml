@@ -1,0 +1,25 @@
+services:
+  # ============================================================
+  # 游戏前瞻日报 · NAS 归档（每周一 04:00 把网页日报拉回家）
+  #
+  # 群晖 Container Manager：项目 -> 新增 -> 粘贴本文件内容即可，
+  # 端口不用映射，它自己到点干活。
+  # ============================================================
+  game-report-archive:
+    build: .
+    image: game-report-archive:latest
+    container_name: game-report-archive
+    restart: unless-stopped
+
+    volumes:
+      # 左边改成你 NAS 上想存放日报的共享文件夹，建议先在 File Station 建好
+      # 例如 /volume1/docker/game-report-archive
+      - /volume1/docker/game-report-archive:/archive
+
+    environment:
+      TZ: Asia/Shanghai
+      # 仓库地址：公开 CDN 慢的话可以换成镜像，例如
+      # https://ghfast.top/https://github.com/GYoukino/game-daily-report.git
+      REPO_URL: https://github.com/GYoukino/game-daily-report.git
+      BRANCH: main
+      DEST_DIR: /archive

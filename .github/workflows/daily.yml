@@ -1,0 +1,64 @@
+name: 每日游戏前瞻日报
+
+# 每天自动跑到时在 GitHub 的云端机器上执行 community_report.py：
+#   抓取 → 生成 HTML → 写回 daily/ 并推送 → 飞书收到推送卡片
+# 产出后 GitHub Pages 会自动重建（仓库已开启 Pages + .nojekyll）。
+on:
+  schedule:
+    # GitHub Actions 统一用 UTC。北京时间 = UTC+8，所以 UTC 02:00 就是北京 10:00。
+    # 想改时间的话：目标北京时间减去 8 就是这里要填的 UTC 小时。
+    - cron: '0 2 * * *'
+  # 也能在 Actions 页面手动点「Run workflow」补跑某一天（不着急时不用管）
+  workflow_dispatch:
+
+# 同一时间只允许跑一个，避免次日重叠改写同一份日报
+concurrency:
+  group: daily-report
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write      # 需要权限把 daily/ 推回仓库
+    env:
+      TZ: Asia/Shanghai    # 让脚本里的「今天」按北京时间算，否则跨零点会算成前一天
+      NO_PUSH: '1'         # 脚本只负责写文件，git 提交交给下面的步骤（runner 自带权限）
+      SITE_DIR: ${{ github.workspace }}
+      FEISHU_WEBHOOK: ${{ secrets.FEISHU_WEBHOOK }}
+      FEISHU_SECRET: ${{ secrets.FEISHU_SECRET }}
+    steps:
+      - name: 检出仓库
+        uses: actions/checkout@v4
+
+      - name: 准备 Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+        # 脚本零第三方依赖（只用标准库 + tomllib），所以不需要 pip install
+
+      - name: 抓取官方资讯并生成日报
+        run: python community_report.py
+
+      - name: 把网页提交回仓库
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A daily index.html .nojekyll
+          if git diff --cached --quiet; then
+            echo "网页内容没有变化，跳过提交"
+            exit 0
+          fi
+          git commit -m "daily report $(date +%F)"
+          git push origin main
+
+      - name: 上传生成的 HTML 备份
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: daily-report-${{ github.run_number }}
+          path: reports/*.html
+          retention-days: 30
+          if-no-files-found: ignore
