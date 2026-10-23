@@ -68,36 +68,38 @@
 
 | 文件 / 文件夹                 | 作用                                   |
 | ------------------------ | ------------------------------------ |
-| `config.toml`            | **总配置文件**（记事本打开就能改）：监测间隔、推送开关、游戏清单   |
-| `main.py`                | 程序入口                                 |
-| `run_forever.bat`        | 双击 = 常驻模式（一直在后台循环监测，按 Ctrl+C 停止）     |
-| `run_once.bat`           | 双击 = 手动跑一轮（看看有没有新公告）                 |
-| `register_task.bat`      | 注册"开机自启 + 每30分钟"的 Windows 计划任务（推荐用法） |
-| `unregister_task.bat`    | 卸载上面注册的计划任务                          |
-| `run_once_scheduled.bat` | 计划任务内部调用的入口（自动写日志）                   |
-| `run_test_publish.bat`   | 双击 = 测试网页日报发布（GitHub Pages，首次需登录 GitHub） |
-| `reports/`               | **HTML 日报都放在这里**，双击就能看               |
-| `pages-site/`            | 网页日报的本地发布目录（配置 GitHub Pages 后自动生成）    |
-| `data/`                  | 程序内部数据（已看过的公告记录、每日原始数据），不要手动删        |
-| `logs/monitor.log`       | 计划任务模式的运行日志                          |
+| `community_report.py`    | **主程序**：抓取 → 分类 → 生成 HTML → 发布网页 → 推飞书（双击 `run_community.bat` 手动跑一轮） |
+| `config.toml`            | **总配置文件**（记事本可改）：数据源、游戏清单、发布开关。密钥不写在这里 |
+| `secrets.local.toml`     | 本机密钥（飞书 webhook / 签名），**不进 Git**；CI 用仓库 Secrets 注入 |
+| `classifier.py`          | 分类与时效性判定（前瞻 / 版本 / 兑换码 / 联动 / 周边…） |
+| `fetchers.py`            | 各官方数据源的抓取器（米哈游、鹰角、库洛、深空之眼…） |
+| `notifier.py`            | 飞书机器人推送（HMAC 签名）                     |
+| `publisher.py`           | 发布到 GitHub Pages（写 `daily/` + `index.html` 并提交推送） |
+| `check_links.py`         | 体检工具：校验官网详情路由 + 抓最新日报所有外链查 404      |
+| `reports/`               | **本地留档的 HTML 日报**（每天一份，双击就能看）       |
+| `daily/` + `index.html` + `.nojekyll` | 网页日报本体；仓库根目录即站点根，由 Actions 自动更新 |
+| `.github/workflows/daily.yml` | GitHub Actions 每天 10:00 自动跑（**主力跑法**）   |
+| `nas-archive/`           | 群晖 NAS 归档容器：每周把 `daily/` 拉回本地硬盘      |
+| `n8n/`                   | 可选的「日报缺失告警」工作流（导入 n8n 即用）           |
+| `docs/`                  | 资料来源清单 + GitHub 配置傻瓜教程                 |
+| `run_community.bat`      | 双击 = 本机手动跑一轮                           |
+| `register_community_task.bat` / `unregister_community_task.bat` | 注册 / 卸载 Windows 计划任务（每天 10:00，可选） |
 
 ---
 
-## 二、推荐用法：开机自启（一次设置，长期不管）
+## 二、本机手动跑 / 本机定时跑（可选，云端 Actions 之外的补充）
 
-1. 进入本文件夹，**右键 `register_task.bat` → 以管理员身份运行**（必须管理员，否则注册失败）。
-2. 看到"注册成功"即可关闭窗口。
-3. 之后每次开机登录 Windows 会自动跑一轮，并且每 30 分钟自动跑一轮，无需再管。
+> 云端 Actions（第零节）已经每天自动跑一遍，**本机这一节不是必需的**。
+> 需要临时补跑、或者想在自己电脑上留一份最新报告时用。
 
-想取消自动运行：右键 `unregister_task.bat` → 以管理员身份运行。
+**手动跑一轮**：双击 `run_community.bat`。
+黑窗口会显示每一步进度（抓了几个源、生成多少条、有没有推送成功），跑完自动关闭或按键退出。
 
-> 计划任务的运行记录写在 `logs/monitor.log` 里，出问题时先看它。
+**让本机也每天定时跑**（双保险，关了电脑就不跑）：
+右键 `register_community_task.bat` → **以管理员身份运行** → 看到"注册成功"即可。
+想取消：右键 `unregister_community_task.bat` → 以管理员身份运行。
 
-### 其他两种手动方式（二选一即可）
-
-- **双击 `run_forever.bat`**：常驻模式，程序持续循环监测（每 30 分钟一轮）。  
-  适合想"挂着跑"的场景；关掉黑窗口就停止。
-- **双击 `run_once.bat`**：立刻跑一轮就退出，窗口里能看到抓取结果。
+> 本机和云端同一天各跑一次不会冲突：当天报告会被覆盖重写成同一份，网页和飞书看到的仍是当天最新结果（飞书可能收到两条）。
 
 ---
 
@@ -118,7 +120,8 @@
    webhook = "你的Webhook地址粘在这里"
    secret = "你的签名密钥粘在这里"
    ```
-5. 保存，然后运行 `python main.py --test-push`，飞书群里收到测试消息即配置完成。
+5. 保存，然后**双击 `run_community.bat` 跑一轮**，飞书群里收到日报卡片即配置完成。
+   （命令行等价写法：`python community_report.py`）
 
 > 备用渠道：`[notify.serverchan]`（Server酱，免费版 5 条/天）仍保留，  
 > 飞书推送失败时会自动尝试 Server酱（需两边都配置）。  
@@ -131,7 +134,7 @@
 
 ## 三之二、配置网页日报：GitHub Pages（可选，强烈推荐）
 
-> 📖 **零基础用户**：同目录下有一份《GitHub Pages 配置指南_小白版.html》，浏览器打开，
+> 📖 **零基础用户**：`docs/GitHub配置教程_小白版.html` 双击用浏览器打开，
 > 是一步一图（操作/注意事项/预期结果）的详细图文教程，跟着点即可，约 15 分钟。
 > 下面是与代码/配置对应的速查版说明。
 
@@ -150,8 +153,9 @@
    username = "你的GitHub用户名"
    repo = "game-daily-report"
    ```
-5. 保存，双击 `run_test_publish.bat`：**首次会弹出 GitHub 登录窗口**，登录一次后系统会记住凭证，
-   以后自动推送不再打扰。看到输出「成功：网页链接 https://...」即推送完成。
+5. 保存，双击 `run_community.bat`：**首次会弹出 GitHub 登录窗口**（或用系统已保存的凭证），
+   登录一次后系统记住，以后自动推送不再打扰。看到输出「成功：网页链接 https://...」即发布完成。
+   > 云端 Actions 不需要这一步——它用仓库内置的 `GITHUB_TOKEN` 提交。
 6. 等 1-2 分钟（GitHub 部署延迟），打开链接确认能正常阅读；把门户页链接发到飞书聊天里点开验证。
 
 **行为说明**：
@@ -169,7 +173,7 @@
 `requested scope blocked by data security policy`），与权限配置无关，个人账号无法绕过。
 
 该路线已于 2026-10-22 随项目精简**整体删除**（原 `feishu_app.py` / `doc_report.py` /
-`--test-doc` / `[notify.feishu_app]` 配置段均已移除，备份在 `backup_20261022/deprecated/`）。
+`--test-doc` / `[notify.feishu_app]` 配置段均已移除，已无处引用）。
 查看日报请使用上一节的 GitHub Pages 方案（效果相同且更稳定）。
 
 ---
@@ -227,14 +231,13 @@ ChinaJoy 官网（SPA 空壳无可抓接口）、CP 漫展（官方票务 CPP �
 ## 五、日常维护
 
 - **报告堆积**：`reports/` 里每天一个 HTML，可定期把旧文件移到别处或删除（只删报告，不影响运行）。
-- **想回溯官网历史信息**（换电脑 / 清空数据后重建全景，或想让时间线更完整）：
-  运行 `python main.py --backfill`，各源会翻页抓取过去几年的公告（米哈游 8 页≈160 条/游戏，
-  1999 全量 57 条，鸣潮/鹰角官网单页即全量）。抓到的历史条目**一律记为基线、不推送**，
-  只用于充实前瞻日报全景与「今天起 100 天」时间线。
-- **改配置**：编辑 `config.toml`，保存后重启程序（计划任务模式下下一轮自动生效）。
+- **改配置**：编辑 `config.toml`，保存后下一轮自动生效（云端 Actions 会在第二天 10:00 生效；
+  本机想立刻看效果就双击 `run_community.bat`）。
 - **想临时停掉某款游戏**：把 config.toml 里对应 `[[games]]` 块的 `enabled = true` 改成 `false`。
-- **`data/` 目录不要手动修改或删除**，里面的 `seen.json` 记录"哪些公告已推送过"。
-- 长时间断网/关机后重新开机，错过的公告会在下一轮自动补抓并推送。
+- **本程序不写本地数据库**：每次运行都是「当场抓取 → 当场出报告」，没有需要维护的状态文件，
+  换电脑只需把代码和 `secrets.local.toml` 拷过去即可。
+- **跑挂了怎么查**：云端看 Actions 运行日志；本机双击 `run_community.bat` 直接看黑窗口输出。
+- 想验证链接有没有失效（官网改版常见），跑 `python check_links.py`。
 
 ---
 
@@ -252,7 +255,7 @@ ChinaJoy 官网（SPA 空壳无可抓接口）、CP 漫展（官方票务 CPP �
    params = { iChanId = 123, iPageSize = 20, iPage = 1, sLangKey = "zh-cn" }
    detail_url = "公告详情页链接，{id} 会被替换成公告ID"
    ```
-2. 保存后跑一轮验证（双击 `run_once.bat`）。
+2. 保存后跑一轮验证（双击 `run_community.bat`），并跑 `python check_links.py` 确认新链接可达。
 
 采集器类型对照：
 
@@ -280,7 +283,7 @@ ChinaJoy 官网（SPA 空壳无可抓接口）、CP 漫展（官方票务 CPP �
 程序必须在本目录内运行。计划任务模式已自动处理；手动运行时请先双击/进入本目录再执行。
 
 **Q：有公告但收不到推送？**  
-依次检查：① `config.toml` 里 `[notify.feishu]` 的 `enabled = true` 且 `webhook` 已填写（填错时可用 `python main.py --test-push` 看具体报错）；② 是否第一次运行（首次只建基线不推送）；③ 飞书机器人是否被移出群聊（Webhook 会失效）；④ 若用 Server酱 备用渠道，检查当天 5 条免费额度是否用完。
+依次检查：① `secrets.local.toml` 里 `[notify.feishu]` 的 `enabled = true` 且 `webhook` 已填写（本机双击 `run_community.bat` 看黑窗口的具体报错；云端则检查仓库 Secrets 里 `FEISHU_WEBHOOK`/`FEISHU_SECRET` 的两个**名称**是否全大写、值是否多了空格）；② 只推送前瞻类新条目，非前瞻内容不打扰（这是设计如此，不是故障）；③ 飞书机器人是否被移出群聊（Webhook 会失效）；④ 若用 Server酱 备用渠道，检查当天 5 条免费额度是否用完。
 
 **Q：1999（重返未来）为什么只有英文公告？**  
 其官网接口当前只开放"全球服"公告（英文）。国服特有公告暂无法从该接口获取。
@@ -292,7 +295,7 @@ ChinaJoy 官网（SPA 空壳无可抓接口）、CP 漫展（官方票务 CPP �
 不会漏抓。休眠唤醒后的下一轮会把期间发布的新公告一次性补齐并推送（按游戏分组，每款一条）。
 
 **Q：网页日报链接打不开 / 发布失败？**  
-先看《GitHub Pages 配置指南_小白版.html》文末 FAQ。最常见三个原因：刚推送完还没部署好（等 1-2 分钟刷新）；仓库是私有的（私有仓库 Pages 需付费，改成 Public）；Pages 设置里分支没选 `main`。
+先看 `docs/GitHub配置教程_小白版.html` 文末的排错表。最常见四个原因：刚推送完还没部署好（等 1-2 分钟刷新）；仓库是私有的（私有仓库 Pages 需付费，改成 Public）；Pages 设置里分支没选 `main`；**Actions 的 Workflow permissions 没设成 Read and write**（这步漏了会导致日报生成了却推不回仓库）。
 
 ---
 
@@ -327,4 +330,5 @@ ChinaJoy 官网（SPA 空壳无可抓接口）、CP 漫展（官方票务 CPP �
   - 2026-10-22 重构后全链路实测：`--once` 抓到 374 条（含 gamescom 15 / TGA 3 / BW 1），
     前瞻日报 16 条（版本前瞻 7 + 漫展展会 9）→ 发布线上 200 → 飞书测试卡片带链接成功
   - 计划任务注册脚本已提供，注册流程需在本机以管理员身份实际执行确认
-- 测试命令：`python main.py --test-digest`（本地重新生成前瞻日报）、`--test-publish`（发布今日日报）、`--test-push`（发送带链接的测试卡片）、`--backfill`（翻页回溯官网历史信息）。
+- 常用命令：`python community_report.py`（跑完整一轮：抓取 + 生成 + 发布 + 推送）、
+  `python check_links.py`（配置路由校验 + 日报外链 404 体检）。
