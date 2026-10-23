@@ -48,13 +48,16 @@
 
    | Name | Value |
    | --- | --- |
-   | `FEISHU_WEBHOOK` | `https://open.feishu.cn/open-apis/bot/v2/hook/7086...` |
-   | `FEISHU_SECRET` | 创建机器人时那串签名密钥 |
+   | `FEISHU_WEBHOOK` | 飞书机器人的 Webhook 地址（从本机 `secrets.local.toml` 里复制） |
+   | `FEISHU_SECRET` | 同上文件里的签名密钥 |
 
 2. **给 Actions 写权限**，否则它没法把日报提交回仓库：
    Settings → Actions → General → Workflow permissions → 选 **Read and write permissions** → Save
 
 配好后想立刻验证：Actions 页面左侧选 `每日游戏前瞻日报` → 右上角 **Run workflow**。
+
+> 带图的傻瓜版教程见 **`docs/GitHub配置教程_小白版.html`**（双击就能在浏览器里看），
+> 里面也写清了「这个仓库现在对外公开什么、不公开什么、想改成私有要付出什么代价」。
 
 > 小提醒：GitHub 对长期无动静的仓库会停用定时触发器，但我们每天都在提交，不存在这个问题。
 > 另外 Actions 的执行时间会有几分钟排队延迟，属于正常现象。

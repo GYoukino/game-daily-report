@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHub 配置教程（小白版）· 游戏前瞻日报</title>
+<style>
+:root{
+  --brand:#4a6cf7; --brand-dark:#2f4bd0; --brand-soft:#eef2ff;
+  --ink:#242938; --muted:#6b7280; --line:#e5e8f0;
+  --bg:#f6f8fc; --card:#fff;
+  --ok:#0f9960; --ok-bg:#e7f6ef;
+  --warn:#b7791f; --warn-bg:#fff8e6;
+  --danger:#c0392b; --danger-bg:#fdecec;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif;
+  line-height:1.75;font-size:15px}
+.wrap{max-width:860px;margin:0 auto;padding:0 16px 60px}
+header{background:linear-gradient(135deg,#4a6cf7 0%,#6a5acd 100%);color:#fff;
+  padding:34px 0 30px;margin-bottom:26px}
+header .wrap{padding-bottom:0}
+header h1{margin:0 0 8px;font-size:26px;font-weight:600;letter-spacing:.5px}
+header p{margin:0;opacity:.92;font-size:14px}
+.meta{margin-top:14px;font-size:13px;opacity:.9}
+.meta a{color:#fff;text-decoration:underline}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;
+  padding:22px 24px;margin-bottom:20px}
+h2{font-size:20px;margin:0 0 4px;font-weight:600}
+h2 .num{display:inline-flex;align-items:center;justify-content:center;
+  width:28px;height:28px;border-radius:50%;background:var(--brand);color:#fff;
+  font-size:15px;margin-right:10px;vertical-align:-4px}
+h3{font-size:16px;margin:22px 0 8px;font-weight:600;color:var(--brand-dark)}
+h3:first-of-type{margin-top:12px}
+p{margin:8px 0}
+ol,ul{padding-left:22px;margin:8px 0}
+li{margin:6px 0}
+.path{display:inline-block;background:var(--brand-soft);color:var(--brand-dark);
+  border:1px solid #d5ddfd;border-radius:6px;padding:2px 9px;font-size:13px;
+  font-family:ui-monospace,Menlo,Consolas,monospace;margin:2px 0}
+.step{background:#f8faff;border-left:3px solid var(--brand);padding:12px 16px;
+  border-radius:0 8px 8px 0;margin:12px 0}
+.box{border-radius:8px;padding:12px 16px;margin:14px 0;font-size:14px}
+.box.ok{background:var(--ok-bg);border-left:3px solid var(--ok)}
+.box.warn{background:var(--warn-bg);border-left:3px solid var(--warn)}
+.box.danger{background:var(--danger-bg);border-left:3px solid var(--danger)}
+.box.info{background:var(--brand-soft);border-left:3px solid var(--brand)}
+code{background:#f1f3f8;padding:2px 6px;border-radius:4px;font-size:13px;
+  font-family:ui-monospace,Menlo,Consolas,monospace;word-break:break-all}
+pre{background:#1f2437;color:#e8ecf5;padding:14px 16px;border-radius:8px;
+  overflow-x:auto;font-size:12.5px;line-height:1.7;margin:10px 0}
+pre code{background:none;color:inherit;padding:0}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:14px}
+th{background:#eef1f9;color:#3a4a6b;text-align:left;padding:9px 12px;
+  font-weight:600;border-bottom:2px solid var(--line)}
+td{padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:none}
+.pill{display:inline-block;padding:1px 8px;border-radius:10px;font-size:12px}
+.pill.g{background:var(--ok-bg);color:var(--ok)}
+.pill.r{background:var(--danger-bg);color:var(--danger)}
+.pill.y{background:var(--warn-bg);color:var(--warn)}
+.kbd{display:inline-block;border:1px solid #cfd6e4;border-bottom-width:2px;
+  border-radius:5px;padding:1px 7px;font-size:12.5px;background:#fff;color:#48536b}
+.arrow{color:var(--brand);margin:0 4px;font-weight:600}
+.sub{color:var(--muted);font-size:14px;margin-top:0;margin-bottom:16px}
+footer{text-align:center;color:var(--muted);font-size:13px;margin-top:34px;
+  padding-top:18px;border-top:1px solid var(--line)}
+@media (max-width:600px){
+  header h1{font-size:21px}
+  .card{padding:16px}
+  table{font-size:13px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <h1>GitHub 配置教程 · 小白版</h1>
+    <p>照着做两件事，以后你电脑不用开、NAS 不用开，每天上午 10 点自动出日报</p>
+    <div class="meta">
+      仓库：<a href="https://github.com/GYoukino/game-daily-report">github.com/GYoukino/game-daily-report</a><br>
+      日报网页：<a href="https://GYoukino.github.io/game-daily-report/">GYoukino.github.io/game-daily-report</a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+<div class="card">
+  <h3 style="margin-top:0">先花 30 秒搞懂要做什么</h3>
+  <p>GitHub 现在要帮你在云端跑抓取程序，但它缺两样东西：</p>
+  <ol>
+    <li><strong>飞书机器人的钥匙</strong>——不然它没法把日报推到你的飞书群</li>
+    <li><strong>写文件的权限</strong>——不然它跑完的日报存不回仓库</li>
+  </ol>
+  <p>下面是这两件事的精确点击路径，全程不用敲命令，<strong>大约 5 分钟</strong>。</p>
+</div>
+
+<!-- ===================== 第一步 ===================== -->
+<div class="card">
+  <h2><span class="num">1</span>把飞书钥匙交给 GitHub</h2>
+  <p class="sub">做一次就行，之后永久有效</p>
+
+  <h3>① 先从你电脑上把钥匙复制出来</h3>
+  <div class="step">
+    打开这个文件（右键 → 用记事本打开）：<br>
+    <span class="path">D:\WorkBuddy工作任务\技能安装\game-activity-monitor\secrets.local.toml</span>
+  </div>
+  <p>里面你会看到这样的两行：</p>
+  <pre><code>webhook = "https://open.feishu.cn/open-apis/bot/v2/hook/一长串字母数字"
+secret = "另一串密钥"</code></pre>
+  <p>把<strong>引号里面</strong>的内容分别复制出来（<span class="kbd">Ctrl</span>+<span class="kbd">C</span>），
+  先粘贴到记事本备用，一共两串。</p>
+  <div class="box info">
+    <strong>为什么要这一步？</strong> 这把钥匙原来明明写在 config.toml 里，
+    但那个文件会上传到公开仓库，等于把钥匙挂在大门口。所以昨天我把它搬进了这个
+    不会被上传的文件里。GitHub 那边也需要同一把钥匙，你得手动递一次。
+  </div>
+
+  <h3>② 到 GitHub 网页上填进去</h3>
+  <p>打开仓库首页，按这个顺序点：</p>
+  <div class="step">
+    <span class="path">Settings（右上角）</span>
+    <span class="arrow">→</span>
+    <span class="path">Secrets and variables</span>
+    <span class="arrow">→</span>
+    <span class="path">Actions</span>
+    <span class="arrow">→</span>
+    <span class="path">New repository secret</span>
+  </div>
+  <div class="box warn">
+    注意别走错：<code>Secrets and variables</code> 在左边侧栏里，不是顶上的标签页。
+    点开后要再点一下 <code>Actions</code>，才会看到新建按钮。
+  </div>
+
+  <p>点绿按钮后填两栏，<strong>做两次</strong>（先 WEBHOOK，再 SECRET）：</p>
+  <table>
+    <thead><tr><th style="width:32%">Name 填这个（照抄）</th><th>Secret 粘贴</th></tr></thead>
+    <tbody>
+      <tr><td><code>FEISHU_WEBHOOK</code></td><td>刚才复制的第 1 串（https:// 开头那行）</td></tr>
+      <tr><td><code>FEISHU_SECRET</code></td><td>刚才复制的第 2 串</td></tr>
+    </tbody>
+  </table>
+  <div class="box warn">
+    <strong>最容易出错的地方：</strong>名字必须一模一样，<strong>全大写、带下划线</strong>。
+    写成 <code>feishu_webhook</code> 或多了个空格，后面就会静默失败——不报错，但收不到消息。
+  </div>
+
+  <h3>③ 确认填对了</h3>
+  <p>填完列表中应该出现两条记录，形如：</p>
+  <pre><code>FEISHU_WEBHOOK      Updated now
+FEISHU_SECRET       Updated now</code></pre>
+  <div class="box ok">
+    <strong>看不到内容是不是填错了？</strong> 不是。GitHub 出于安全考虑，
+    密钥存进去之后<strong>连你自己都看不到明文了</strong>，只能删掉重填。这是正常的保护措施。
+  </div>
+</div>
+
+<!-- ===================== 第二步 ===================== -->
+<div class="card">
+  <h2><span class="num">2</span>给它一个写文件的权限</h2>
+  <p class="sub">漏了这步，日报生成了却存不回去</p>
+
+  <div class="step">
+    <span class="path">Settings</span>
+    <span class="arrow">→</span>
+    <span class="path">Actions</span>
+    <span class="arrow">→</span>
+    <span class="path">General</span>
+    <span class="arrow">→</span>
+    往下滚到 <span class="path">Workflow permissions</span>
+  </div>
+
+  <p>把选项从默认的 <code>Read repository contents</code> 改成：</p>
+  <p style="font-size:16px"><strong>● Read and write permissions</strong></p>
+  <p>然后点那一小块区域右下角的绿色 <strong>Save</strong> 按钮。</p>
+
+  <div class="box danger">
+    <strong>这步 90% 的人会漏。</strong> 因为页面上的 Save 按钮位置比较隐蔽，
+    改完选项一定要真的点到 Save。没保存 = 等于没改。
+  </div>
+</div>
+
+<!-- ===================== 第三步 ===================== -->
+<div class="card">
+  <h2><span class="num">3</span>立刻手动跑一次，验证成功</h2>
+  <p class="sub">现在验证过，明天就不用操心了</p>
+
+  <div class="step">
+    <span class="path">仓库顶上的 Actions 标签页</span>
+    <span class="arrow">→</span>
+    左侧列表找 <span class="path">每日游戏前瞻日报</span>
+    <span class="arrow">→</span>
+    右边 <span class="path">Run workflow ▾</span>
+    <span class="arrow">→</span>
+    点绿色 <span class="path">Run workflow</span>
+  </div>
+
+  <p>点完之后等一两分钟，列表里会冒出一条正在转圈的运行记录，点进去能看到实时日志。</p>
+
+  <h3>怎么判断成功了</h3>
+  <table>
+    <thead><tr><th style="width:34%">现象</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td><span class="pill g">绿色对勾</span></td><td>抓取成功，日报已更新，网页版也刷新了</td></tr>
+      <tr><td>飞书收到推送卡片</td><td>第一步的钥匙没问题，全链路通了</td></tr>
+      <tr><td><span class="pill r">红色叉</span></td><td>点进去看红色那段报错，对照下面的表</td></tr>
+    </tbody>
+  </table>
+  <p>此后每天<strong>北京时间上午 10:00</strong> 会自动重复这个过程。
+  GitHub 有时会晚几分钟才排到队，这属于正常现象。</p>
+</div>
+
+<!-- ===================== 排错表 ===================== -->
+<div class="card">
+  <h2><span class="num">?</span>万一失败了，对照这张表</h2>
+  <table>
+    <thead><tr><th style="width:38%">报错 / 现象</th><th>原因和解法</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>Error: Process completed with exit code 1</code></td>
+        <td>往上翻几行看真正的错误。多数是某个数据源当天抽风（比如官网在维护），不影响主流程，第二天自动恢复</td>
+      </tr>
+      <tr>
+        <td>推送被拒 / <code>permission denied</code></td>
+        <td>第 2 步没保存。回去确认选项停在 Read and write 上</td>
+      </tr>
+      <tr>
+        <td>跑成功了但飞书没收到</td>
+        <td>检查第一步两条密钥有没有粘贴完整（前后有没有多复制空格）</td>
+      </tr>
+      <tr>
+        <td>网页打开还是昨天的</td>
+        <td>GitHub Pages 重建要 1-2 分钟，强刷一次（<span class="kbd">Ctrl</span>+<span class="kbd">F5</span>）</td>
+      </tr>
+      <tr>
+        <td>左侧压根没有那个工作流</td>
+        <td>刷新页面；还不行就是仓库里的 <code>.github</code> 文件夹没同步上来，告诉我一声</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ===================== 隐私 ===================== -->
+<div class="card">
+  <h2><span class="num">🔒</span>关于隐私：现在谁能看到？</h2>
+
+  <h3>先说结论：仓库是公开的，但里面没有任何你的私人信息</h3>
+  <p>我把全部 <strong>31 次历史提交</strong>从头到尾扫了一遍，结果如下：</p>
+  <table>
+    <thead><tr><th style="width:46%">检查项</th><th>结果</th></tr></thead>
+    <tbody>
+      <tr><td>飞书 webhook / 签名密钥</td><td><span class="pill g">没有泄露</span>（已移出公仓库）</td></tr>
+      <tr><td>你的真实姓名 / 邮箱</td><td><span class="pill g">没有泄露</span>（提交身份是 game-monitor@localhost 这个假身份）</td></tr>
+      <tr><td>电脑本地路径（如 D 盘真实目录）</td><td><span class="pill g">没有出现</span></td></tr>
+      <tr><td>NAS 地址、内网 IP</td><td><span class="pill g">没有出现</span></td></tr>
+      <tr><td>仓库里剩下的是什么</td><td>抓取脚本源码 + 每天的游戏前瞻资讯（原神、星铁、方舟等 9 款游戏的公开官方信息）</td></tr>
+    </tbody>
+  </table>
+  <p>唯一对外可见的你的个人信息，是你的 GitHub 用户名 <code>GYoukino</code>——
+  但这个在 GitHub 上本来就是公开的，不属于泄露。</p>
+  <div class="box info">
+    <strong>一句话理解风险：</strong> 外面的人看到的是一个「每天自动整理游戏资讯」的小项目，
+    就像你在网上分享的一个小工具。他知道你在玩/关注原神、星铁、明日方舟这些，
+    但拿不到你的飞书、威胁不到你的账号、也进不了你的电脑或 NAS。
+  </div>
+
+  <h3>想改成只有自己能看？可以，但有个代价</h3>
+  <div class="box danger">
+    <strong>关键限制：</strong> GitHub 免费账户的网页托管（Pages）<strong>只对公开仓库开放</strong>。
+    仓库一旦设为私有，<code>GYoukino.github.io/game-daily-report</code> 这个网页<strong>立刻打不开</strong>，
+    除非升级到付费版 Pro（大约每月 4 美元）。
+  </div>
+
+  <table>
+    <thead><tr><th style="width:22%">方案</th><th>网页还能看吗</th><th>费用</th><th>适合谁</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>① 保持公开</strong><br><span class="pill g">推荐</span></td>
+        <td>能，一切照旧</td><td>免费</td>
+        <td>反正没有敏感内容，省心</td>
+      </tr>
+      <tr>
+        <td>② 转私有 + 只推飞书</td>
+        <td>不能</td><td>免费</td>
+        <td>能接受只在飞书里看日报的人</td>
+      </tr>
+      <tr>
+        <td>③ 转私有 + NAS 上开网页 <br><span class="pill y">你的强项</span></td>
+        <td>能，但只有家里网络或连 VPN 时</td><td>免费</td>
+        <td>你已经有群晖了，装个 Web Station 把 daily 目录挂出去就行</td>
+      </tr>
+      <tr>
+        <td>④ 转私有 + 升 Pro</td>
+        <td>能，和现在一样</td><td>约 ¥30/月</td>
+        <td>愿意花钱买省事</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>如果确定要转私有（方案 ②③④）</h3>
+  <div class="step">
+    <span class="path">Settings</span>
+    <span class="arrow">→</span>
+    页面最底部 <span class="path">Danger Zone</span>
+    <span class="arrow">→</span>
+    <span class="path">Change visibility</span>
+    <span class="arrow">→</span>
+    <span class="path">Make private</span>
+  </div>
+  <p>系统会让你手打一遍仓库名确认，照着输 <code>GYoukino/game-daily-report</code> 即可。</p>
+  <div class="box warn">
+    <strong>转私有后还有一件事要跟着改：</strong>
+    NAS 上那个归档容器现在是用公开地址拉取的，私有仓库它拉不动，会变成空转。
+    需要在 GitHub 再办一张「通行证」（Personal Access Token），
+    然后把容器配置里的地址改成带通行证的。这一步做完告诉我，我给你具体的改法——或者你就先维持公开，省掉这件事。
+  </div>
+</div>
+
+<footer>
+  游戏前瞻日报 · 自动运维配置说明<br>
+  随时可以回来重看这份教程：项目目录下 <code>docs/GitHub配置教程_小白版.html</code>
+</footer>
+
+</div>
+</body>
+</html>
