@@ -29,6 +29,38 @@
 
 ---
 
+## 零、这套东西现在有哪几种跑法
+
+代码完全零第三方依赖（只用 Python 标准库 + git 命令行），所以挪到哪台机器上都能跑。目前三种跑法并存，互不冲突：
+
+| 跑法 | 谁负责定时 | 适合场景 | 现状 |
+| --- | --- | --- | --- |
+| **① 本机计划任务** | Windows 任务计划程序（每天 10:00） | 只在自己电脑上跑 | 已在用，`run_community.bat` |
+| **② GitHub Actions** | GitHub 云端（每天北京时间 10:00） | **推荐**：电脑和 NAS 都不用开 | 已配好，见 `.github/workflows/daily.yml` |
+| **③ NAS 归档容器** | 容器里的 cron（每周一 04:00） | 把历史日报留一份在自己硬盘 | 见 `nas-archive/` |
+
+三种跑法产出完全一样：**网页版日报页 + 飞书推送卡片**。
+
+### 首次使用 Actions 需要你在 GitHub 网页上做两件事
+
+1. **填两个密钥**（脚本不要写死密钥，这是故意的）：
+   Settings → Secrets and variables → Actions → **New repository secret**
+
+   | Name | Value |
+   | --- | --- |
+   | `FEISHU_WEBHOOK` | `https://open.feishu.cn/open-apis/bot/v2/hook/7086...` |
+   | `FEISHU_SECRET` | 创建机器人时那串签名密钥 |
+
+2. **给 Actions 写权限**，否则它没法把日报提交回仓库：
+   Settings → Actions → General → Workflow permissions → 选 **Read and write permissions** → Save
+
+配好后想立刻验证：Actions 页面左侧选 `每日游戏前瞻日报` → 右上角 **Run workflow**。
+
+> 小提醒：GitHub 对长期无动静的仓库会停用定时触发器，但我们每天都在提交，不存在这个问题。
+> 另外 Actions 的执行时间会有几分钟排队延迟，属于正常现象。
+
+---
+
 ## 一、目录里都有什么
 
 | 文件 / 文件夹                 | 作用                                   |

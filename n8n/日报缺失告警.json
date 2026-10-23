@@ -1,0 +1,147 @@
+{
+  "name": "游戏日报缺失告警",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 4 * * *"
+            }
+          ]
+        }
+      },
+      "id": "a1000000-0000-4000-8000-000000000001",
+      "name": "每天中午检查",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [-460, 300]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ 'https://GYoukino.github.io/game-daily-report/daily/' + $now.toFormat('yyyy-MM-dd') + '.html' }}",
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          },
+          "timeout": 20000
+        }
+      },
+      "id": "a1000000-0000-4000-8000-000000000002",
+      "name": "请求当天日报",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [-240, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "a1000000-0000-4000-8000-000000000010",
+              "leftValue": "={{ $json.statusCode }}",
+              "rightValue": "200",
+              "operator": {
+                "type": "number",
+                "operation": "notEqual"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true
+      },
+      "id": "a1000000-0000-4000-8000-000000000003",
+      "name": "当天报告在吗",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [-20, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const crypto = require('crypto');\nconst SECRET = '在这里填你的飞书签名密钥';\nconst ts = Math.floor(Date.now() / 1000);\nconst sign = crypto.createHmac('sha256', ts + '\\n' + SECRET).update('').digest('base64');\nreturn [{ json: { timestamp: ts, sign } }];\n"
+      },
+      "id": "a1000000-0000-4000-8000-000000000004",
+      "name": "生成飞书签名",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [200, 200]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://open.feishu.cn/open-apis/bot/v2/hook/在这里填你的webhook后缀",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ timestamp: $json.timestamp, sign: $json.sign, msg_type: 'text', content: { text: '今日游戏前瞻日报还没生成，去这里看看是不是 Actions 跑挂了：https://github.com/GYoukino/game-daily-report/actions' } }) }}",
+        "options": {}
+      },
+      "id": "a1000000-0000-4000-8000-000000000005",
+      "name": "推送告警到飞书",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [420, 200]
+    }
+  ],
+  "connections": {
+    "每天中午检查": {
+      "main": [
+        [
+          {
+            "node": "请求当天日报",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "请求当天日报": {
+      "main": [
+        [
+          {
+            "node": "当天报告在吗",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "当天报告在吗": {
+      "main": [
+        [
+          {
+            "node": "生成飞书签名",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "生成飞书签名": {
+      "main": [
+        [
+          {
+            "node": "推送告警到飞书",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}
