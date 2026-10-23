@@ -216,22 +216,30 @@ class GitHubPagesPublisher:
             "utf-8", errors="replace")
         return p.returncode, out
 
+    def _ensure_identity(self):
+        """确保仓库内有提交身份，缺失会导致 git commit 静默失败。
+
+        换机器、重新克隆后仓库里往往没有 user.email，这里统一补上
+        （已有配置时不覆盖，尊重用户自己的身份设置）。
+        """
+        rc, out = self._run_git("config", "user.email")
+        if rc != 0 or not (out or "").strip():
+            self._run_git("config", "user.name", "game-monitor")
+            self._run_git("config", "user.email", "game-monitor@localhost")
+
     def _ensure_repo(self):
         """站点目录不是 git 仓库时，初始化并关联远端（首次发布）。"""
-        if os.path.exists(os.path.join(self.site_dir, ".git")):
-            return True
-        log("首次发布：初始化本地仓库并关联远端…")
-        rc, out = self._run_git("init", "-b", self.branch)
-        if rc != 0:
-            log(f"git init 失败: {out.strip()}")
-            return False
-        # 本地仓库内配置提交身份，不依赖全局 git 配置
-        self._run_git("config", "user.name", "game-monitor")
-        self._run_git("config", "user.email", "game-monitor@localhost")
-        rc, out = self._run_git("remote", "add", "origin", self.remote_url)
-        if rc != 0:
-            log(f"关联远端失败: {out.strip()}")
-            return False
+        if not os.path.exists(os.path.join(self.site_dir, ".git")):
+            log("首次发布：初始化本地仓库并关联远端…")
+            rc, out = self._run_git("init", "-b", self.branch)
+            if rc != 0:
+                log(f"git init 失败: {out.strip()}")
+                return False
+            rc, out = self._run_git("remote", "add", "origin", self.remote_url)
+            if rc != 0:
+                log(f"关联远端失败: {out.strip()}")
+                return False
+        self._ensure_identity()
         return True
 
     # 网络类错误关键词：这类抖动值得自动重试。
@@ -277,7 +285,9 @@ class GitHubPagesPublisher:
         """提交并推送。返回是否成功。"""
         if not self._ensure_repo():
             return False
-        rc, out = self._run_git("add", "-A")
+        # 只 add 网页相关的三处。site_dir 现在常常就是脚本所在的仓库根目录，
+        # 用 add -A 会把整个工程塞进「daily report」这一个提交里。
+        rc, out = self._run_git("add", "-A", "daily", "index.html", ".nojekyll")
         if rc != 0:
             log(f"git add 失败: {out.strip()}")
             return False
