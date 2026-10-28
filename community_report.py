@@ -1551,6 +1551,8 @@ def build_payload(kept, now):
     # 其余（联动 / 周边 / 漫展）按「游戏 + 类型 + 标题归一」判重。
     rows = []
     for e in kept:
+        if not e.get("is_official"):
+            continue  # 板块1 时间线仅展示官方信息（用户 2026-10-28）
         d = _act_date(e)
         if d is None or not (today0 <= d <= horizon):
             continue
@@ -1663,12 +1665,6 @@ def build_payload(kept, now):
     for e in kept:
         title = e.get("title") or ""
         fac = set(e.get("fwd_facets") or [])
-        # 板块2 准入：官方 / 第三方码汇总 / 第三方爆料帖
-        unofficial_ok = e.get("is_official") or \
-            (e.get("source_label") in ("第三方汇总",)) or \
-            _is_leakish(e)
-        if not unofficial_ok:
-            continue
         if _is_leakish(e) or "livestream" in fac \
                 or any(k in title for k in PREVIEW_TITLE_HINTS):
             ver_members.append(e)
@@ -1709,11 +1705,12 @@ def build_payload(kept, now):
             "pubTs": _pub_ts(e),
             "actTs": (int(_act_date(e).timestamp()) if _act_date(e) else 0),
         })
-    digest = _merge_dup_rows(rows, prefer_newest_post=True)
+    ver_full = _merge_dup_rows(rows, prefer_newest_post=True)
     sections.append({
         "key": "version", "num": "2", "title": "游戏版本前瞻内容汇总",
-        "desc": "表格：游戏 · 前瞻标题（点击跳原文） · 前瞻时间 · 兑换码 · 来源",
-        "count": len(digest), "items": digest})
+        "desc": "表格：游戏 · 前瞻标题（点击跳原文） · 前瞻时间 · 兑换码 · 来源（仅官方）",
+        "count": len([i for i in ver_full if i.get("official")]),
+        "items": [i for i in ver_full if i.get("official")]})
 
     # ---- 3-4. 板块：森空岛式卡片（原帖封面图 + 标题跳转 + 概览） ----
     SUB_OF = {"offline_collab": "collab", "popup": "popup", "expo": "expo"}
@@ -1726,6 +1723,7 @@ def build_payload(kept, now):
          "facets": {"merch"}, "include_leak": False},
     ]
     loc_re = re.compile(r"地点[：:]\s*([^，。；\n]{2,24})")
+    card_full = {}  # 各卡片板块全量（含第三方/爆料），供信息汇总使用
     for sd in CARD_SECTIONS:
         members = []
         for e in kept:
@@ -1777,11 +1775,23 @@ def build_payload(kept, now):
             "actTs": (int(_act_date(e).timestamp()) if _act_date(e) else 0),
             })
         cards = _merge_dup_rows(cards)
+        card_full[sd["key"]] = cards
         sections.append({
             "key": sd["key"], "num": sd["num"], "title": sd["title"],
-            "desc": sd["desc"], "count": len(cards), "items": cards,
+            "desc": sd["desc"] + "（仅官方）",
+            "count": len([i for i in cards if i.get("official")]),
+            "items": [i for i in cards if i.get("official")],
         })
-    return {"timeline": timeline, "sections": sections, "games": GAMES_META,
+    # 信息汇总专用：全量（官方 + 第三方 + 爆料），与板块1-4的官方口径解耦
+    digest_payload = []
+    for _sec, _lst in (("version", ver_full),
+                       ("collab", card_full.get("collab", [])),
+                       ("merch", card_full.get("merch", []))):
+        for _it in _lst:
+            if _it.get("url"):
+                digest_payload.append({"it": _it, "sec": _sec})
+    return {"timeline": timeline, "sections": sections, "digest": digest_payload,
+            "games": GAMES_META,
             "captured_at": now.strftime("%Y-%m-%d %H:%M:%S"),
             "generated": now.strftime("%Y-%m-%d %H:%M GMT+8")}
 
@@ -2289,14 +2299,14 @@ TEMPLATE = r"""<!DOCTYPE html>
     box.innerHTML="";
     var t0=new Date(); t0.setHours(0,0,0,0); var t0s=Math.floor(t0.getTime()/1000);
     var all=[];
-    ["version","collab","merch"].forEach(function(k){
-      (SECTIONS[k]?SECTIONS[k].items:[]).forEach(function(it){
-        if(it && it.url){
-          // Q1-A：仅保留活动开始日期≥今天的内容（无日期的保留，避免误删）
-          if(it.actTs && it.actTs < t0s) return;
-          all.push({it:it, sec:k});
-        }
-      });
+    // 信息汇总读取全量 digest（官方+第三方+爆料），与板块1-4的官方口径解耦
+    (PAYLOAD.digest||[]).forEach(function(o){
+      var it=o.it;
+      if(it && it.url){
+        // Q1-A：仅保留活动开始日期≥今天的内容（无日期的保留，避免误删）
+        if(it.actTs && it.actTs < t0s) return;
+        all.push(o);
+      }
     });
     if(!all.length){
       box.innerHTML='<div class="empty">今日及以后暂无带链接的资讯</div>';
