@@ -1073,15 +1073,16 @@ def filter_ongoing(items, now):
         # 兜底提取活动时间（兑换码分支等 classifier 未覆盖的情形）
         _ensure_activity_time(e, now)
         tags = e.get("fwd_tags") or []
-        if "已过期" in tags or "已结束" in tags:
+        # 去除第三方兑换码资讯（仅保留官方发布的兑换码，2026-10-28 补充）
+        if "redeem_code" in (e.get("fwd_facets") or []) and not e.get("is_official"):
             continue
+        # 全部资讯口径（2026-10-28 更正）：不再因「已过期/已结束/过去日期」剔除，
+        # 历史与进行中内容交由各区块自行过滤（信息汇总/时间线按开始日期≥今天）。
         dl, st = e.get("fwd_deadline"), e.get("fwd_start")
         if dl:
-            if dl < today0:
-                continue
+            pass
         elif st:
-            if st < today0 - timedelta(days=45):
-                continue  # 开始且无截止、又过旧：视为已结束
+            pass
         else:
             if e.get("source_label") in THIRD_PARTY_LABELS:
                 # 第三方资讯站的线下/周边条目：本报告只以官方渠道为时效依据，
@@ -1456,7 +1457,7 @@ _TIME_RANK = {"开始时间": 3, "活动时间": 2, "截止时间": 1}
 _TITLE_RANK = {"【前瞻直播】": 4, "【版本更新】": 3, "【兑换码】": 2}
 
 
-def _merge_dup_rows(rows):
+def _merge_dup_rows(rows, prefer_newest_post=False):
     """把同一条事件的多行记录合并成一行（用户要求：同一个东西不要出现好几条）。
 
     合并规则：
@@ -1476,6 +1477,17 @@ def _merge_dup_rows(rows):
             out.append(r)
             continue
         cur = out[idx[k]]
+        # 板块2 需求（2026-10-28）：同游戏+同版本多条时，标题/链接指向【最新发布】那条，
+        # 实现"前瞻预告 → 版本PV+活动汇总"自动替换；官方来源优先于第三方。
+        if prefer_newest_post:
+            cand = [cur, r]
+            cand.sort(key=lambda x: (0 if (x.get("source") == "官宣"
+                                           or x.get("official")) else 1,
+                                     x.get("pubTs") or 0), reverse=True)
+            win = cand[0]
+            for f in ("title", "url", "ver", "id"):
+                if win.get(f):
+                    cur[f] = win[f]
         if _TIME_RANK.get(r.get("timeKind"), 0) > _TIME_RANK.get(cur.get("timeKind"), 0):
             cur["timeDisplay"], cur["timeKind"] = r["timeDisplay"], r["timeKind"]
         # 另一行带来的截止时间补进行内（预告帖只有开始时间、正片帖只有截止时间）
@@ -1486,13 +1498,14 @@ def _merge_dup_rows(rows):
         for c in r.get("codes") or []:
             if c not in (cur.get("codes") or []):
                 cur.setdefault("codes", []).append(c)
-        # 标题/链接指向事件本身：类型优先级高的替换优先级低的
-        rk = _TITLE_RANK.get(_tag_of_title(r.get("title") or ""), 0)
-        ck = _TITLE_RANK.get(_tag_of_title(cur.get("title") or ""), 0)
-        if rk > ck:
-            for f in ("title", "url", "ver", "id"):
-                if r.get(f):
-                    cur[f] = r[f]
+        if not prefer_newest_post:
+            # 标题/链接指向事件本身：类型优先级高的替换优先级低的
+            rk = _TITLE_RANK.get(_tag_of_title(r.get("title") or ""), 0)
+            ck = _TITLE_RANK.get(_tag_of_title(cur.get("title") or ""), 0)
+            if rk > ck:
+                for f in ("title", "url", "ver", "id"):
+                    if r.get(f):
+                        cur[f] = r[f]
         for f in ("url", "image", "platforms", "reward", "ver", "location"):
             if not cur.get(f) and r.get(f):
                 cur[f] = r[f]
@@ -1679,8 +1692,9 @@ def build_payload(kept, now):
                            or "redeem_code" in set(e.get("fwd_facets") or [])),
             "pubTime": (e.get("time") or "").strip(),
             "pubTs": _pub_ts(e),
+            "actTs": (int(_act_date(e).timestamp()) if _act_date(e) else 0),
         })
-    digest = _merge_dup_rows(rows)
+    digest = _merge_dup_rows(rows, prefer_newest_post=True)
     sections.append({
         "key": "version", "num": "2", "title": "游戏版本前瞻内容汇总",
         "desc": "表格：游戏 · 前瞻标题（点击跳原文） · 前瞻时间 · 兑换码 · 来源",
@@ -1711,7 +1725,7 @@ def build_payload(kept, now):
                    ("更新公告", "更新说明", "版本更新", "预下载")):
                 continue
             members.append(e)
-        members.sort(key=lambda e: _act_date(e) or now)
+        members.sort(key=lambda e: _pub_ts(e) or 0, reverse=True)
         cards = []
         for e in members:
             td, tk = _time_bits(e)
@@ -1743,8 +1757,9 @@ def build_payload(kept, now):
                 "channel": _extract_channel(body),
                 "sub": sub,
                 "location": location,
-                "pubTime": (e.get("time") or "").strip(),
-                "pubTs": _pub_ts(e),
+            "pubTime": (e.get("time") or "").strip(),
+            "pubTs": _pub_ts(e),
+            "actTs": (int(_act_date(e).timestamp()) if _act_date(e) else 0),
             })
         cards = _merge_dup_rows(cards)
         sections.append({
@@ -1957,7 +1972,7 @@ TEMPLATE = r"""<!DOCTYPE html>
   <section id="sec-digest">
     <div class="digest-head">
       <span class="sec-num">❰</span><h2>信息汇总 · 每日全量抓取</h2>
-      <span class="desc">全部带链接的前瞻资讯 · 按原帖发布时间倒序（最新置顶）· 点击跳转后「新」自动标记已读</span>
+      <span class="desc">今日及以后带链接的资讯（除游戏内活动公告）· 按原帖发布时间倒序（最新置顶）· 点击跳转后「新」自动标记已读</span>
       <span id="digestCount"></span>
     </div>
     <div class="digest-list" id="digestList"></div>
@@ -2257,14 +2272,19 @@ TEMPLATE = r"""<!DOCTYPE html>
     var box=document.getElementById("digestList");
     if(!box) return;
     box.innerHTML="";
+    var t0=new Date(); t0.setHours(0,0,0,0); var t0s=Math.floor(t0.getTime()/1000);
     var all=[];
     ["version","collab","merch"].forEach(function(k){
       (SECTIONS[k]?SECTIONS[k].items:[]).forEach(function(it){
-        if(it && it.url) all.push({it:it, sec:k});
+        if(it && it.url){
+          // Q1-A：仅保留活动开始日期≥今天的内容（无日期的保留，避免误删）
+          if(it.actTs && it.actTs < t0s) return;
+          all.push({it:it, sec:k});
+        }
       });
     });
     if(!all.length){
-      box.innerHTML='<div class="empty">今日暂无带链接的前瞻资讯</div>';
+      box.innerHTML='<div class="empty">今日及以后暂无带链接的资讯</div>';
       refreshDigestCount();
       return;
     }
