@@ -1056,6 +1056,22 @@ OFFLINE_RESCUE_KEYWORDS = ("FES", "fes", "嘉年华", "周年庆典", "线下",
                            "Zenless LIVE", "ZLIVE")
 
 
+def _is_ended(e, today0):
+    """活动是否已结束（用于剔除板块 2-4 中的过去信息）。
+
+    - 有截止时间且截止 < 今天 → 已结束
+    - 有开始时间、无截止、且开始 < 今天 → 已开始且无结束信号，视为过去信息
+    - 否则（未来开始 / 进行中（有未来截止）/ 无明确日期）→ 未结束
+    """
+    dl = e.get("fwd_deadline")
+    st = e.get("fwd_start")
+    if dl and dl < today0:
+        return True
+    if st and st < today0 and not dl:
+        return True
+    return False
+
+
 def filter_ongoing(items, now):
     """只保留进行中 / 将要开始的信息；时间按活动时间标注。"""
     today0 = now.replace(hour=0, minute=0, second=0, microsecond=0)
@@ -1076,14 +1092,13 @@ def filter_ongoing(items, now):
         # 去除第三方兑换码资讯（仅保留官方发布的兑换码，2026-10-28 补充）
         if "redeem_code" in (e.get("fwd_facets") or []) and not e.get("is_official"):
             continue
-        # 全部资讯口径（2026-10-28 更正）：不再因「已过期/已结束/过去日期」剔除，
-        # 历史与进行中内容交由各区块自行过滤（信息汇总/时间线按开始日期≥今天）。
+        # 时效过滤（2026-10-28 修正）：剔除已结束 / 过去的信息，仅保留
+        # 即将开始或仍在进行中的内容（前瞻资讯汇总的定位）；无明确日期的旧帖
+        # 仍由下方第三方 / 官方发布时间兜底逻辑判定。
         dl, st = e.get("fwd_deadline"), e.get("fwd_start")
-        if dl:
-            pass
-        elif st:
-            pass
-        else:
+        if _is_ended(e, today0):
+            continue
+        if dl is None and st is None:
             if e.get("source_label") in THIRD_PARTY_LABELS:
                 # 第三方资讯站的线下/周边条目：本报告只以官方渠道为时效依据，
                 # 发布时间不可知（含抓取兜底填的当前时间）或已早于 45 天，
