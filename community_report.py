@@ -1742,6 +1742,7 @@ def build_payload(kept, now):
             "desc": sd["desc"], "count": len(cards), "items": cards,
         })
     return {"timeline": timeline, "sections": sections, "games": GAMES_META,
+            "captured_at": now.strftime("%Y-%m-%d %H:%M:%S"),
             "generated": now.strftime("%Y-%m-%d %H:%M GMT+8")}
 
 
@@ -1780,6 +1781,34 @@ TEMPLATE = r"""<!DOCTYPE html>
   nav.topnav a:hover{background:#eef2ff;color:var(--accent)}
   nav.topnav a.fav{margin-left:auto;color:var(--leak);font-weight:600}
   nav.topnav a.fav.active{background:var(--leak-bg)}
+  /* ===== 信息汇总版块（顶部全量列表，带「新」已读标记） ===== */
+  #sec-digest{background:linear-gradient(180deg,#f7f9ff,#fff);border:1px solid var(--line);
+    border-radius:var(--radius);padding:16px 16px 18px;box-shadow:var(--shadow);scroll-margin-top:58px}
+  .digest-head{display:flex;align-items:baseline;gap:10px;margin:0 0 12px;flex-wrap:wrap}
+  .digest-head h2{font-size:19px;margin:0}
+  .digest-head .desc{color:var(--sub);font-size:12.5px}
+  #digestCount{color:var(--accent);font-weight:600;font-size:12.5px}
+  .digest-list{display:flex;flex-direction:column;gap:7px;max-height:360px;overflow:auto;padding-right:4px}
+  .digest-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:10px;
+    background:#fff;border:1px solid var(--line);font-size:13.5px;line-height:1.3}
+  .digest-item.read{opacity:.7}
+  .new-badge{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;
+    min-width:20px;height:20px;padding:0 5px;border-radius:6px;background:#ff3b30;color:#fff;
+    font-size:11px;font-weight:700;line-height:1}
+  .digest-item.read .new-badge{display:none}
+  .di-type{flex:0 0 auto;color:var(--accent);font-weight:600;font-size:12px;
+    background:#eef2ff;border-radius:6px;padding:2px 7px;white-space:nowrap}
+  .di-game{flex:0 0 auto;color:var(--sub);font-size:12.5px;white-space:nowrap}
+  .di-title{flex:1 1 auto;color:#1f2733;text-decoration:none;font-weight:500;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+  .di-title:hover{color:var(--accent);text-decoration:underline}
+  .di-src{flex:0 0 auto;display:flex;gap:4px}
+  .di-time{flex:0 0 auto;color:#a7aec2;font-size:11.5px;white-space:nowrap}
+  @media(max-width:680px){
+    .digest-item{flex-wrap:wrap;gap:6px}
+    .di-title{flex:1 1 100%;order:5}
+    .di-time{flex:1 1 100%;order:6}
+  }
   main{max-width:1160px;margin:0 auto;padding:20px 14px 60px}
   section{margin:28px 0;scroll-margin-top:58px}
   .sec-head{display:flex;align-items:baseline;gap:9px;margin:0 0 13px;flex-wrap:wrap}
@@ -1905,6 +1934,7 @@ TEMPLATE = r"""<!DOCTYPE html>
 
 <nav class="topnav">
   <div class="wrap">
+    <a href="#sec-digest">❰ 信息汇总</a>
     <a href="#sec-timeline">① 资讯时间线</a>
     <a href="#sec-version">② 版本前瞻汇总</a>
     <a href="#sec-collab">③ 联动活动</a>
@@ -1914,6 +1944,15 @@ TEMPLATE = r"""<!DOCTYPE html>
 </nav>
 
 <main>
+  <section id="sec-digest">
+    <div class="digest-head">
+      <span class="sec-num">❰</span><h2>信息汇总 · 每日全量抓取</h2>
+      <span class="desc">全部带链接的前瞻资讯 · 按抓取时间倒序 · 点击跳转后「新」自动标记已读</span>
+      <span id="digestCount"></span>
+    </div>
+    <div class="digest-list" id="digestList"></div>
+  </section>
+
   <section id="sec-timeline">
     <div class="sec-head"><span class="sec-num">1</span><h2>主要资讯时间线速览</h2>
       <span class="desc">未来约 100 天 · 关键节点 · 按活动时间排序</span></div>
@@ -1973,6 +2012,12 @@ TEMPLATE = r"""<!DOCTYPE html>
   var FAV_KEY = "gmon_fav_comm_v3";
   var favSet = new Set(JSON.parse(localStorage.getItem(FAV_KEY) || "[]"));
   var favOnly = false;
+  var DIGEST_READ_KEY = "gmon_digest_read_v1";
+  var digestRead = new Set(JSON.parse(localStorage.getItem(DIGEST_READ_KEY) || "[]"));
+  function markDigestRead(id){
+    digestRead.add(id);
+    try{localStorage.setItem(DIGEST_READ_KEY, JSON.stringify([...digestRead]));}catch(e){}
+  }
 
   function esc(s){return (s||"").replace(/[&<>"]/g,function(c){
     return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];});}
@@ -2184,6 +2229,69 @@ TEMPLATE = r"""<!DOCTYPE html>
     sec.items.forEach(function(it){box.appendChild(skCard(it));});
   }
 
+  /* ===== 0. 信息汇总：顶部全量列表（带链接，按抓取时间倒序，不合并，含「新」已读标记） ===== */
+  function secTypeLabel(sec, it){
+    if(sec==="version") return "版本前瞻";
+    if(sec==="merch") return "官方周边";
+    var m={"collab":"联动活动","popup":"快闪店","expo":"漫展展会"};
+    return m[it.sub]||"联动活动";
+  }
+  function refreshDigestCount(){
+    var items=document.querySelectorAll("#digestList .digest-item");
+    var unread=0;
+    items.forEach(function(r){ if(!r.classList.contains("read")) unread++; });
+    var cnt=document.getElementById("digestCount");
+    if(cnt) cnt.textContent="("+items.length+(unread?" · 未读 "+unread:"")+")";
+  }
+  function renderDigest(){
+    var box=document.getElementById("digestList");
+    if(!box) return;
+    box.innerHTML="";
+    var all=[];
+    ["version","collab","merch"].forEach(function(k){
+      (SECTIONS[k]?SECTIONS[k].items:[]).forEach(function(it){
+        if(it && it.url) all.push({it:it, sec:k});
+      });
+    });
+    if(!all.length){
+      box.innerHTML='<div class="empty">今日暂无带链接的前瞻资讯</div>';
+      refreshDigestCount();
+      return;
+    }
+    var cap=PAYLOAD.captured_at||"";
+    all.sort(function(a,b){ return (cap).localeCompare(cap); }); // 同一批次抓取时间相同 → 保持稳定顺序
+    all.forEach(function(o){
+      var it=o.it, id=it.id;
+      var row=document.createElement("div");
+      row.className="digest-item"+(digestRead.has(id)?" read":"");
+      var badge=document.createElement("span");
+      badge.className="new-badge";badge.textContent="新";
+      row.appendChild(badge);
+      var type=document.createElement("span");type.className="di-type";
+      type.textContent=secTypeLabel(o.sec,it);row.appendChild(type);
+      var game=document.createElement("span");game.className="di-game";
+      game.textContent=it.game||"";row.appendChild(game);
+      var a=document.createElement("a");a.className="di-title";
+      a.href=esc(it.url);a.target="_blank";a.rel="noopener";
+      a.textContent=it.title||"(无标题)";
+      a.onclick=function(){
+        if(!digestRead.has(id)){
+          markDigestRead(id);
+          row.classList.add("read");
+          refreshDigestCount();
+        }
+      };
+      row.appendChild(a);
+      var src=document.createElement("span");src.className="di-src";
+      src.innerHTML=sourceBadge(it);row.appendChild(src);
+      var time=document.createElement("span");time.className="di-time";
+      time.textContent="🕐 "+(it.timeDisplay||"")+(cap?" · 抓取 "+cap:"");
+      row.appendChild(time);
+      box.appendChild(row);
+    });
+    refreshDigestCount();
+  }
+
   document.getElementById("favToggle").onclick=function(e){
     e.preventDefault();
     if(!favOnly&&!favSet.size){
@@ -2207,7 +2315,7 @@ TEMPLATE = r"""<!DOCTYPE html>
   })();
   document.getElementById("subtitle").textContent="关键节点时间线（未来约 100 天，标题可点击跳原文）· "
     +"板块2 汇总表格（标题跳原文+前瞻时间+兑换码+来源）· 板块3/4 统一封面图卡片（无图占位）";
-  renderTimeline();renderVersion();renderCollab();renderMerch();
+  renderDigest();renderTimeline();renderVersion();renderCollab();renderMerch();
 })();
 </script>
 </body>
