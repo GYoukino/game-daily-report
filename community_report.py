@@ -1320,6 +1320,12 @@ def _act_date(e):
     return e.get("fwd_start") or e.get("fwd_deadline")
 
 
+def _pub_ts(e):
+    """原帖发布时间 epoch（用于「信息汇总」按原帖发布时间倒序）；缺失返回 None。"""
+    dt = parse_publish_time(e)
+    return dt.timestamp() if dt else None
+
+
 def _badge(e):
     """时间线徽标：官方确认=官宣，社区/爆料/待确认=待官宣。"""
     if e.get("is_leak"):
@@ -1671,6 +1677,8 @@ def build_payload(kept, now):
             # 正文/标题提及兑换码（前瞻直播的码只在直播画面公布，正文无码串）
             "hasCodeCtx": ("兑换码" in title + content
                            or "redeem_code" in set(e.get("fwd_facets") or [])),
+            "pubTime": (e.get("time") or "").strip(),
+            "pubTs": _pub_ts(e),
         })
     digest = _merge_dup_rows(rows)
     sections.append({
@@ -1735,6 +1743,8 @@ def build_payload(kept, now):
                 "channel": _extract_channel(body),
                 "sub": sub,
                 "location": location,
+                "pubTime": (e.get("time") or "").strip(),
+                "pubTs": _pub_ts(e),
             })
         cards = _merge_dup_rows(cards)
         sections.append({
@@ -1947,7 +1957,7 @@ TEMPLATE = r"""<!DOCTYPE html>
   <section id="sec-digest">
     <div class="digest-head">
       <span class="sec-num">❰</span><h2>信息汇总 · 每日全量抓取</h2>
-      <span class="desc">全部带链接的前瞻资讯 · 按抓取时间倒序 · 点击跳转后「新」自动标记已读</span>
+      <span class="desc">全部带链接的前瞻资讯 · 按原帖发布时间倒序（最新置顶）· 点击跳转后「新」自动标记已读</span>
       <span id="digestCount"></span>
     </div>
     <div class="digest-list" id="digestList"></div>
@@ -2229,7 +2239,7 @@ TEMPLATE = r"""<!DOCTYPE html>
     sec.items.forEach(function(it){box.appendChild(skCard(it));});
   }
 
-  /* ===== 0. 信息汇总：顶部全量列表（带链接，按抓取时间倒序，不合并，含「新」已读标记） ===== */
+  /* ===== 0. 信息汇总：顶部全量列表（带链接，按原帖发布时间倒序，不合并，含「新」已读标记） ===== */
   function secTypeLabel(sec, it){
     if(sec==="version") return "版本前瞻";
     if(sec==="merch") return "官方周边";
@@ -2259,7 +2269,7 @@ TEMPLATE = r"""<!DOCTYPE html>
       return;
     }
     var cap=PAYLOAD.captured_at||"";
-    all.sort(function(a,b){ return (cap).localeCompare(cap); }); // 同一批次抓取时间相同 → 保持稳定顺序
+    all.sort(function(a,b){ var x=a.it.pubTs||0, y=b.it.pubTs||0; return y-x; }); // 按原帖发布时间倒序（最新置顶），无发布时间沉底
     all.forEach(function(o){
       var it=o.it, id=it.id;
       var row=document.createElement("div");
@@ -2285,7 +2295,8 @@ TEMPLATE = r"""<!DOCTYPE html>
       var src=document.createElement("span");src.className="di-src";
       src.innerHTML=sourceBadge(it);row.appendChild(src);
       var time=document.createElement("span");time.className="di-time";
-      time.textContent="🕐 "+(it.timeDisplay||"")+(cap?" · 抓取 "+cap:"");
+      var pt=it.pubTime||"";
+      time.textContent= pt ? ("🕓 发布 "+pt) : ("🕐 "+(it.timeDisplay||""));
       row.appendChild(time);
       box.appendChild(row);
     });
