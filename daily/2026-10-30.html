@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>官方社区前瞻总览</title>
+<style>
+  :root{
+    --bg:#f4f6fb; --card:#fff; --ink:#1e2430; --sub:#68738a;
+    --line:#e6eaf4; --accent:#3f6df5; --accent2:#8b5cf6;
+    --official:#0f9d6e; --official-bg:#e5f7ef;
+    --leak:#d9541e; --leak-bg:#fdeee4;
+    --expo:#8a63d2; --expo-bg:#f1ebfc;
+    --shadow:0 5px 20px rgba(35,52,100,.08); --radius:14px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    background:var(--bg);color:var(--ink);line-height:1.55;-webkit-text-size-adjust:100%}
+  a{color:inherit;text-decoration:none}
+  header.hero{background:linear-gradient(120deg,#3f6df5,#8b5cf6);color:#fff;padding:24px 18px 20px;text-align:center}
+  header.hero h1{margin:0;font-size:23px}
+  header.hero p{margin:7px 0 0;font-size:12.5px;opacity:.92}
+  nav.topnav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.94);backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);box-shadow:var(--shadow)}
+  nav.topnav .wrap{max-width:1160px;margin:0 auto;display:flex;gap:2px;align-items:center;padding:7px 10px;overflow-x:auto;scrollbar-width:thin}
+  nav.topnav a{flex:0 0 auto;padding:8px 13px;border-radius:999px;font-size:13.5px;color:var(--sub);white-space:nowrap}
+  nav.topnav a:hover{background:#eef2ff;color:var(--accent)}
+  nav.topnav a.fav{margin-left:auto;color:var(--leak);font-weight:600}
+  nav.topnav a.fav.active{background:var(--leak-bg)}
+  /* ===== 信息汇总版块（顶部全量列表，带「新」已读标记） ===== */
+  #sec-digest{background:linear-gradient(180deg,#f7f9ff,#fff);border:1px solid var(--line);
+    border-radius:var(--radius);padding:16px 16px 18px;box-shadow:var(--shadow);scroll-margin-top:58px}
+  .digest-head{display:flex;align-items:baseline;gap:10px;margin:0 0 12px;flex-wrap:wrap}
+  .digest-head h2{font-size:19px;margin:0}
+  .digest-head .desc{color:var(--sub);font-size:12.5px}
+  #digestCount{color:var(--accent);font-weight:600;font-size:12.5px}
+  .digest-list{display:flex;flex-direction:column;gap:7px;max-height:360px;overflow:auto;padding-right:4px}
+  .digest-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:10px;
+    background:#fff;border:1px solid var(--line);font-size:13.5px;line-height:1.3}
+  .digest-item.read{opacity:.7}
+  .new-badge{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;
+    min-width:20px;height:20px;padding:0 5px;border-radius:6px;background:#ff3b30;color:#fff;
+    font-size:11px;font-weight:700;line-height:1}
+  .digest-item.read .new-badge{display:none}
+  .di-type{flex:0 0 auto;color:var(--accent);font-weight:600;font-size:12px;
+    background:#eef2ff;border-radius:6px;padding:2px 7px;white-space:nowrap}
+  .di-game{flex:0 0 auto;color:var(--sub);font-size:12.5px;white-space:nowrap}
+  .di-title{flex:1 1 auto;color:#1f2733;text-decoration:none;font-weight:500;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+  .di-title:hover{color:var(--accent);text-decoration:underline}
+  .di-src{flex:0 0 auto;display:flex;gap:4px}
+  .di-time{flex:0 0 auto;color:#a7aec2;font-size:11.5px;white-space:nowrap}
+  @media(max-width:680px){
+    .digest-item{flex-wrap:wrap;gap:6px}
+    .di-title{flex:1 1 100%;order:5}
+    .di-time{flex:1 1 100%;order:6}
+  }
+  main{max-width:1160px;margin:0 auto;padding:20px 14px 60px}
+  section{margin:28px 0;scroll-margin-top:58px}
+  .sec-head{display:flex;align-items:baseline;gap:9px;margin:0 0 13px;flex-wrap:wrap}
+  .sec-head h2{font-size:19px;margin:0}
+  .sec-head .desc{color:var(--sub);font-size:12.5px}
+  .sec-num{display:inline-flex;align-items:center;justify-content:center;width:25px;height:25px;border-radius:8px;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:13px;font-weight:700;flex:0 0 auto;align-self:center}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:13px 15px;box-shadow:var(--shadow);transition:.15s}
+  .card:hover{transform:translateY(-2px);border-color:#c9d4ef}
+  .row{display:flex;gap:9px;align-items:flex-start}
+  .title-link{font-weight:600;font-size:15px;color:var(--ink);flex:1}
+  .title-link:hover{color:var(--accent)}
+  .title-link .ext{font-size:11px;color:var(--sub);margin-left:4px;font-weight:400}
+  .meta{display:flex;flex-wrap:wrap;gap:5px;align-items:center;margin-top:7px;font-size:12px;color:var(--sub)}
+  .tag{padding:2px 9px;border-radius:999px;font-size:11.5px;font-weight:600;white-space:nowrap}
+  .tag.official{background:var(--official-bg);color:var(--official)}
+  .tag.leak{background:var(--leak-bg);color:var(--leak)}
+  .tag.expo{background:var(--expo-bg);color:var(--expo)}
+  .tag.status{background:#eef2ff;color:var(--accent)}
+  .tag.ft{background:#f0f3fa;color:#5a6377}
+  .tag.code{background:#fff1f0;color:#d4380d;border:1px dashed #ffb3ae;font-family:ui-monospace,Menlo,Consolas,monospace}
+  .game-pill{background:#eef2ff;color:var(--accent);padding:2px 9px;border-radius:999px;font-size:11.5px;font-weight:600}
+  .when{font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums;font-size:12.5px}
+  .empty{color:var(--sub);font-size:13.5px;padding:16px;text-align:center;border:1px dashed var(--line);border-radius:12px;background:#fafbff}
+  .star{flex:0 0 auto;width:29px;height:29px;border-radius:50%;border:1px solid var(--line);background:#fff;cursor:pointer;
+    font-size:14px;display:flex;align-items:center;justify-content:center;color:#c3c9d8;transition:.15s;user-select:none}
+  .star:hover{color:var(--leak);border-color:var(--leak)}
+  .star.on{color:#fff;background:var(--leak);border-color:var(--leak)}
+  /* 紧凑时间线（关键节点式：日期头 + 文字行 + 徽标） */
+  .tline{position:relative;margin-left:6px;padding-left:26px}
+  .tline::before{content:"";position:absolute;left:7px;top:6px;bottom:6px;width:2px;border-radius:2px;
+    background:linear-gradient(var(--accent),var(--accent2))}
+  .tl-node{position:relative;margin-bottom:15px}
+  .tl-node::before{content:"";position:absolute;left:-26px;top:7px;width:9px;height:9px;border-radius:50%;
+    background:#fff;border:3px solid var(--accent);box-shadow:0 0 0 3px #fff}
+  .tl-date{font-size:14px;font-weight:700;color:var(--accent);margin-bottom:3px;font-variant-numeric:tabular-nums}
+  .tl-text{font-size:13.5px;color:var(--ink);line-height:1.95}
+  .tl-time{color:var(--accent);font-weight:600;font-variant-numeric:tabular-nums}
+  .tl-line{display:block;margin:4px 0;padding-left:2px;border-left:2px solid #eef2ff}
+  .tl-link{color:inherit;transition:.15s;border-bottom:1px dashed transparent}
+  .tl-link:hover{color:var(--accent);border-bottom-color:var(--accent)}
+  .badge-off,.badge-pend{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;font-weight:600;
+    vertical-align:1px;margin-left:4px;white-space:nowrap}
+  .badge-off{background:var(--official-bg);color:var(--official)}
+  .badge-pend{background:#fff7e6;color:#d48806}
+  .code-pill{display:inline-block;padding:0 7px;border-radius:6px;font-size:11.5px;color:#d4380d;background:#fff1f0;
+    border:1px dashed #ffb3ae;font-family:ui-monospace,Menlo,Consolas,monospace;margin:0 2px;vertical-align:1px}
+  /* 兑换码未以文字公布时（直播画面公布）的说明 */
+  .tl-note{display:inline-block;padding:0 7px;border-radius:6px;font-size:11.5px;color:#8a6236;
+    background:#fdf6ec;border:1px dashed #e8c48a;margin:0 2px;vertical-align:1px;cursor:help}
+  .vcode-note{display:inline-block;padding:0 7px;border-radius:6px;font-size:11.5px;color:#8a6236;
+    background:#fdf6ec;border:1px dashed #e8c48a;cursor:help}
+  .star.mini{width:22px;height:22px;font-size:11px;vertical-align:middle;margin-left:5px;border:none;background:transparent}
+  /* 森空岛式讯息卡：原帖封面图 + 标题跳转 + 概览 */
+  .skcard{position:relative;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column;transition:.15s}
+  .skcard:hover{transform:translateY(-2px);border-color:#c9d4ef}
+  .skcard .cover{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;background:#eef2ff}
+  .skcard .sk-body{padding:12px 14px 13px;display:flex;flex-direction:column}
+  .skcard .star{position:absolute;top:9px;right:9px;background:rgba(255,255,255,.93);box-shadow:0 1px 6px rgba(0,0,0,.14)}
+  .tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:13px;scrollbar-width:thin}
+  .tabs button{flex:0 0 auto;padding:8px 15px;border:1px solid var(--line);background:#fff;border-radius:999px;
+    font-size:13.5px;color:var(--sub);cursor:pointer;white-space:nowrap;transition:.15s}
+  .tabs button:hover{border-color:var(--accent);color:var(--accent)}
+  .tabs button.active{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-color:transparent;font-weight:600}
+  .sub-h{font-size:14px;font-weight:700;margin:15px 0 8px;display:flex;align-items:center;gap:6px}
+  .sub-h .bar{width:4px;height:15px;border-radius:3px;background:var(--accent)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:11px}
+  /* 板块2：汇总表格（游戏 · 前瞻标题跳转 · 前瞻时间 · 兑换码 · 来源） */
+  .vtable-wrap{overflow-x:auto;background:var(--card);border:1px solid var(--line);
+    border-radius:var(--radius);box-shadow:var(--shadow)}
+  table.vtable{width:100%;border-collapse:collapse;font-size:13px;min-width:760px}
+  .vtable thead th{background:#e8effc;color:#2c4a8a;font-weight:700;font-size:12.5px;
+    text-align:left;padding:10px 12px;border-bottom:2px solid #d5e1f7;white-space:nowrap}
+  .vtable tbody td{padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.6}
+  .vtable tbody tr:last-child td{border-bottom:none}
+  .vtable tbody tr:hover{background:#f6f9ff}
+  .vtable .vgame{font-weight:700;color:var(--accent);white-space:nowrap;font-size:12.5px}
+  .vtable .vtitle{font-weight:600;font-size:13.5px}
+  .vtable .vtitle a{color:var(--ink);border-bottom:1px dashed transparent}
+  .vtable .vtitle a:hover{color:var(--accent);border-bottom-color:var(--accent)}
+  .vtable .vtitle .ver{font-weight:400;color:var(--sub);font-size:12px;display:block;margin-top:1px}
+  .vtable .vtime{color:var(--accent);font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap;font-size:12.5px}
+  .vtable .vtime small{display:block;color:#a7aec2;font-weight:400}
+  .vtable .vcodes{max-width:170px}
+  .vtable .vsrc{white-space:nowrap}
+  .vtable .vsrc .star{margin-top:2px}
+  .dg-reward{color:#9a6206;background:#fff3dd;padding:1px 8px;border-radius:999px;
+    font-size:11.5px;font-weight:600;white-space:nowrap}
+  .dg-plat{margin-top:4px;font-size:12px;color:var(--accent)}
+  .tl-venue{color:var(--sub);font-size:12.5px}
+  .tl-reward{color:#9a6206;font-size:12px;font-weight:600}
+  /* 卡片封面：无图时用统一占位，保持外观一致 */
+  .skcard .cover{width:100%;aspect-ratio:16/9;object-fit:cover;object-position:center;
+    display:block;background:#eef2ff}
+  .skcard .cover-empty{width:100%;aspect-ratio:16/9;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:5px;
+    background:linear-gradient(135deg,#eef2ff,#f4f0ff);color:#93a0bd}
+  .skcard .cover-empty .ph-i{font-size:20px;opacity:.55}
+  .skcard .cover-empty .ph-g{font-size:14.5px;font-weight:700;color:#7b88a8;letter-spacing:.4px}
+  .skcard .cover-empty .ph-t{font-size:11.5px;color:#a9b4cc}
+  footer{max-width:1160px;margin:0 auto;padding:22px 16px 50px;color:var(--sub);font-size:12.5px;text-align:center}
+  footer .note{background:#fff;border:1px solid var(--line);border-radius:12px;padding:13px 16px;text-align:left;box-shadow:var(--shadow)}
+  @media (max-width:768px){
+    header.hero h1{font-size:19px}
+    main{padding:14px 11px 50px}
+    .grid{grid-template-columns:1fr}
+    nav.topnav a{padding:7px 11px;font-size:12.5px}
+    .sec-head h2{font-size:17px}
+    .title-link{font-size:14.5px}
+    .tl-text{font-size:13px}
+  }
+  body.fav-only .skcard:not(.faved){display:none}
+  body.fav-only .vtable tbody tr:not(.faved){display:none}
+</style>
+</head>
+<body>
+<header class="hero">
+  <h1>📡 官方社区前瞻总览</h1>
+  <p id="subtitle">来源：米游社 / 官网 / 官方微博 / NGA社区 / 测试服爆料 / 官方票务展会平台 / 资讯站交叉参考 / 第三方码汇总</p>
+  <p id="genMeta" style="margin:4px 0 0;font-size:12px;opacity:.85"></p>
+</header>
+
+<nav class="topnav">
+  <div class="wrap">
+    <a href="#sec-digest">❰ 信息汇总</a>
+    <a href="#sec-timeline">① 资讯时间线</a>
+    <a href="#sec-version">② 版本前瞻汇总</a>
+    <a href="#sec-collab">③ 联动活动</a>
+    <a href="#sec-merch">④ 官方周边</a>
+    <a href="#" class="fav" id="favToggle">★ 我的收藏 <span id="favCount">(0)</span></a>
+  </div>
+</nav>
+
+<main>
+  <section id="sec-digest">
+    <div class="digest-head">
+      <span class="sec-num">❰</span><h2>信息汇总 · 每日全量抓取</h2>
+      <span class="desc">今日及以后带链接的资讯（除游戏内活动公告）· 按原帖发布时间倒序（最新置顶）· 点击跳转后「新」自动标记已读</span>
+      <span id="digestCount"></span>
+    </div>
+    <div class="digest-list" id="digestList"></div>
+  </section>
+
+  <section id="sec-timeline">
+    <div class="sec-head"><span class="sec-num">1</span><h2>主要资讯时间线速览</h2>
+      <span class="desc">未来约 100 天 · 关键节点 · 按活动时间排序</span></div>
+    <div class="tline" id="timeline"></div>
+  </section>
+
+  <section id="sec-version">
+    <div class="sec-head"><span class="sec-num">2</span><h2>游戏版本前瞻内容汇总</h2>
+      <span class="desc">表格：游戏 · 前瞻标题（点击跳原文） · 前瞻时间 · 兑换码 · 来源</span></div>
+    <div id="versionBody"></div>
+  </section>
+
+  <section id="sec-collab">
+    <div class="sec-head"><span class="sec-num">3</span><h2>联动活动资讯</h2>
+      <span class="desc">联动活动 / 快闪店 / 漫展展会 子分页切换</span></div>
+    <div class="tabs" id="collabTabs"></div>
+    <div class="grid" id="collabList"></div>
+  </section>
+
+  <section id="sec-merch">
+    <div class="sec-head"><span class="sec-num">4</span><h2>官方周边资讯</h2>
+      <span class="desc">周边上新 · 限时优惠 · 盲袋活动</span></div>
+    <div class="grid" id="merchGrid"></div>
+  </section>
+</main>
+
+<footer>
+  <div class="note">
+    <b>标注说明：</b>时间线为<b>纯信息速览</b>（无链接），「官宣」= 官方渠道确认，「待官宣」= 社区信息 / 测试服爆料 / 待官方确认；
+    板块2 为<b>汇总表格</b>（游戏 · 前瞻标题可点击跳转原文 · 前瞻时间 · 兑换码 · 来源）；
+    板块3-4 每条讯息统一以封面图（原帖无图时显示占位图）+ 标题（点击跳转原始来源）呈现。
+    「X·官方」= 官方社区第一方渠道；「官网·官方」= 游戏官网新闻公告；「官方票务/展会」= B站会员购与展会官网；
+    「测试服爆料·第三方」非官方确认，请以官方公告为准。
+    时间一律按<b>实际活动时间</b>标注，时间线仅收录未来约 100 天内正在进行 / 将要开始的信息。<br>
+    <b>分级图例：</b><span class="tag official">官宣</span>官方渠道已公布 ｜
+    <span class="tag leak">爆料</span>测试服 / 社区消息未经确认 ｜
+    <span class="tag status">待官宣</span>官方已预告但档期未定（尚未公布具体时间）｜
+    <span class="tag ft">第三方汇总</span>兑换码来自第三方聚合站，时效 / 区服不定，失效属正常。
+    防骗提示：官方福利码全部免费，凡「付费代兑 / 内部码 / 扫码领原石 / 索要账号密码验证码」均为诈骗。
+    数据生成于 <span id="genTime"></span>。
+  </div>
+</footer>
+
+<script type="application/json" id="payload">{"timeline": [{"label": "10/30（周五）", "items": [{"time": "03:59", "kind": "start", "title": "【联动】【明日方舟×国家图书馆】「恒远津梁」限时活动即将开启", "url": "https://ak.hypergryph.com/news/1454", "badge": "official", "codes": [], "venue": "", "reward": "", "expect": false, "hasCodeCtx": false, "id": "明日方舟|1454"}, {"time": "19:30", "kind": "start", "title": "【前瞻直播】崩坏：星穹铁道 【有奖活动】4.7版本前瞻讨论活动开启，参与赢648现金 发", "url": "https://www.miyoushe.com/sr/article/79207918", "badge": "official", "codes": [], "venue": "", "reward": "", "expect": false, "hasCodeCtx": false, "id": "崩坏：星穹铁道|mys_79207918"}, {"time": "", "kind": "start", "title": "【周边上新】崩坏：星穹铁道 创作者活动 | 「晒星铁周边・赢星途好礼」活动开启", "url": "https://www.miyoushe.com/sr/article/79207913", "badge": "official", "codes": [], "venue": "", "reward": "", "expect": false, "hasCodeCtx": false, "id": "崩坏：星穹铁道|mys_79207913"}]}, {"label": "10/31（周六）", "items": [{"time": "20:00", "kind": "start", "title": "【周边上新】《原神》「极光派对系列」周边即将开启贩售！", "url": "https://www.miyoushe.com/ys/article/79158977", "badge": "official", "codes": [], "venue": "", "reward": "", "expect": false, "hasCodeCtx": false, "id": "原神|mys_79158977"}, {"time": "20:00", "kind": "start", "title": "【周边优惠】《原神》多款模玩手办新品双11首发登场", "url": "https://www.miyoushe.com/ys/article/79141077", "badge": "official", "codes": [], "venue": "", "reward": "", "expect": false, "hasCodeCtx": false, "id": "原神|mys_79141077"}]}, {"label": "11/08（周日）", "items": [{"time": "23:59", "kind": "start", "title": "【周边优惠】崩坏：星穹铁道 周边优惠上新 手办服饰新品齐亮相", "url": "https://www.miyoushe.com/sr/article/78988118", "badge": "official", "codes": [], "venue": "天猫「miHoYo旗舰店」", "reward": "", "expect": false, "hasCodeCtx": false, "id": "崩坏：星穹铁道|mys_78988118"}]}, {"label": "11/11（周三）", "items": [{"time": "06:00", "kind": "start", "title": "【版本更新】崩坏：星穹铁道 4.6版本「月升之前，与兽共舞」版本更新说明", "url": "https://sr.mihoyo.com/news/166489", "badge": "official", "codes": [], "venue": "■「星际幻宠」乐园", "reward": "", "expect": false, "hasCodeCtx": false, "id": "崩坏：星穹铁道|166489"}, {"time": "23:59", "kind": "start", "title": "【周边优惠】绝区零 新品情报丨客制化三模键盘等多款周边上新", "url": "https://zzz.mihoyo.com/news/166933", "badge": "official", "codes": [], "venue": "天猫「绝区零三Z官方旗舰店」", "reward": "", "expect": false, "hasCodeCtx": false, "id": "绝区零|166933"}]}, {"label": "11/18（周三）", "items": [{"time": "", "kind": "start", "title": "【漫展】G-STAR 2026（11月18日–22日·韩国釜山 BEXCO）", "url": "https://www.gstar.or.kr/eng/gstar/gstar_info.do", "badge": "official", "codes": [], "venue": "韩国釜山 BEXCO", "reward": "", "expect": false, "hasCodeCtx": false, "id": "|gstar_2026"}]}, {"label": "11/26（周四）", "items": [{"time": "04:00", "kind": "start", "title": "【版本更新】崩坏3 「时序照新」9.1版本更新公告", "url": "https://bh3.mihoyo.com/news/cate_0/166469", "badge": "official", "codes": [], "venue": "", "reward": "9600 水晶", "expect": false, "hasCodeCtx": false, "id": "崩坏3|166469"}]}, {"label": "11/27（周五）", "items": [{"time": "", "kind": "start", "title": "【漫展】《绝区零》☆Zenless LIVE 2026——FES专场", "url": "https://zzz.mihoyo.com/news/166660", "badge": "official", "codes": [], "venue": "杭州大会展中心", "reward": "", "expect": false, "hasCodeCtx": false, "id": "绝区零|166660"}]}, {"label": "12/10（周四）", "items": [{"time": "", "kind": "start", "title": "【漫展】The Game Awards TGA Returns December 10, 2026", "url": "https://thegameawards.com/news/tga-returns-december-10-2026/", "badge": "official", "codes": [], "venue": "", "reward": "", "expect": false, "hasCodeCtx": false, "id": "The Game Awards|tga-returns-december-10-2026"}]}], "sections": [{"key": "version", "num": "2", "title": "游戏版本前瞻内容汇总", "desc": "表格：游戏 · 前瞻标题（点击跳原文） · 前瞻时间 · 兑换码 · 来源（仅官方）", "count": 3, "items": [{"id": "崩坏：星穹铁道|mys_79207918", "game": "崩坏：星穹铁道", "title": "【前瞻直播】崩坏：星穹铁道 【有奖活动】4.7版本前瞻讨论活动开启，参与赢648现金 发", "url": "https://www.miyoushe.com/sr/article/79207918", "ver": "4.7「前瞻讨论活动开启」", "timeDisplay": "10/30（周五） 19:30 开始", "timeKind": "开始时间", "codes": [], "deadline": "", "reward": "", "platforms": "米游社", "source": "米游社", "official": true, "leak": false, "hasCodeCtx": false, "pubTime": "2026-10-30 12:00:11", "pubTs": 1793332811.0, "actTs": 1793359800}, {"id": "崩坏：星穹铁道|166489", "game": "崩坏：星穹铁道", "title": "【版本更新】崩坏：星穹铁道 4.6版本「月升之前，与兽共舞」版本更新说明", "url": "https://sr.mihoyo.com/news/166489", "ver": "4.6「月升之前」", "timeDisplay": "11/11（周三） 06:00 开始", "timeKind": "开始时间", "codes": [], "deadline": "", "reward": "", "platforms": "", "source": "官网", "official": true, "leak": false, "hasCodeCtx": false, "pubTime": "2026-09-24 17:33:01", "pubTs": 1790242381.0, "actTs": 1794348000}, {"id": "崩坏3|166469", "game": "崩坏3", "title": "【版本更新】崩坏3 「时序照新」9.1版本更新公告", "url": "https://bh3.mihoyo.com/news/cate_0/166469", "ver": "9.1「更新公告」", "timeDisplay": "11/26（周四） 04:00 开始", "timeKind": "开始时间", "codes": [], "deadline": "", "reward": "9600 水晶", "platforms": "", "source": "官网", "official": true, "leak": false, "hasCodeCtx": false, "pubTime": "2026-09-23 22:33:22", "pubTs": 1790174002.0, "actTs": 1795636800}]}, {"key": "collab", "num": "3", "title": "联动活动资讯", "desc": "联动活动 / 快闪店 / 漫展展会 三个子分页切换（仅官方）", "count": 4, "items": [{"id": "|gstar_2026", "game": "", "title": "【漫展】G-STAR 2026（11月18日–22日·韩国釜山 BEXCO）", "url": "https://www.gstar.or.kr/eng/gstar/gstar_info.do", "timeDisplay": "11/18（周三） 开始", "timeKind": "开始时间", "source": "G-STAR官网", "official": true, "leak": false, "facets": ["expo"], "codes": [], "tags": ["官宣"], "image": "https://www.gstar.or.kr/resources/renew/images/img_exhibition.png", "price": "", "channel": "", "sub": "expo", "location": "韩国釜山 BEXCO", "pubTime": "2026-11-18 09:00:00", "pubTs": 1794963600.0, "actTs": 1794931200}, {"id": "明日方舟|1454", "game": "明日方舟", "title": "【联动】【明日方舟×国家图书馆】「恒远津梁」限时活动即将开启", "url": "https://ak.hypergryph.com/news/1454", "timeDisplay": "10/30（周五） 03:59 开始", "timeKind": "开始时间", "source": "鹰角官网", "official": true, "leak": false, "facets": ["version_preview", "offline_collab"], "codes": [], "tags": ["官宣", "即将"], "image": "https://web.hycdn.cn/upload/image/20261008/f30ac1ad6f4dc846e2cc0f60766502ba.png", "price": "", "channel": "", "sub": "collab", "location": "", "pubTime": "2026-10-11 11:00:00", "pubTs": 1791687600.0, "actTs": 1793303940}, {"id": "绝区零|166660", "game": "绝区零", "title": "【漫展】《绝区零》☆Zenless LIVE 2026——FES专场", "url": "https://zzz.mihoyo.com/news/166660", "timeDisplay": "11/27（周五） 开始", "timeKind": "开始时间", "source": "官网", "official": true, "leak": false, "facets": ["expo"], "codes": [], "tags": ["官宣"], "image": "https://fastcdn.mihoyo.com/content-v2/nap/166660/dac8aac9fc9b5e79e900b474b429f73d_6955112982363774443.jpg", "price": "", "channel": "", "sub": "expo", "location": "杭州大会展中心", "pubTime": "2026-10-10 11:51:12", "pubTs": 1791604272.0, "actTs": 1795708800}, {"id": "The Game Awards|tga-returns-december-10-2026", "game": "The Game Awards", "title": "【漫展】The Game Awards TGA Returns December 10, 2026", "url": "https://thegameawards.com/news/tga-returns-december-10-2026/", "timeDisplay": "12/10（周四） 开始", "timeKind": "开始时间", "source": "展会官网", "official": true, "leak": false, "facets": ["expo"], "codes": [], "tags": ["官宣"], "image": "https://assets.thegameawards.com/2026/08/56601a04-2026_tga_keyart_16x9-copy-scaled-1.webp", "price": "", "channel": "", "sub": "expo", "location": "以官方公告为准", "pubTime": "2026-06-24 11:12:00", "pubTs": 1782270720.0, "actTs": 1796832000}]}, {"key": "merch", "num": "4", "title": "官方周边资讯", "desc": "周边上新 · 限时优惠 · 盲袋活动（仅官方）", "count": 6, "items": [{"id": "崩坏：星穹铁道|mys_79207918", "game": "崩坏：星穹铁道", "title": "【前瞻直播】崩坏：星穹铁道 【有奖活动】4.7版本前瞻讨论活动开启，参与赢648现金 发", "url": "https://www.miyoushe.com/sr/article/79207918", "timeDisplay": "10/30（周五） 19:30 开始", "timeKind": "开始时间", "source": "米游社", "official": true, "leak": false, "facets": ["livestream", "version_preview", "merch"], "codes": [], "tags": ["官宣", "即将"], "image": "https://upload-bbs.miyoushe.com/upload/2026/10/29/80823548/a01723de45089e0cad56992b568e78a7_2346752906866635506.jpg", "price": "648 元", "channel": "", "sub": "", "location": "", "pubTime": "2026-10-30 12:00:11", "pubTs": 1793332811.0, "actTs": 1793359800}, {"id": "崩坏：星穹铁道|mys_79207913", "game": "崩坏：星穹铁道", "title": "【周边上新】崩坏：星穹铁道 创作者活动 | 「晒星铁周边・赢星途好礼」活动开启", "url": "https://www.miyoushe.com/sr/article/79207913", "timeDisplay": "10/30（周五） – 12/01（周二）", "timeKind": "活动时间", "source": "米游社", "official": true, "leak": false, "facets": ["merch"], "codes": [], "tags": ["官宣", "即将"], "image": "https://upload-bbs.miyoushe.com/upload/2026/10/30/378227948/6de3708fcfd986ce3657f9baf322c36c_9219479583522503958.jpg", "price": "", "channel": "", "sub": "", "location": "", "pubTime": "2026-10-30 12:00:04", "pubTs": 1793332804.0, "actTs": 1793289600}, {"id": "原神|mys_79158977", "game": "原神", "title": "【周边上新】《原神》「极光派对系列」周边即将开启贩售！", "url": "https://www.miyoushe.com/ys/article/79158977", "timeDisplay": "10/31（周六） 20:00 开始", "timeKind": "开始时间", "source": "米游社", "official": true, "leak": false, "facets": ["version_preview", "merch"], "codes": [], "tags": ["官宣", "即将"], "image": "https://upload-bbs.miyoushe.com/upload/2026/10/26/218080295/9118531156a2b0c00736a33ca53e7d23_4563385806519845391.jpg", "price": "", "channel": "", "sub": "", "location": "", "pubTime": "2026-10-27 12:00:10", "pubTs": 1793073610.0, "actTs": 1793448000}, {"id": "原神|mys_79141077", "game": "原神", "title": "【周边优惠】《原神》多款模玩手办新品双11首发登场", "url": "https://www.miyoushe.com/ys/article/79141077", "timeDisplay": "10/31（周六） 20:00 开始", "timeKind": "开始时间", "source": "米游社", "official": true, "leak": false, "facets": ["merch"], "codes": [], "tags": ["官宣", "即将"], "image": "https://upload-bbs.miyoushe.com/upload/2026/10/23/218080295/29ab269ed24a442520d625e948eb0593_8777709874622150190.jpg", "price": "", "channel": "", "sub": "", "location": "", "pubTime": "2026-10-26 12:00:04", "pubTs": 1792987204.0, "actTs": 1793448000}, {"id": "绝区零|166933", "game": "绝区零", "title": "【周边优惠】绝区零 新品情报丨客制化三模键盘等多款周边上新", "url": "https://zzz.mihoyo.com/news/166933", "timeDisplay": "11/11（周三） 23:59 开始", "timeKind": "开始时间", "source": "官网", "official": true, "leak": false, "facets": ["merch"], "codes": [], "tags": ["官宣"], "image": "https://fastcdn.mihoyo.com/content-v2/nap/166933/570345c48f5f3274ef830b9ff3e71ed7_1703309851645438743.jpg", "price": "", "channel": "绝区零三Z官方旗舰店 / 绝区零", "sub": "", "location": "天猫「绝区零三Z官方旗舰店」", "pubTime": "2026-10-19 11:18:16", "pubTs": 1792379896.0, "actTs": 1794412740}, {"id": "崩坏：星穹铁道|mys_78988118", "game": "崩坏：星穹铁道", "title": "【周边优惠】崩坏：星穹铁道 周边优惠上新 手办服饰新品齐亮相", "url": "https://www.miyoushe.com/sr/article/78988118", "timeDisplay": "11/08（周日） 23:59 开始", "timeKind": "开始时间", "source": "米游社", "official": true, "leak": false, "facets": ["merch"], "codes": [], "tags": ["官宣"], "image": "https://upload-bbs.miyoushe.com/upload/2026/10/16/378227948/d24f0689e024f45ad83699221409595f_6789675414331068696.jpg", "price": "", "channel": "miHoYo旗舰店 / 崩坏星穹铁道官方旗舰店", "sub": "", "location": "天猫「miHoYo旗舰店」", "pubTime": "2026-10-18 18:00:01", "pubTs": 1792317601.0, "actTs": 1794153540}]}], "digest": [{"it": {"id": "明日方舟|nga_47805357", "game": "明日方舟", "title": "【前瞻直播】[新闻搬运] 《明日方舟》限定干员“塔露拉”前瞻PV（@夜如梭）", "url": "https://bbs.nga.cn/read.php?tid=47805357", "ver": "", "timeDisplay": "发布 10-29 11:03", "timeKind": "发布时间", "codes": [], "deadline": "", "reward": "", "platforms": "", "source": "NGA", "official": false, "leak": false, "hasCodeCtx": false, "pubTime": "2026-10-29 11:03:35", "pubTs": 1793243015.0, "actTs": 0}, "sec": "version"}, {"it": {"id": "崩坏：星穹铁道|mys_79207918", "game": "崩坏：星穹铁道", "title": "【前瞻直播】崩坏：星穹铁道 【有奖活动】4.7版本前瞻讨论活动开启，参与赢648现金 发", "url": "https://www.miyoushe.com/sr/article/79207918", "ver": "4.7「前瞻讨论活动开启」", "timeDisplay": "10/30（周五） 19:30 开始", "timeKind": "开始时间", "codes": [], "deadline": "", "reward": "", "platforms": "米游社", "source": "米游社", "official": true, "leak": false, "hasCodeCtx": false, "pubTime": "2026-10-30 12:00:11", "pubTs": 1793332811.0, "actTs": 1793359800}, "sec": "version"}, {"it": {"id": "崩坏：星穹铁道|166489", "game": "崩坏：星穹铁道", "title": "【版本更新】崩坏：星穹铁道 4.6版本「月升之前，与兽共舞」版本更新说明", "url": "https://sr.mihoyo.com/news/166489", "ver": "4.6「月升之前」", "timeDisplay": "11/11（周三） 06:00 开始", "timeKind": "开始时间", "codes": [], "deadline": "", "reward": "", "platforms": "", "source": "官网", "official": true, "leak": false, "hasCodeCtx": false, "pubTime": "2026-09-24 17:33:01", "pubTs": 1790242381.0, "actTs": 1794348000}, "sec": "version"}, {"it": {"id": "崩坏3|166469", "game": "崩坏3", "title": "【版本更新】崩坏3 「时序照新」9.1版本更新公告", "url": "https://bh3.mihoyo.com/news/cate_0/166469", "ver": "9.1「更新公告」", "timeDisplay": "11/26（周四） 04:00 开始", "timeKind": "开始时间", "codes": [], "deadline": "", "reward": "9600 水晶", "platforms": "", "source": "官网", "official": true, "leak": false, "hasCodeCtx": false, "pubTime": "2026-09-23 22:33:22", "pubTs": 1790174002.0, "actTs": 1795636800}, "sec": "version"}, {"it": {"id": "|gstar_2026", "game": "", "title": "【漫展】G-STAR 2026（11月18日–22日·韩国釜山 BEXCO）", "url": "https://www.gstar.or.kr/eng/gstar/gstar_info.do", "timeDisplay": "11/18（周三） 开始", "timeKind": "开始时间", "source": "G-STAR官网", "official": true, "leak": false, "facets": ["expo"], "codes": [], "tags": ["官宣"], "image": "https://www.gstar.or.kr/resources/renew/images/img_exhibition.png", "price": "", "channel": "", "sub": "expo", "location": "韩国釜山 BEXCO", "pubTime": "2026-11-18 09:00:00", "pubTs": 1794963600.0, "actTs": 1794931200}, "sec": "collab"}, {"it": {"id": "明日方舟|nga_47811792", "game": "明日方舟", "title": "【快闪店】明日方舟 [线下活动]快闪部分图片[多图杀猫]（@加班的孔明3308）", "url": "https://bbs.nga.cn/read.php?tid=47811792", "timeDisplay": "发布 10-30 09:54", "timeKind": "发布时间", "source": "NGA", "official": false, "leak": false, "facets": ["popup"], "codes": [], "tags": ["社区", "档期待确认"], "image": "", "price": "", "channel": "", "sub": "popup", "location": "", "pubTime": "2026-10-30 09:54:25", "pubTs": 1793325265.0, "actTs": 0}, "sec": "collab"}, {"it": {"id": "明日方舟|nga_47810718", "game": "明日方舟", "title": "【联动】[新闻搬运]韵律源点Arcaea x 明日方舟 联动决定（@雪无言，雨有源）", "url": "https://bbs.nga.cn/read.php?tid=47810718", "timeDisplay": "发布 10-30 08:04", "timeKind": "发布时间", "source": "NGA", "official": false, "leak": false, "facets": ["offline_collab"], "codes": [], "tags": ["社区", "档期待确认"], "image": "", "price": "", "channel": "", "sub": "collab", "location": "", "pubTime": "2026-10-30 08:04:03", "pubTs": 1793318643.0, "actTs": 0}, "sec": "collab"}, {"it": {"id": "明日方舟|1454", "game": "明日方舟", "title": "【联动】【明日方舟×国家图书馆】「恒远津梁」限时活动即将开启", "url": "https://ak.hypergryph.com/news/1454", "timeDisplay": "10/30（周五） 03:59 开始", "timeKind": "开始时间", "source": "鹰角官网", "official": true, "leak": false, "facets": ["version_preview", "offline_collab"], "codes": [], "tags": ["官宣", "即将"], "image": "https://web.hycdn.cn/upload/image/20261008/f30ac1ad6f4dc846e2cc0f60766502ba.png", "price": "", "channel": "", "sub": "collab", "location": "", "pubTime": "2026-10-11 11:00:00", "pubTs": 1791687600.0, "actTs": 1793303940}, "sec": "collab"}, {"it": {"id": "绝区零|166660", "game": "绝区零", "title": "【漫展】《绝区零》☆Zenless LIVE 2026——FES专场", "url": "https://zzz.mihoyo.com/news/166660", "timeDisplay": "11/27（周五） 开始", "timeKind": "开始时间", "source": "官网", "official": true, "leak": false, "facets": ["expo"], "codes": [], "tags": ["官宣"], "image": "https://fastcdn.mihoyo.com/content-v2/nap/166660/dac8aac9fc9b5e79e900b474b429f73d_6955112982363774443.jpg", "price": "", "channel": "", "sub": "expo", "location": "杭州大会展中心", "pubTime": "2026-10-10 11:51:12", "pubTs": 1791604272.0, "actTs": 1795708800}, "sec": "collab"}, {"it": {"id": "The Game Awards|tga-returns-december-10-2026", "game": "The Game Awards", "title": "【漫展】The Game Awards TGA Returns December 10, 2026", "url": "https://thegameawards.com/news/tga-returns-december-10-2026/", "timeDisplay": "12/10（周四） 开始", "timeKind": "开始时间", "source": "展会官网", "official": true, "leak": false, "facets": ["expo"], "codes": [], "tags": ["官宣"], "image": "https://assets.thegameawards.com/2026/08/56601a04-2026_tga_keyart_16x9-copy-scaled-1.webp", "price": "", "channel": "", "sub": "expo", "location": "以官方公告为准", "pubTime": "2026-06-24 11:12:00", "pubTs": 1782270720.0, "actTs": 1796832000}, "sec": "collab"}, {"it": {"id": "崩坏：星穹铁道|mys_79207918", "game": "崩坏：星穹铁道", "title": "【前瞻直播】崩坏：星穹铁道 【有奖活动】4.7版本前瞻讨论活动开启，参与赢648现金 发", "url": "https://www.miyoushe.com/sr/article/79207918", "timeDisplay": "10/30（周五） 19:30 开始", "timeKind": "开始时间", "source": "米游社", "official": true, "leak": false, "facets": ["livestream", "version_preview", "merch"], "codes": [], "tags": ["官宣", "即将"], "image": "https://upload-bbs.miyoushe.com/upload/2026/10/29/80823548/a01723de45089e0cad56992b568e78a7_2346752906866635506.jpg", "price": "648 元", "channel": "", "sub": "", "location": "", "pubTime": "2026-10-30 12:00:11", "pubTs": 1793332811.0, "actTs": 1793359800}, "sec": "merch"}, {"it": {"id": "崩坏：星穹铁道|mys_79207913", "game": "崩坏：星穹铁道", "title": "【周边上新】崩坏：星穹铁道 创作者活动 | 「晒星铁周边・赢星途好礼」活动开启", "url": "https://www.miyoushe.com/sr/article/79207913", "timeDisplay": "10/30（周五） – 12/01（周二）", "timeKind": "活动时间", "source": "米游社", "official": true, "leak": false, "facets": ["merch"], "codes": [], "tags": ["官宣", "即将"], "image": "https://upload-bbs.miyoushe.com/upload/2026/10/30/378227948/6de3708fcfd986ce3657f9baf322c36c_9219479583522503958.jpg", "price": "", "channel": "", "sub": "", "location": "", "pubTime": "2026-10-30 12:00:04", "pubTs": 1793332804.0, "actTs": 1793289600}, "sec": "merch"}, {"it": {"id": "原神|mys_79158977", "game": "原神", "title": "【周边上新】《原神》「极光派对系列」周边即将开启贩售！", "url": "https://www.miyoushe.com/ys/article/79158977", "timeDisplay": "10/31（周六） 20:00 开始", "timeKind": "开始时间", "source": "米游社", "official": true, "leak": false, "facets": ["version_preview", "merch"], "codes": [], "tags": ["官宣", "即将"], "image": "https://upload-bbs.miyoushe.com/upload/2026/10/26/218080295/9118531156a2b0c00736a33ca53e7d23_4563385806519845391.jpg", "price": "", "channel": "", "sub": "", "location": "", "pubTime": "2026-10-27 12:00:10", "pubTs": 1793073610.0, "actTs": 1793448000}, "sec": "merch"}, {"it": {"id": "原神|mys_79141077", "game": "原神", "title": "【周边优惠】《原神》多款模玩手办新品双11首发登场", "url": "https://www.miyoushe.com/ys/article/79141077", "timeDisplay": "10/31（周六） 20:00 开始", "timeKind": "开始时间", "source": "米游社", "official": true, "leak": false, "facets": ["merch"], "codes": [], "tags": ["官宣", "即将"], "image": "https://upload-bbs.miyoushe.com/upload/2026/10/23/218080295/29ab269ed24a442520d625e948eb0593_8777709874622150190.jpg", "price": "", "channel": "", "sub": "", "location": "", "pubTime": "2026-10-26 12:00:04", "pubTs": 1792987204.0, "actTs": 1793448000}, "sec": "merch"}, {"it": {"id": "明日方舟|nga_47778747", "game": "明日方舟", "title": "【周边上新】明日方舟 [版面活动]分享冻土与火种H5活动进阶模式结算界面，赢版面声望！(抽20位幸运坛友赠送精美周边一份！)（@冲出一线）", "url": "https://bbs.nga.cn/read.php?tid=47778747", "timeDisplay": "发布 10-24 22:21", "timeKind": "发布时间", "source": "NGA", "official": false, "leak": false, "facets": ["merch"], "codes": [], "tags": ["社区", "档期待确认"], "image": "", "price": "", "channel": "", "sub": "", "location": "", "pubTime": "2026-10-24 22:21:15", "pubTs": 1792851675.0, "actTs": 0}, "sec": "merch"}, {"it": {"id": "绝区零|166933", "game": "绝区零", "title": "【周边优惠】绝区零 新品情报丨客制化三模键盘等多款周边上新", "url": "https://zzz.mihoyo.com/news/166933", "timeDisplay": "11/11（周三） 23:59 开始", "timeKind": "开始时间", "source": "官网", "official": true, "leak": false, "facets": ["merch"], "codes": [], "tags": ["官宣"], "image": "https://fastcdn.mihoyo.com/content-v2/nap/166933/570345c48f5f3274ef830b9ff3e71ed7_1703309851645438743.jpg", "price": "", "channel": "绝区零三Z官方旗舰店 / 绝区零", "sub": "", "location": "天猫「绝区零三Z官方旗舰店」", "pubTime": "2026-10-19 11:18:16", "pubTs": 1792379896.0, "actTs": 1794412740}, "sec": "merch"}, {"it": {"id": "崩坏：星穹铁道|mys_78988118", "game": "崩坏：星穹铁道", "title": "【周边优惠】崩坏：星穹铁道 周边优惠上新 手办服饰新品齐亮相", "url": "https://www.miyoushe.com/sr/article/78988118", "timeDisplay": "11/08（周日） 23:59 开始", "timeKind": "开始时间", "source": "米游社", "official": true, "leak": false, "facets": ["merch"], "codes": [], "tags": ["官宣"], "image": "https://upload-bbs.miyoushe.com/upload/2026/10/16/378227948/d24f0689e024f45ad83699221409595f_6789675414331068696.jpg", "price": "", "channel": "miHoYo旗舰店 / 崩坏星穹铁道官方旗舰店", "sub": "", "location": "天猫「miHoYo旗舰店」", "pubTime": "2026-10-18 18:00:01", "pubTs": 1792317601.0, "actTs": 1794153540}, "sec": "merch"}], "games": [{"name": "原神", "note": ""}, {"name": "崩坏：星穹铁道", "note": ""}, {"name": "绝区零", "note": ""}, {"name": "崩坏3", "note": ""}, {"name": "鸣潮", "note": "官网源已接入；库街区填 token 后增强"}, {"name": "明日方舟", "note": "官网源已接入；森空岛填 cred 后增强"}, {"name": "明日方舟：终末地", "note": "官网源已接入；森空岛填 cred 后增强"}, {"name": "重返未来：1999", "note": "官网接口为全球服公告；国服动态待官方社媒接入"}], "captured_at": "2026-10-30 15:58:51", "generated": "2026-10-30 15:58 GMT+8"}</script>
+<script>
+(function(){
+  "use strict";
+  var PAYLOAD = JSON.parse(document.getElementById("payload").textContent);
+  var DATA = PAYLOAD.timeline || [];
+  var SECTIONS = {};
+  (PAYLOAD.sections || []).forEach(function(s){SECTIONS[s.key]=s;});
+  var GAMES_META = PAYLOAD.games || [];
+  var FACET_LABEL = {
+    livestream:"前瞻直播", version_preview:"版本前瞻", redeem_code:"兑换码",
+    offline_collab:"联动", merch:"周边", popup:"快闪店", expo:"漫展展会"
+  };
+  var FAV_KEY = "gmon_fav_comm_v3";
+  var favSet = new Set(JSON.parse(localStorage.getItem(FAV_KEY) || "[]"));
+  var favOnly = false;
+  var DIGEST_READ_KEY = "gmon_digest_read_v1";
+  var digestRead = new Set(JSON.parse(localStorage.getItem(DIGEST_READ_KEY) || "[]"));
+  function markDigestRead(id){
+    digestRead.add(id);
+    try{localStorage.setItem(DIGEST_READ_KEY, JSON.stringify([...digestRead]));}catch(e){}
+  }
+
+  function esc(s){return (s||"").replace(/[&<>"]/g,function(c){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];});}
+
+  function saveFav(){localStorage.setItem(FAV_KEY, JSON.stringify([...favSet]));
+    document.getElementById("favCount").textContent="("+favSet.size+")";}
+  function toggleFav(id,btn){
+    if(favSet.has(id)){favSet.delete(id);if(btn){btn.classList.remove("on");btn.textContent="☆";}}
+    else{favSet.add(id);if(btn){btn.classList.add("on");btn.textContent="★";}}
+    saveFav();
+    toggleFav(id);   // 时间线不再参与收藏，卡片/汇总行由各自渲染函数刷新
+  }
+  function starBtn(id){
+    var on=favSet.has(id);
+    var b=document.createElement("button");
+    b.className="star"+(on?" on":"");b.textContent=on?"★":"☆";b.title="特别关注 / 收藏";
+    b.setAttribute("data-id",id);
+    b.onclick=function(e){e.stopPropagation();e.preventDefault();toggleFav(id,b);};
+    return b;}
+  function starHtml(id){
+    return '<button class="star mini'+(favSet.has(id)?" on":"")
+      +'" data-id="'+esc(id)+'" title="特别关注 / 收藏">'+(favSet.has(id)?"★":"☆")+'</button>';}
+
+  function sourceBadge(it){
+    if(it.leak) return '<span class="tag leak">测试服爆料·第三方</span>';
+    if(it.official){
+      var s=it.source||"官方";
+      if(/会员购|展会/.test(s)) s=s+"·官方票务/展会";
+      else s=s+"·官方";
+      return '<span class="tag official">'+esc(s)+'</span>';
+    }
+    return '<span class="tag leak">'+esc(it.source||"社区")+'</span>';}
+  function statusTags(it){
+    var h="";
+    (it.tags||[]).forEach(function(t){
+      if(t==="官宣"||t==="社区"||t==="第三方")return;
+      h+='<span class="tag status">'+esc(t)+'</span>';});
+    return h;}
+  function facetTags(it){
+    var h="";
+    (it.facets||[]).forEach(function(f){
+      h+='<span class="tag ft">'+(FACET_LABEL[f]||f)+'</span>';});
+    return h;}
+  function codeTags(it){
+    var h="";
+    (it.codes||[]).slice(0,4).forEach(function(c){
+      h+='<span class="tag code">'+esc(c)+'</span>';});
+    return h;}
+
+  /* 森空岛式讯息卡：封面图（无图占位）+ 标题跳转 + 简介 */
+  function skCard(it){
+    var c=document.createElement("div");
+    c.className="skcard"+(favSet.has(it.id)?" faved":"");
+    if(it.image){
+      var img=document.createElement("img");
+      img.className="cover";img.loading="lazy";img.referrerPolicy="no-referrer";
+      img.src=it.image;img.alt="";
+      c.appendChild(img);
+    }else{
+      var ph=document.createElement("div");
+      ph.className="cover-empty";
+      var tg=(it.title||"").match(/^【([^】]*)】/);
+      ph.innerHTML='<span class="ph-i">🖼</span>'
+        +'<span class="ph-g">'+esc(it.game||"官方")+'</span>'
+        +'<span class="ph-t">'+esc(tg?tg[1]:"官方讯息")+' · 原帖未提供封面图</span>';
+      c.appendChild(ph);
+    }
+    var body=document.createElement("div");body.className="sk-body";
+    var link=it.url
+      ? '<a class="title-link" href="'+esc(it.url)+'" target="_blank" rel="noopener">'+esc(it.title)
+        +'<span class="ext">↗</span></a>'
+      : '<div class="title-link">'+esc(it.title)+'</div>';
+    var meta='<div class="meta">'
+      +'<span class="game-pill">'+esc(it.game)+'</span>'
+      +sourceBadge(it)+statusTags(it)+facetTags(it)+codeTags(it)
+      +'<span class="when">🕐 '+esc(it.timeDisplay||"")+'</span>'
+      +(it.timeDisplay?'<span style="color:#a7aec2">'+esc(it.timeKind)+'</span>':'')
+      +(it.location?'<span style="color:#a7aec2">📍 '+esc(it.location)+'</span>':'')
+      +(it.price?'<span class="dg-reward">💰 '+esc(it.price)+'</span>':'')
+      +(it.channel?'<span style="color:#a7aec2">🏬 '+esc(it.channel)+'</span>':'')
+      +'</div>';
+    body.innerHTML='<div class="row">'+link+'</div>'+meta;
+    c.appendChild(body);
+    c.appendChild(starBtn(it.id));
+    return c;}
+
+  /* ===== 1. 时间线：紧凑关键节点式（日期头 + 文字行 + 徽标，标题点击跳原文） ===== */
+  function renderTimeline(){
+    var box=document.getElementById("timeline");
+    box.innerHTML="";
+    var nodes=DATA;
+    if(!nodes.length){
+      box.innerHTML='<div class="empty">未来约 100 天内暂无带明确活动时间的前瞻资讯</div>';
+      return;}
+    nodes.forEach(function(nd){
+      var node=document.createElement("div");node.className="tl-node";
+      var h=document.createElement("div");h.className="tl-date";
+      h.textContent="📅 "+nd.label;
+      node.appendChild(h);
+      var html=nd.items.map(function(it){
+        var s="";
+        if(it.kind==="start"&&it.time) s+='<span class="tl-time">'+esc(it.time)+'</span> ';
+        s+= it.url
+          ? '<a class="tl-link" href="'+esc(it.url)+'" target="_blank" rel="noopener">'+esc(it.title)+'</a>'
+          : esc(it.title);
+        if(it.venue) s+=' <span class="tl-venue">📍 '+esc(it.venue)+'</span>';
+        if(it.reward) s+=' <span class="tl-reward">🎁 '+esc(it.reward)+'</span>';
+        if(it.kind==="deadline") s+=' <span class="tl-time">'+esc(it.time||"00:00")+' 截止</span>';
+        (it.codes||[]).slice(0,3).forEach(function(c){
+          s+=' <span class="code-pill">'+esc(c)+'</span>';});
+        if(!(it.codes||[]).length&&it.hasCodeCtx)
+          s+=' <span class="tl-note" title="官方在前瞻直播中公布兑换码，正文与回顾长图未以文字形式给出">直播期间公布</span>';
+        s+= it.badge==="official"
+          ? ' <span class="badge-off">官宣</span>'
+          : ' <span class="badge-pend" title="社区信息 / 测试服爆料 / 待官方确认">待官宣</span>';
+        return '<div class="tl-line">'+s+'</div>';
+      }).join('');
+      var t=document.createElement("div");t.className="tl-text";t.innerHTML=html;
+      node.appendChild(t);
+      box.appendChild(node);
+    });
+  }
+
+  /* ===== 2. 版本前瞻汇总：表格（游戏 · 前瞻标题跳转 · 前瞻时间 · 兑换码 · 来源） ===== */
+  function renderVersion(){
+    var body=document.getElementById("versionBody");
+    var sec=SECTIONS.version||{items:[]};
+    body.innerHTML="";
+    if(!sec.items.length){
+      body.innerHTML='<div class="empty">暂无进行中/将开始的大版本前瞻与兑换码</div>';
+      return;}
+    var wrap=document.createElement("div");wrap.className="vtable-wrap";
+    var t=document.createElement("table");t.className="vtable";
+    t.innerHTML="<thead><tr><th>游戏</th><th>前瞻标题</th><th>前瞻时间</th>"
+      +"<th>兑换码</th><th>来源</th></tr></thead>";
+    var tb=document.createElement("tbody");
+    sec.items.forEach(function(it){
+      var tr=document.createElement("tr");
+      tr.className=favSet.has(it.id)?"faved":"";
+      var codes="";
+      (it.codes||[]).slice(0,4).forEach(function(c){
+        codes+='<span class="tag code">'+esc(c)+'</span> ';});
+      if(!(it.codes||[]).length&&it.hasCodeCtx)
+        codes+='<span class="vcode-note" title="官方在前瞻直播中公布兑换码，正文与回顾长图未以文字形式给出">直播期间公布</span>';
+      if(it.deadline&&(it.codes.length||it.hasCodeCtx)&&it.timeKind!=="截止时间"
+         &&(it.timeDisplay||"").indexOf("截止")<0){
+        codes+='<div style="color:#c0392b;font-size:11.5px;margin-top:3px">'+esc(it.deadline)+' 截止</div>';}
+      var ver=it.ver?'<span class="ver">'+esc(it.ver)+'</span>':'';
+      var plat=it.platforms?'<div class="dg-plat">📺 '+esc(it.platforms)+'</div>':'';
+      var reward=it.reward?' <span class="dg-reward">🎁 '+esc(it.reward)+'</span>':'';
+      var title=it.url
+        ? '<a href="'+esc(it.url)+'" target="_blank" rel="noopener">'+esc(it.title)+' ↗</a>'
+        : esc(it.title);
+      var src=it.leak
+        ? '<span class="tag leak">测试服爆料</span>'
+        : (it.official
+          ? '<span class="tag official">'+esc(it.source||"官方")+'</span>'
+          : '<span class="tag ft">'+esc(it.source||"第三方")+'</span>');
+      tr.innerHTML='<td class="vgame">'+esc(it.game)+'<div style="margin-top:4px">'+starHtml(it.id)+'</div></td>'
+        +'<td class="vtitle">'+title+ver+plat+reward+'</td>'
+        +'<td class="vtime">'+esc(it.timeDisplay||"档期待确认")+'<small>'+esc(it.timeKind||"")+'</small></td>'
+        +'<td class="vcodes">'+(codes||'<span style="color:#a7aec2">—</span>')+'</td>'
+        +'<td class="vsrc">'+src+'</td>';
+      tb.appendChild(tr);
+    });
+    t.appendChild(tb);wrap.appendChild(t);body.appendChild(wrap);
+  }
+
+  /* ===== 3. 联动活动：三个子分页（联动 / 快闪店 / 漫展展会，卡片带封面图） ===== */
+  var COLLAB_TABS=[["collab","联动活动"],["popup","快闪店"],["expo","漫展展会"]];
+  function renderCollab(){
+    var tabs=document.getElementById("collabTabs");
+    var box=document.getElementById("collabList");
+    var sec=SECTIONS.collab||{items:[]};
+    var labelOf={};COLLAB_TABS.forEach(function(p){labelOf[p[0]]=p[1];});
+    function draw(sub){
+      box.innerHTML="";
+      var arr=sec.items.filter(function(it){return it.sub===sub;});
+      if(!arr.length){
+        box.innerHTML='<div class="empty">'+esc(labelOf[sub])
+          +'：暂无进行中/将开始的资讯（快闪店 / 漫展通常随大版本或档期由官方公告，'
+          +'建议关注官方微博 / 公众号与会员购）</div>';
+        return;}
+      arr.forEach(function(it){box.appendChild(skCard(it));});
+    }
+    tabs.innerHTML="";
+    var firstNonEmpty=COLLAB_TABS[0][0];
+    COLLAB_TABS.forEach(function(pair,i){
+      var n=sec.items.filter(function(it){return it.sub===pair[0];}).length;
+      if(i===0){
+        for(var j=0;j<COLLAB_TABS.length;j++){
+          if(sec.items.some(function(it){return it.sub===COLLAB_TABS[j][0];})){
+            firstNonEmpty=COLLAB_TABS[j][0];break;}}}
+      var b=document.createElement("button");
+      b.textContent=pair[1]+" ("+n+")";
+      if(pair[0]===firstNonEmpty)b.classList.add("active");
+      b.onclick=function(){[...tabs.children].forEach(function(x){x.classList.remove("active");});
+        b.classList.add("active");draw(pair[0]);};
+      tabs.appendChild(b);
+    });
+    draw(firstNonEmpty);
+  }
+
+  /* ===== 4. 官方周边（森空岛式卡片） ===== */
+  function renderMerch(){
+    var box=document.getElementById("merchGrid");
+    var sec=SECTIONS.merch||{items:[]};
+    if(!sec.items.length){box.innerHTML='<div class="empty">暂无官方周边资讯</div>';return;}
+    sec.items.forEach(function(it){box.appendChild(skCard(it));});
+  }
+
+  /* ===== 0. 信息汇总：顶部全量列表（带链接，按原帖发布时间倒序，不合并，含「新」已读标记） ===== */
+  function secTypeLabel(sec, it){
+    if(sec==="version") return "版本前瞻";
+    if(sec==="merch") return "官方周边";
+    var m={"collab":"联动活动","popup":"快闪店","expo":"漫展展会"};
+    return m[it.sub]||"联动活动";
+  }
+  function refreshDigestCount(){
+    var items=document.querySelectorAll("#digestList .digest-item");
+    var unread=0;
+    items.forEach(function(r){ if(!r.classList.contains("read")) unread++; });
+    var cnt=document.getElementById("digestCount");
+    if(cnt) cnt.textContent="("+items.length+(unread?" · 未读 "+unread:"")+")";
+  }
+  function renderDigest(){
+    var box=document.getElementById("digestList");
+    if(!box) return;
+    box.innerHTML="";
+    var t0=new Date(); t0.setHours(0,0,0,0); var t0s=Math.floor(t0.getTime()/1000);
+    var all=[];
+    // 信息汇总读取全量 digest（官方+第三方+爆料），与板块1-4的官方口径解耦
+    (PAYLOAD.digest||[]).forEach(function(o){
+      var it=o.it;
+      if(it && it.url){
+        // Q1-A：仅保留活动开始日期≥今天的内容（无日期的保留，避免误删）
+        if(it.actTs && it.actTs < t0s) return;
+        all.push(o);
+      }
+    });
+    if(!all.length){
+      box.innerHTML='<div class="empty">今日及以后暂无带链接的资讯</div>';
+      refreshDigestCount();
+      return;
+    }
+    var cap=PAYLOAD.captured_at||"";
+    all.sort(function(a,b){ var x=a.it.pubTs||0, y=b.it.pubTs||0; return y-x; }); // 按原帖发布时间倒序（最新置顶），无发布时间沉底
+    all.forEach(function(o){
+      var it=o.it, id=it.id;
+      var row=document.createElement("div");
+      row.className="digest-item"+(digestRead.has(id)?" read":"");
+      var badge=document.createElement("span");
+      badge.className="new-badge";badge.textContent="新";
+      row.appendChild(badge);
+      var type=document.createElement("span");type.className="di-type";
+      type.textContent=secTypeLabel(o.sec,it);row.appendChild(type);
+      var game=document.createElement("span");game.className="di-game";
+      game.textContent=it.game||"";row.appendChild(game);
+      var a=document.createElement("a");a.className="di-title";
+      a.href=esc(it.url);a.target="_blank";a.rel="noopener";
+      a.textContent=it.title||"(无标题)";
+      a.onclick=function(){
+        if(!digestRead.has(id)){
+          markDigestRead(id);
+          row.classList.add("read");
+          refreshDigestCount();
+        }
+      };
+      row.appendChild(a);
+      var src=document.createElement("span");src.className="di-src";
+      src.innerHTML=sourceBadge(it);row.appendChild(src);
+      var time=document.createElement("span");time.className="di-time";
+      var pt=it.pubTime||"";
+      time.textContent= pt ? ("🕓 发布 "+pt) : ("🕐 "+(it.timeDisplay||""));
+      row.appendChild(time);
+      box.appendChild(row);
+    });
+    refreshDigestCount();
+  }
+
+  document.getElementById("favToggle").onclick=function(e){
+    e.preventDefault();
+    if(!favOnly&&!favSet.size){
+      alert("你还没有收藏任何资讯，点击条目/卡片右上角的 ☆ 即可特别关注。");return;}
+    favOnly=!favOnly;
+    document.body.classList.toggle("fav-only",favOnly);
+    this.classList.toggle("active",favOnly);
+  };
+
+  document.getElementById("favCount").textContent="("+favSet.size+")";
+  document.getElementById("genTime").textContent=PAYLOAD.generated||new Date().toLocaleString("zh-CN");
+  (function(){
+    var g={};
+    (PAYLOAD.timeline||[]).forEach(function(nd){nd.items.forEach(function(it){
+      g[it.title.split(" ")[0]]=1;});});
+    (PAYLOAD.sections||[]).forEach(function(sec){sec.items.forEach(function(it){
+      g[it.game||it.title]=1;});});
+    var names=Object.keys(g).filter(function(k){return k&&k.length<12;});
+    document.getElementById("genMeta").textContent="数据截至 "+(PAYLOAD.generated||"")
+      +(names.length?" ｜ 覆盖："+names.slice(0,10).join("、"):"");
+  })();
+  document.getElementById("subtitle").textContent="关键节点时间线（未来约 100 天，标题可点击跳原文）· "
+    +"板块2 汇总表格（标题跳原文+前瞻时间+兑换码+来源）· 板块3/4 统一封面图卡片（无图占位）";
+  renderDigest();renderTimeline();renderVersion();renderCollab();renderMerch();
+})();
+</script>
+</body>
+</html>
